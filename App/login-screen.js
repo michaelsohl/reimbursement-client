@@ -6,16 +6,20 @@ import { Platform,
   Text,
   View,
   Image,
-  ScrollView
+  ScrollView,
+  TextInput
 } from 'react-native'
+import { NavigationActions } from 'react-navigation'
 // import LoginButton from './components/login-button'
 import Header from './components/header'
 import store from './redux-store'
-import { NavigationActions } from 'react-navigation'
+import TextField from './components/text-field'
+
 
 const sylogPic = require('./media/Icon-App-83.5x83.5.png')
 
 const instructions = Platform.select({
+    
   ios: 'Press Cmd+R to reload,\n' +
     'Cmd+D or shake for dev menu',
   android: 'Double tap R on your keyboard to reload,\n' +
@@ -26,7 +30,7 @@ const instructions = Platform.select({
 export default class LoginScreen extends Component {
   constructor(props, context){
     super(props, context)
-    this.store = store.getState()
+    this.state = store.getState()
     store.subscribe(() => { this.setState(store.getState()) })
   }
 
@@ -35,16 +39,24 @@ export default class LoginScreen extends Component {
     this.props.navigation.dispatch(NavigationActions.back())
    }
 
+   onChangeText = (text) => {
+     store.dispatch({
+       type: 'LOGIN_EMAIL',
+       text
+     })
+   }
+
   render () {
-    console.log('KEEEY2:',this.props.navigation.state)
     return (
-      
       <View style={styles.container}>
         <Header buttonName='Cancel' onPress={this.goBack}/>
         <Image style={styles.headerPicture} source={sylogPic} />
-        <Text style={styles.welcome}>
-          Var god och logga in.
-        </Text>
+        <View> style={styles.textFieldContainer}
+          <Text style={styles.welcome}>
+            Var god och logga in.
+          </Text>
+          <TextField label='Enter work-email'onChangeText={this.onChangeText} value={this.state.loginEmail.value} />
+        </View>
       </View>
     )
   }
@@ -59,7 +71,7 @@ const styles = StyleSheet.create({
   welcome: {
     fontSize: 20,
     textAlign: 'center',
-    margin: 10
+    marginBottom: 20,
   },
   buttonContainer: {
     position: 'absolute',
@@ -72,6 +84,9 @@ const styles = StyleSheet.create({
   headerPicture: {
     height: 100,
     width: 100
+  },
+  textFieldContainer: {
+    flex: 1
   }
 
 })

@@ -10,7 +10,7 @@ import { Platform,
 } from 'react-native'
 import LoginButton from './components/login-button'
 import Header from './components/header'
-import store from './redux-store'
+// import store from './redux-store'
 import { StackNavigator } from 'react-navigation'
 
 const sylogPic = require('./media/Icon-App-83.5x83.5.png')
@@ -26,8 +26,6 @@ const instructions = Platform.select({
 export default class StartScreen extends Component {
   constructor(props, context){
     super(props, context)
-    this.store = store.getState()
-    store.subscribe(() => { this.setState(store.getState()) })
   }
    onCreateAccount = () => {
     console.log('Create account button was pressed!')
@@ -42,7 +40,6 @@ export default class StartScreen extends Component {
 
 
   render () {
-    console.log('KEEEY:',this.props.navigation.state.key)
     return (
       <View style={styles.container}>
         <Header buttonName='Sign in' onPress={this.onLogin}/>
