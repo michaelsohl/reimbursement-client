@@ -9,7 +9,7 @@ export default function (props) {
   return (
     <View style={styles.container}>
       <Text> {props.label} </Text>
-      <TextInput style={styles.textField} onChangeText={props.onChangeText} value={props.value} />
+      <TextInput style={styles.textField} onChangeText={props.onChangeText} value={props.value} autoCapitalize='none' />
     </View>
   )
 }

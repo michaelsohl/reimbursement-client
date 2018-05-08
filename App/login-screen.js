@@ -10,10 +10,11 @@ import { Platform,
   TextInput
 } from 'react-native'
 import { NavigationActions } from 'react-navigation'
-// import LoginButton from './components/login-button'
+import LoginButton from './components/login-button'
 import Header from './components/header'
-import store from './redux-store'
+import { cs, checkWithServerIfEmailValid } from './redux-store'
 import TextField from './components/text-field'
+import EventEmitter from './event-handler'
 
 
 const sylogPic = require('./media/Icon-App-83.5x83.5.png')
@@ -30,8 +31,8 @@ const instructions = Platform.select({
 export default class LoginScreen extends Component {
   constructor(props, context){
     super(props, context)
-    this.state = store.getState()
-    store.subscribe(() => { this.setState(store.getState()) })
+    this.state = cs.getState()
+    this.unsubscribe = cs.subscribe(() => { this.setState(cs.getState()) })
   }
 
    goBack = () => {
@@ -40,23 +41,46 @@ export default class LoginScreen extends Component {
    }
 
    onChangeText = (text) => {
-     store.dispatch({
-       type: 'LOGIN_EMAIL',
-       text
-     })
+    cs.dispatch({
+      type: 'LOGIN_EMAIL',
+      text
+    })
+    cs.dispatch(checkWithServerIfEmailValid(text))
+  }
+
+  login = () => {
+    this.props.navigation.navigate('MainApp')
+  }
+
+   componentWillReceiveProps(newProps) {
+     console.log('componentWillReceiveProps')
+   }
+
+   componentDidUpdate(){
+    console.log('login-screen did update!')
+  }
+   componentWillUnmount(){
+    this.unsubscribe()
    }
 
   render () {
+    console.log('STATE:', this.state)
+    let button = null
+    if(this.state.data) {
+      button = <LoginButton buttonName='Login' onPress={this.login} buttonContainer={styles.buttonContainer} />
+    }
+    console.log('Is it valid in rerender?:', this.state.loginEmail.valid)
     return (
       <View style={styles.container}>
         <Header buttonName='Cancel' onPress={this.goBack}/>
         <Image style={styles.headerPicture} source={sylogPic} />
         <View> style={styles.textFieldContainer}
           <Text style={styles.welcome}>
-            Var god och logga in.
+            Var god och logga in
           </Text>
-          <TextField label='Enter work-email'onChangeText={this.onChangeText} value={this.state.loginEmail.value} />
+          <TextField label='Enter work-email' onChangeText={this.onChangeText} value={this.state.loginEmail.value} />
         </View>
+        { button }
       </View>
     )
   }

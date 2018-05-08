@@ -37,7 +37,9 @@ export default class StartScreen extends Component {
     this.props.navigation.navigate('Login')
    }
 
-
+   componentDidUpdate(){
+     console.log('start-screen did update!')
+   }
 
   render () {
     return (
