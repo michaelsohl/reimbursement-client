@@ -1,21 +1,10 @@
-import { StackNavigator } from 'react-navigation'
-import StartScreen from './start-screen'
-import LoginScreen from './login-screen'
-import MainTabNavigator from './main-tab-navigator'
+import React, { Component } from 'react'
+import MainNavigator from './navigation'
 
-export default StackNavigator({
-  Start: {
-    screen: StartScreen
-  },
-  Login: {
-    screen: LoginScreen
-  },
-  MainApp: {
-    screen: MainTabNavigator
+export default class App extends Component {
+  render () {
+    return (
+      <MainNavigator />
+    )
   }
-},
-{
-  navigationOptions: {
-    header: null
-  }
-})
+}

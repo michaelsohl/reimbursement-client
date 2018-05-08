@@ -8,12 +8,12 @@ import { Platform,
   Image,
   ScrollView
 } from 'react-native'
-import LoginButton from './components/login-button'
-import Header from './components/header'
+import LoginButton from '../components/login-button'
+import Header from '../components/header'
 // import store from './redux-store'
 import { StackNavigator } from 'react-navigation'
 
-const sylogPic = require('./media/Icon-App-83.5x83.5.png')
+const sylogPic = require('../media/Icon-App-83.5x83.5.png')
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' +
@@ -24,9 +24,7 @@ const instructions = Platform.select({
 
 
 export default class StartScreen extends Component {
-  constructor(props, context){
-    super(props, context)
-  }
+  
    onCreateAccount = () => {
     console.log('Create account button was pressed!')
     this.props.navigation.navigate('Start')
@@ -35,10 +33,6 @@ export default class StartScreen extends Component {
    onLogin = () => {
     console.log('Login button was pressed!')
     this.props.navigation.navigate('Login')
-   }
-
-   componentDidUpdate(){
-     console.log('start-screen did update!')
    }
 
   render () {

@@ -10,14 +10,14 @@ import { Platform,
   TextInput
 } from 'react-native'
 import { NavigationActions } from 'react-navigation'
-import LoginButton from './components/login-button'
-import Header from './components/header'
-import { cs, checkWithServerIfEmailValid } from './redux-store'
-import TextField from './components/text-field'
-import EventEmitter from './event-handler'
+import LoginButton from '../components/login-button'
+import Header from '../components/header'
+import { createstore, emailvalidation } from '../redux-store'
+import TextField from '../components/text-field'
+import EventEmitter from '../event-handler'
 
 
-const sylogPic = require('./media/Icon-App-83.5x83.5.png')
+const sylogPic = require('../media/Icon-App-83.5x83.5.png')
 
 const instructions = Platform.select({
     
@@ -31,8 +31,8 @@ const instructions = Platform.select({
 export default class LoginScreen extends Component {
   constructor(props, context){
     super(props, context)
-    this.state = cs.getState()
-    this.unsubscribe = cs.subscribe(() => { this.setState(cs.getState()) })
+    this.state = createstore.getState()
+    this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
   }
 
    goBack = () => {
@@ -41,24 +41,17 @@ export default class LoginScreen extends Component {
    }
 
    onChangeText = (text) => {
-    cs.dispatch({
+    createstore.dispatch({
       type: 'LOGIN_EMAIL',
       text
     })
-    cs.dispatch(checkWithServerIfEmailValid(text))
+    createstore.dispatch(emailvalidation(text))
   }
 
   login = () => {
     this.props.navigation.navigate('MainApp')
   }
 
-   componentWillReceiveProps(newProps) {
-     console.log('componentWillReceiveProps')
-   }
-
-   componentDidUpdate(){
-    console.log('login-screen did update!')
-  }
    componentWillUnmount(){
     this.unsubscribe()
    }

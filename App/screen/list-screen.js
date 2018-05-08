@@ -1,24 +1,22 @@
 import React, { Component } from 'react'
-
-import { Platform,
+import {
   StyleSheet,
   Text,
-  View,
-  // Image,
-  // ScrollView
+  View
 } from 'react-native'
 // import Header from './components/header'
 // import store from './redux-store'
 
-export default class EditScreen extends Component {
+export default class ListScreen extends Component {
   componentDidUpdate () {
-    console.log('edit-screen did update!')
+    console.log('start-screen did update!')
   }
+
   render () {
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Redigera dina utgifter nedan
+          Lista för utgifter!!1
         </Text>
       </View>
     )

@@ -1,6 +1,6 @@
 import { TabNavigator } from 'react-navigation'
-import ListScreen from './list-screen'
-import EditScreen from './edit-screen'
+import ListScreen from '../screen/list-screen'
+import EditScreen from '../screen/edit-screen'
 
 const mainTabNavigator = TabNavigator({
   ListPage: {
