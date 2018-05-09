@@ -9,13 +9,14 @@ import { Platform,
   ScrollView,
   TextInput
 } from 'react-native'
+import debounce from 'debounce'
 import { NavigationActions } from 'react-navigation'
 import LoginButton from '../components/login-button'
 import Header from '../components/header'
 import { createstore, emailvalidation } from '../redux-store'
 import TextField from '../components/text-field'
 import EventEmitter from '../event-handler'
-
+console.log(debounce)
 
 const sylogPic = require('../media/Icon-App-83.5x83.5.png')
 
@@ -33,6 +34,11 @@ export default class LoginScreen extends Component {
     super(props, context)
     this.state = createstore.getState()
     this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
+    this.validateEmail = debounce(this._validateEmail , 2000)
+  }
+
+  _validateEmail = (text) => {
+    createstore.dispatch(emailvalidation(text))
   }
 
    goBack = () => {
@@ -45,7 +51,7 @@ export default class LoginScreen extends Component {
       type: 'LOGIN_EMAIL',
       text
     })
-    createstore.dispatch(emailvalidation(text))
+    this.validateEmail(text)
   }
 
   login = () => {
@@ -59,7 +65,7 @@ export default class LoginScreen extends Component {
   render () {
     console.log('STATE:', this.state)
     let button = null
-    if(this.state.data) {
+    if(this.state.loginEmail.data) {
       button = <LoginButton buttonName='Login' onPress={this.login} buttonContainer={styles.buttonContainer} />
     }
     console.log('Is it valid in rerender?:', this.state.loginEmail.valid)
@@ -69,7 +75,7 @@ export default class LoginScreen extends Component {
         <Image style={styles.headerPicture} source={sylogPic} />
         <View> style={styles.textFieldContainer}
           <Text style={styles.welcome}>
-            Var god och logga in
+            Enter the app here
           </Text>
           <TextField label='Enter work-email' onChangeText={this.onChangeText} value={this.state.loginEmail.value} />
         </View>
@@ -100,7 +106,8 @@ const styles = StyleSheet.create({
   },
   headerPicture: {
     height: 100,
-    width: 100
+    width: 100,
+    margin: 40
   },
   textFieldContainer: {
     flex: 1

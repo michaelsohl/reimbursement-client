@@ -2,22 +2,126 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  ScrollView
 } from 'react-native'
+import Header from '../components/header'
+import { createstore } from '../redux-store'
 // import Header from './components/header'
 // import store from './redux-store'
 
 export default class ListScreen extends Component {
-  componentDidUpdate () {
-    console.log('start-screen did update!')
+  constructor(props){
+    super(props)
+    this.state = createstore.getState()
+    this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
   }
 
+  signout = () => {
+    this.props.navigation.navigate('Start')
+  }
   render () {
     return (
       <View style={styles.container}>
+        <Header buttonName='Sign out' onPress={this.signout} />
+        <View style={styles.textContainer}>
         <Text style={styles.welcome}>
-          Lista för utgifter!!1
+              Lista för utgifter!!
         </Text>
+        </View>
+          <ScrollView>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+            <Text style={styles.welcome}>
+              Lista för utgifter!!
+            </Text>
+
+          </ScrollView>
       </View>
     )
   }
@@ -27,8 +131,11 @@ const buttonThemeColor = '#C21807'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
     backgroundColor: '#F5FCFF'
+  },
+  textContainer: {
+    height: 80,
+    alignItems: 'center',
   },
   welcome: {
     fontSize: 20,

@@ -15,6 +15,7 @@ export default StackNavigator({
   }
 },
 {
+  initialRouteName: 'MainApp',
   navigationOptions: {
     header: null
   }

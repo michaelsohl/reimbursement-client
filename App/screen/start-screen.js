@@ -41,7 +41,7 @@ export default class StartScreen extends Component {
         <Header buttonName='Sign in' onPress={this.onLogin}/>
         <Image style={styles.headerPicture} source={sylogPic} />
         <Text style={styles.welcome}>
-          Sylog appen är äntligen här!
+          Transport-reimbursement at Sylog!
         </Text>
         <LoginButton buttonName='Create account' onPress={this.onCreateAccount} buttonContainer={styles.buttonContainer} />
       </View>
@@ -71,7 +71,8 @@ const styles = StyleSheet.create({
   },
   headerPicture: {
     height: 100,
-    width: 100
+    width: 100,
+    margin: 40
   }
 
 })
