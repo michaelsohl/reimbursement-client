@@ -38,6 +38,7 @@ export default class LoginScreen extends Component {
   }
 
   _validateEmail = (text) => {
+    console.log('text:', text)
     createstore.dispatch(emailvalidation(text))
   }
 

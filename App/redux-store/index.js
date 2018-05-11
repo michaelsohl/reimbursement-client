@@ -3,7 +3,11 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
 import EmailValidation from './email-validation'
 
-const defaultState = {
+const userDefaultState = {
+  expenses: []
+}
+
+const loginDefaultState = {
   value: '',
   loggedIn: false,
   feedback: '',
@@ -11,10 +15,11 @@ const defaultState = {
 }
 
 const reducers = combineReducers({
-  loginEmail: reduxReducer
+  loginEmail: loginReducer,
+  userExpenses: getUserReducer
 })
 // main reducer
-function reduxReducer (state = defaultState, action) {
+function loginReducer (state = loginDefaultState, action) {
   // console.log('action:', action)
   // console.log('action type:', action.type)
   let newObj
@@ -33,6 +38,20 @@ function reduxReducer (state = defaultState, action) {
       return Object.assign({}, state, newObj)
     case 'FEEDBACK':
       return Object.assign({}, state, { feedback: action.mess })
+    default:
+      return state
+  }
+}
+
+function getUserReducer (state = userDefaultState, action) {
+  let newObj
+  console.log('action:', action)
+  switch (action.type) {
+    case 'GET_USER_EXPENSES':
+      newObj = {
+        expenses: action.data
+      }
+      return Object.assign({}, state, newObj)
     default:
       return state
   }

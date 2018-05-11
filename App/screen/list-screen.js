@@ -7,6 +7,7 @@ import {
 } from 'react-native'
 import Header from '../components/header'
 import { createstore } from '../redux-store'
+import getexpenses from '../redux-store/user-exprenses'
 // import Header from './components/header'
 // import store from './redux-store'
 
@@ -15,6 +16,14 @@ export default class ListScreen extends Component {
     super(props)
     this.state = createstore.getState()
     this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
+  }
+  componentDidMount() {
+    console.log('componentDidMount')
+    createstore.dispatch(getexpenses('Michael Sohl'))
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
   }
 
   signout = () => {
