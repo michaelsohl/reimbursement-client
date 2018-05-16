@@ -22,6 +22,7 @@ const reducers = combineReducers({
 function loginReducer (state = loginDefaultState, action) {
   // console.log('action:', action)
   // console.log('action type:', action.type)
+  console.log('loginReducer')
   let newObj
   switch (action.type) {
     case 'LOGIN_EMAIL':
@@ -44,6 +45,7 @@ function loginReducer (state = loginDefaultState, action) {
 }
 
 function getUserReducer (state = userDefaultState, action) {
+  console.log('getUserReducer:', action.data)
   let newObj
   console.log('action:', action)
   switch (action.type) {

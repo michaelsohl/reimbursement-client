@@ -8,8 +8,10 @@ import {
 import Header from '../components/header'
 import { createstore } from '../redux-store'
 import getexpenses from '../redux-store/user-exprenses'
+import Expense from '../components/expense'
 // import Header from './components/header'
 // import store from './redux-store'
+
 
 export default class ListScreen extends Component {
   constructor(props){
@@ -19,7 +21,7 @@ export default class ListScreen extends Component {
   }
   componentDidMount() {
     console.log('componentDidMount')
-    createstore.dispatch(getexpenses('Michael Sohl'))
+    createstore.dispatch(getexpenses('michael.sohl@sylog.se'))
   }
 
   componentWillUnmount() {
@@ -29,108 +31,32 @@ export default class ListScreen extends Component {
   signout = () => {
     this.props.navigation.navigate('Start')
   }
+
+
+  renderExpenses = (arr) => {
+    if(!arr) return null
+    return arr.map((expense) => { 
+      return (
+        <Expense date={expense.date} attest={expense.attest} descr={expense.route_descr} key={expense._id} /> // Look out for issues with unique key
+      )
+    })
+  }
+
   render () {
+    console.log('HERE IS LIST_SCREEN STATE:', this.state)
     return (
       <View style={styles.container}>
         <Header buttonName='Sign out' onPress={this.signout} />
         <View style={styles.textContainer}>
         <Text style={styles.welcome}>
-              Lista för utgifter!!
+              Mina utgifter
         </Text>
         </View>
+          <View style={styles.expensesContainer} >
           <ScrollView>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-            <Text style={styles.welcome}>
-              Lista för utgifter!!
-            </Text>
-
+            { this.renderExpenses(this.state.userExpenses.expenses) }
           </ScrollView>
+          </View>
       </View>
     )
   }
@@ -145,6 +71,11 @@ const styles = StyleSheet.create({
   textContainer: {
     height: 80,
     alignItems: 'center',
+  },
+  expensesContainer: {
+    flex: 1,
+    alignItems: 'center',
+    width: '100%'
   },
   welcome: {
     fontSize: 20,

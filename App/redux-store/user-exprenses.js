@@ -17,8 +17,8 @@ function feedback (mess) {
 }
 
 // fetch
-const getUserExpensesFetch = (userId) => {
-  var data = { userId }
+const getUserExpensesFetch = (email) => {
+  var data = { email }
   return fetch('http://127.0.0.1:3000/getexpenses', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -27,7 +27,6 @@ const getUserExpensesFetch = (userId) => {
     console.log('RES:', res)
     return res.json()
   }).then(json => {
-    console.log('JSON RES:', json)
     return json
   })
 }
@@ -38,6 +37,8 @@ export default (userId) => {
     return getUserExpensesFetch(userId).then(
       data => {
         console.log('data in redux-state:', data)
+        // var updatedData = setTimeFormat(data)
+        // console.log('data in redux-state (updated):', updatedData)
         return dispatch(getUserExpenses(data))
       },
       error => dispatch(feedback(error))
