@@ -13,7 +13,7 @@ to work properly.
 ### The following parts should work regardless of which platform you are running.
 
 ```
-git clone {this repository}
+git clone git@github.com:michaelsohl/reimbursement-client.git
 ```
 &&
 ```
