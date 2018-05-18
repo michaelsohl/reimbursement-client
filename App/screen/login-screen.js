@@ -38,13 +38,19 @@ export default class LoginScreen extends Component {
   }
 
   _validateEmail = (text) => {
-    console.log('text:', text)
     createstore.dispatch(emailvalidation(text))
   }
 
    goBack = () => {
-    console.log('Go Back was pressed!')
+    // console.log('Go Back was pressed!')
     this.props.navigation.dispatch(NavigationActions.back())
+   }
+
+   runstuff = (text) => {
+    createstore.dispatch({
+      type: 'LOGIN_EMAIL',
+      text
+    })
    }
 
    onChangeText = (text) => {
@@ -56,7 +62,7 @@ export default class LoginScreen extends Component {
   }
 
   login = () => {
-    this.props.navigation.navigate('MainApp')
+    this.props.navigation.navigate('MainApp', {userId: this.state.loginEmail.userId})
   }
 
    componentWillUnmount(){
@@ -64,12 +70,11 @@ export default class LoginScreen extends Component {
    }
 
   render () {
-    console.log('STATE:', this.state)
+    // console.log('STATE in login-screen:', this.state.loginEmail.userId)
     let button = null
     if(this.state.loginEmail.data) {
       button = <LoginButton buttonName='Login' onPress={this.login} buttonContainer={styles.buttonContainer} />
     }
-    console.log('Is it valid in rerender?:', this.state.loginEmail.valid)
     return (
       <View style={styles.container}>
         <Header buttonName='Cancel' onPress={this.goBack}/>

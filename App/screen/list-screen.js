@@ -9,8 +9,9 @@ import Header from '../components/header'
 import { createstore } from '../redux-store'
 import getexpenses from '../redux-store/user-exprenses'
 import Expense from '../components/expense'
-// import Header from './components/header'
-// import store from './redux-store'
+import Month from '../components/month'
+import IonIcon from 'react-native-vector-icons/Ionicons'
+
 
 
 export default class ListScreen extends Component {
@@ -20,8 +21,11 @@ export default class ListScreen extends Component {
     this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
   }
   componentDidMount() {
-    console.log('componentDidMount')
-    createstore.dispatch(getexpenses('michael.sohl@sylog.se'))
+    // console.log('componentDidMount')
+    if(this.props.navigation) {
+      // this.props.navigation.state.params.userId
+      createstore.dispatch(getexpenses('5afdac99bc597a1defb10f23'))
+    }
   }
 
   componentWillUnmount() {
@@ -33,6 +37,14 @@ export default class ListScreen extends Component {
   }
 
 
+  getMonthExpenses = (index) => {
+    createstore.dispatch({
+      type: 'GET_MONTH_EXPENSES',
+      index
+    })
+  }
+
+  
   renderExpenses = (arr) => {
     if(!arr) return null
     return arr.map((expense) => { 
@@ -42,21 +54,46 @@ export default class ListScreen extends Component {
     })
   }
 
+  onMonthPress = (index) => {
+    console.log('Index:', index)
+    if (this.state.userExpenses.monthIndex === index) {
+      this.getMonthExpenses(-1) 
+    } else {
+      this.getMonthExpenses(index) 
+    }
+  }
+
+  renderMonths = (arr) => {
+    if(!arr) return null
+    let index = 0
+    return arr.map((month) => { 
+      let m = new Date(month[0].date)
+      return (
+        <Month onPress={() => { this.onMonthPress(arr.indexOf(month)) }} month={m.getMonth()} attest={month[0].attest} descr={month[0].route_descr} key={month[0]._id} >
+          { this.state.userExpenses.monthIndex === arr.indexOf(month) ? this.renderExpenses(month) : null }
+        </Month>
+      )
+    })
+  }
+
+
+
   render () {
     console.log('HERE IS LIST_SCREEN STATE:', this.state)
     return (
       <View style={styles.container}>
         <Header buttonName='Sign out' onPress={this.signout} />
+        
         <View style={styles.textContainer}>
-        <Text style={styles.welcome}>
-              Mina utgifter
-        </Text>
+          <Text style={styles.welcome}>
+            Mina utgifter
+          </Text>
         </View>
-          <View style={styles.expensesContainer} >
+        <View style={styles.expensesContainer} >
           <ScrollView>
-            { this.renderExpenses(this.state.userExpenses.expenses) }
+            { this.renderMonths(this.state.userExpenses.monthFormattedExpenses) }
           </ScrollView>
-          </View>
+        </View>
       </View>
     )
   }

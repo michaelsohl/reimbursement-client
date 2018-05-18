@@ -26,12 +26,12 @@ const instructions = Platform.select({
 export default class StartScreen extends Component {
   
    onCreateAccount = () => {
-    console.log('Create account button was pressed!')
+    // console.log('Create account button was pressed!')
     this.props.navigation.navigate('Start')
    }
 
    onLogin = () => {
-    console.log('Login button was pressed!')
+    // console.log('Login button was pressed!')
     this.props.navigation.navigate('Login')
    }
 

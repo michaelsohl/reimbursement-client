@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "debounce": "^1.1.0",
+    "deep-freeze": "0.0.1",
     "es6-promise": "^4.2.4",
     "event-emitter": "^0.3.5",
     "isomorphic-fetch": "^2.2.1",

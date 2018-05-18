@@ -17,9 +17,7 @@ function feedback (mess) {
 }
 // fetch
 const checkWithServerIfEmailValidFetch = (email) => {
-  console.log('email:', email)
   let data = { email }
-  console.log('data:', data)
   return fetch('http://127.0.0.1:3000/authenticate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -27,7 +25,7 @@ const checkWithServerIfEmailValidFetch = (email) => {
   }).then((res) => {
     return res.json()
   }).then(json => {
-    return json.validEmail
+    return json
   })
 }
 
@@ -36,7 +34,6 @@ export default (email) => {
   return function (dispatch) {
     return checkWithServerIfEmailValidFetch(email).then(
       data => {
-        console.log('data in redux-state:', data)
         return dispatch(getData(data))
       },
       error => dispatch(feedback(error))
