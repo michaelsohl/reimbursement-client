@@ -6,6 +6,7 @@ import {
   View
 } from 'react-native'
 import Header from '../components/header'
+import { NavigationActions } from 'react-navigation'
 
 export default class EditScreen extends Component {
 
@@ -17,14 +18,16 @@ export default class EditScreen extends Component {
     console.log('edit-screen did update!')
   }
 
-  signout = () => {
-    this.props.navigation.navigate('Start')
+  goBack = (props) => {
+    // console.log('Go Back was pressed!')
+    props.navigation.dispatch(NavigationActions.back())
   }
+
 
   render () {
     return (
       <View style={styles.container}>
-        <Header buttonName='Sign out' onPress={this.signout} />
+        <Header buttonName='Cancel' onPress={() => { this.goBack(this.props) }} />
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
            Editera mina utgifter

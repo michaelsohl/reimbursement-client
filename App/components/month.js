@@ -23,9 +23,12 @@ export default function (props) {
   return (
     <View>
       <StdButton onPress={props.onPress} >
-        <View style={styles.textAndPendingContainer}>
-          <Text style={{color: 'black', textAlign: 'center'}}> { Months[props.month + 1] }  </Text>
-          <StatusSquare color={props.attest ? 'green' : 'grey'} />
+        <View style={{flex: 1}}>
+          <View style={styles.textAndPendingContainer}>
+            <Text style={{color: 'black', textAlign: 'center'}}> { Months[props.month + 1] }  </Text>
+            <Text style={{color: 'black', fontSize: 12, fontWeight: '700'}}>  Reseutlägg </Text>
+          </View>
+          <Text style={{left: 6, bottom: 10, fontSize: 10, color: 'grey'}}> {props.year} </Text>
         </View>
       </StdButton>
       { props.children }

@@ -16,8 +16,8 @@ import Header from '../components/header'
 import { createstore, emailvalidation } from '../redux-store'
 import TextField from '../components/text-field'
 import EventEmitter from '../event-handler'
-console.log(debounce)
-
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 const sylogPic = require('../media/Icon-App-83.5x83.5.png')
 
 const instructions = Platform.select({
@@ -28,8 +28,7 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu'
 })
 
-
-export default class LoginScreen extends Component {
+class LoginScreen extends Component {
   constructor(props, context){
     super(props, context)
     this.state = createstore.getState()
@@ -46,14 +45,8 @@ export default class LoginScreen extends Component {
     this.props.navigation.dispatch(NavigationActions.back())
    }
 
-   runstuff = (text) => {
-    createstore.dispatch({
-      type: 'LOGIN_EMAIL',
-      text
-    })
-   }
-
    onChangeText = (text) => {
+    // this.props.onChangeLoginTextActionCreator(text)
     createstore.dispatch({
       type: 'LOGIN_EMAIL',
       text
@@ -66,18 +59,18 @@ export default class LoginScreen extends Component {
   }
 
    componentWillUnmount(){
-    this.unsubscribe()
+    // this.unsubscribe()
    }
 
   render () {
-    // console.log('STATE in login-screen:', this.state.loginEmail.userId)
+    console.log('STATE in login-screen:', this.state)
     let button = null
     if(this.state.loginEmail.data) {
       button = <LoginButton buttonName='Login' onPress={this.login} buttonContainer={styles.buttonContainer} />
     }
     return (
       <View style={styles.container}>
-        <Header buttonName='Cancel' onPress={this.goBack}/>
+        <Header buttonName='Cancel' leftadd={false} onPress={this.goBack}/>
         <Image style={styles.headerPicture} source={sylogPic} />
         <View> style={styles.textFieldContainer}
           <Text style={styles.welcome}>
@@ -90,6 +83,28 @@ export default class LoginScreen extends Component {
     )
   }
 }
+
+/*
+function onChangeLoginTextActionCreator(text) {
+  return {
+   type: 'LOGIN_EMAIL',
+   text
+ }
+}
+
+function mapStateToProps(state) {
+  return {
+    loginEmail: state.loginEmail
+  }
+}
+
+function matchDispatchToProps(dispatch) {
+  return bindActionCreators({onChangeLoginTextActionCreator: onChangeLoginTextActionCreator}, dispatch)
+}
+*/
+// export default connect(mapStateToProps, matchDispatchToProps)(LoginScreen)
+
+export default LoginScreen
 
 const styles = StyleSheet.create({
   container: {

@@ -7,12 +7,16 @@ export default function (props) {
   return (
     <StdButton>
       <View style={{height: 20, width: 100}}>
-        <Text style={{color: 'black', right: 0}}>
+        <Text style={{color: 'black', fontWeight: '700', right: 0}}>
           { props.date.slice(0, 10) }
         </Text>
       </View>
       <View style={styles.textAndPendingContainer}>
-        <Text style={{color: 'black', textAlign: 'center'}}> { props.descr }  </Text>
+        <View style={{height: 50}}>
+          <Text style={{fontSize: 10, color: 'grey'}}> { props.descr }  </Text>
+          <Text style={{fontSize: 10, color: 'grey'}}> Egen bil  </Text>
+          <Text style={{fontSize: 10, color: 'grey'}}> 475 km </Text>
+        </View>
         <StatusSquare color={props.attest ? 'green' : 'grey'} />
       </View>
     </StdButton>

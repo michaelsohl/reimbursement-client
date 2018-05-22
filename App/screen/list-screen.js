@@ -3,7 +3,8 @@ import {
   StyleSheet,
   Text,
   View,
-  ScrollView
+  ScrollView,
+  Divider
 } from 'react-native'
 import Header from '../components/header'
 import { createstore } from '../redux-store'
@@ -11,6 +12,7 @@ import getexpenses from '../redux-store/user-exprenses'
 import Expense from '../components/expense'
 import Month from '../components/month'
 import IonIcon from 'react-native-vector-icons/Ionicons'
+import { NavigationActions } from 'react-navigation'
 
 
 
@@ -44,6 +46,10 @@ export default class ListScreen extends Component {
     })
   }
 
+  goBack = () => {
+    // console.log('Go Back was pressed!')
+    this.props.navigation.dispatch(NavigationActions.back())
+   }
   
   renderExpenses = (arr) => {
     if(!arr) return null
@@ -54,13 +60,20 @@ export default class ListScreen extends Component {
     })
   }
 
-  onMonthPress = (index) => {
-    console.log('Index:', index)
+  onMonthPress = (arr, index) => {
+    console.log('Arr:', index)
+
+    this.props.navigation.navigate('ExpensesList', {expenses: arr[index]})
+    //let cb = () => {
+    //  this.goBack()
+    // }
+    /*
     if (this.state.userExpenses.monthIndex === index) {
       this.getMonthExpenses(-1) 
     } else {
       this.getMonthExpenses(index) 
     }
+    */
   }
 
   renderMonths = (arr) => {
@@ -69,20 +82,20 @@ export default class ListScreen extends Component {
     return arr.map((month) => { 
       let m = new Date(month[0].date)
       return (
-        <Month onPress={() => { this.onMonthPress(arr.indexOf(month)) }} month={m.getMonth()} attest={month[0].attest} descr={month[0].route_descr} key={month[0]._id} >
-          { this.state.userExpenses.monthIndex === arr.indexOf(month) ? this.renderExpenses(month) : null }
-        </Month>
+        <Month onPress={() => { this.onMonthPress(arr, arr.indexOf(month)) }} year={m.getFullYear()} month={m.getMonth()} attest={month[0].attest} descr={month[0].route_descr} key={month[0]._id} />
       )
     })
   }
-
+/**
+ * { this.state.userExpenses.monthIndex === arr.indexOf(month) ? this.renderExpenses(month) : null }
+ */
 
 
   render () {
     console.log('HERE IS LIST_SCREEN STATE:', this.state)
     return (
       <View style={styles.container}>
-        <Header buttonName='Sign out' onPress={this.signout} />
+        <Header buttonName='Sign out' onPress={this.signout} leftadd={false} />
         
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
@@ -102,8 +115,7 @@ export default class ListScreen extends Component {
 const buttonThemeColor = '#C21807'
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#F5FCFF'
+    flex: 1
   },
   textContainer: {
     height: 80,

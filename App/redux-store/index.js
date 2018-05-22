@@ -3,6 +3,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
 import EmailValidation from './email-validation'
 import deepFreeze from 'deep-freeze'
+import { reducer as formReducer } from 'redux-form'
 
 const userDefaultState = {
   _id: '',
@@ -25,7 +26,8 @@ const loginDefaultState = {
 
 const reducers = combineReducers({
   loginEmail: loginReducer,
-  userExpenses: getUserReducer
+  userExpenses: getUserReducer,
+  addExpensesForm: formReducer
 })
 
 // AUTH reducer

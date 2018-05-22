@@ -1,23 +1,25 @@
-import { TabNavigator } from 'react-navigation'
+import { StackNavigator } from 'react-navigation'
 import ListScreen from '../screen/list-screen'
 import EditScreen from '../screen/edit-screen'
+import ExpensiveListScreen from '../screen/list-expenses-screen'
 // import Ionicons from 'react-native-vector-icons/Ionicons'
 
-const mainTabNavigator = TabNavigator({
+const mainTabNavigator = StackNavigator({
   ListPage: {
     screen: ListScreen
+  },
+  ExpensesList: {
+    screen: ExpensiveListScreen
   },
   EditExpensesPage: {
     screen: EditScreen
   }
 }, {
-  tabBarPosition: 'bottom',
-  tabBarOptions: {
-    activeTintColor: 'tomato',
-    inactiveTintColor: 'gray'
+  initialRouteName: 'ListPage',
+  navigationOptions: {
+    header: null
   }
-}
-)
+})
 
 export default mainTabNavigator
 

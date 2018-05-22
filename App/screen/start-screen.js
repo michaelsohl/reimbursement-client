@@ -8,7 +8,7 @@ import { Platform,
   Image,
   ScrollView
 } from 'react-native'
-import LoginButton from '../components/login-button'
+import CreateAccountButton from '../components/login-button'
 import Header from '../components/header'
 // import store from './redux-store'
 import { StackNavigator } from 'react-navigation'
@@ -38,12 +38,12 @@ export default class StartScreen extends Component {
   render () {
     return (
       <View style={styles.container}>
-        <Header buttonName='Sign in' onPress={this.onLogin}/>
+        <Header buttonName='Sign in' leftadd={false} onPress={this.onLogin}/>
         <Image style={styles.headerPicture} source={sylogPic} />
         <Text style={styles.welcome}>
-          Transport-reimbursement at Sylog!
+          Resify!
         </Text>
-        <LoginButton buttonName='Create account' onPress={this.onCreateAccount} buttonContainer={styles.buttonContainer} />
+        <CreateAccountButton buttonName='Create account' onPress={this.onCreateAccount} buttonContainer={styles.buttonContainer} />
       </View>
     )
   }
