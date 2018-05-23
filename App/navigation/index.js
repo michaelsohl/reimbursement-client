@@ -42,7 +42,7 @@ const Nav = StackNavigator({
   }
 },
 {
-  initialRouteName: 'Start',
+  initialRouteName: 'MainApp',
   navigationOptions: {
     header: null
   }

@@ -7,6 +7,7 @@ import {
 } from 'react-native'
 import Header from '../components/header'
 import { NavigationActions } from 'react-navigation'
+import ExpenseForm from '../components/ExpenseForm'
 
 export default class EditScreen extends Component {
 
@@ -33,6 +34,7 @@ export default class EditScreen extends Component {
            Editera mina utgifter
           </Text>
         </View>
+        <ExpenseForm />
       </View>
     )
   }
