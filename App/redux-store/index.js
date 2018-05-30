@@ -2,8 +2,9 @@ import { logger } from 'redux-logger'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
 import EmailValidation from './email-validation'
+import AddExpenses from './add-expenses'
 import deepFreeze from 'deep-freeze'
-import { reducer as formReducer } from 'redux-form'
+// import { reducer as formReducer } from 'redux-form'
 
 const userDefaultState = {
   _id: '',
@@ -13,7 +14,8 @@ const userDefaultState = {
   expenses: [],
   formattedExpenses: [],
   monthFormattedExpenses: [],
-  monthIndex: -1
+  monthIndex: -1,
+  expenseJustAdded: false
 }
 
 const loginDefaultState = {
@@ -24,10 +26,14 @@ const loginDefaultState = {
   userId: ''
 }
 
+const defaultExpense = {
+  addedExpense: { attest: false }
+}
+
 const reducers = combineReducers({
   loginEmail: loginReducer,
   userExpenses: getUserReducer,
-  addExpensesForm: formReducer
+  addExpenses: addExpensesReducer
 })
 
 // AUTH reducer
@@ -56,10 +62,21 @@ function loginReducer (state = loginDefaultState, action) {
 
 // GETUserReducer
 function getUserReducer (state = userDefaultState, action) {
-  console.log('state in getUserReducer:', state)
   let newObj
   let monthFormattedExpenses = []
   switch (action.type) {
+    case 'TURN_OFF_UPDATE_FLAG':
+      newObj = {
+        expenseJustAdded: false
+      }
+      return Object.assign({}, state, newObj)
+    case 'POST_USER_EXPENSES':
+      console.log('POST_USER_EXPENSES')
+      newObj = {
+        expenseJustAdded: true
+      }
+      return Object.assign({}, state, newObj)
+      // return state
     case 'GET_USER_EXPENSES':
       let expensesList = action.data.expenses.slice(0, action.data.expenses.length)
       deepFreeze(action.data.expenses)
@@ -98,13 +115,6 @@ function getUserReducer (state = userDefaultState, action) {
         console.log(elem)
       })
 
-      // let newList = []
-      // if (state.formattedExpenses.length == 0) {
-      //  state.formattedExpenses.concat
-      // } else {
-
-      // }
-
       newObj = {
         _id: action.data._id,
         name: action.data.name,
@@ -123,7 +133,7 @@ function getUserReducer (state = userDefaultState, action) {
         formattedExpenses: expenses
       }
       return Object.assign({}, state, newObj)
-    case 'GET_MONTH_EXPENSES':
+    case 'SET_MONTH_SCREEN':
       newObj = {
         monthIndex: action.index
       }
@@ -132,14 +142,53 @@ function getUserReducer (state = userDefaultState, action) {
       return state
   }
 }
+// date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
 
-// Setup datastructures reducer
-// function setExpensesTreeFormat (state = expensesFormatDefaultState, action) {
+function addExpensesReducer (state = defaultExpense, action) {
+  let newObj
+  let obj
+  deepFreeze(state.addedExpense)
+  switch (action.type) {
+    case 'ADD_NEW_EXPENSE_DATE':
+      obj = Object.assign({}, state.addedExpense, {date: action.data})
+      newObj = {
+        addedExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'ADD_NEW_EXPENSE_CARTYPE':
+      obj = Object.assign({}, state.addedExpense, {car_type: action.data})
+      newObj = {
+        addedExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'ADD_NEW_EXPENSE_KM':
+      console.log('ADD_NEW_EXPENSE_KM')
 
-// }
+      obj = Object.assign({}, state.addedExpense, {km: action.data})
+      newObj = {
+        addedExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'ADD_NEW_EXPENSE_ROUTEDESCR':
+      obj = Object.assign({}, state.addedExpense, {route_descr: action.data})
+      newObj = {
+        addedExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'ADD_NEW_EXPENSE_CLIENT':
+      obj = Object.assign({}, state.addedExpense, {client: action.data})
+      newObj = {
+        addedExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    default:
+      return state
+  }
+}
 
 export const createstore = createStore(
   reducers,
   applyMiddleware(thunk, logger)
 )
 export const emailvalidation = EmailValidation
+export const addexpenses = AddExpenses

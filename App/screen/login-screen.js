@@ -63,10 +63,10 @@ class LoginScreen extends Component {
    }
 
   render () {
-    console.log('STATE in login-screen:', this.state)
+    // console.log('STATE in login-screen:', this.state)
     let button = null
     if(this.state.loginEmail.data) {
-      button = <LoginButton buttonName='Login' onPress={this.login} buttonContainer={styles.buttonContainer} />
+      button = <LoginButton buttonName='Login' onPress={this.login} />
     }
     return (
       <View style={styles.container}>
@@ -116,14 +116,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     marginBottom: 20,
-  },
-  buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    justifyContent: 'center',
-    backgroundColor: '#C21807',
-    alignItems: 'center',
-    width: '100%'
   },
   headerPicture: {
     height: 100,

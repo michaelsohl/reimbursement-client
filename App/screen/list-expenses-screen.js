@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { Component }from 'react'
 import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import Expense from '../components/expense'
 import Header from '../components/header'
 import { NavigationActions } from 'react-navigation'
+import { createstore } from '../redux-store'
+import getexpenses from '../redux-store/user-exprenses'
 
 const goBack = (props) => {
   // console.log('Go Back was pressed!')
@@ -21,24 +23,48 @@ const renderExpenses = (arr) => {
   })
 }
 
-export default function (props) {
-  console.log('expenses', props.navigation.state.params.expenses)
-  return (
-    <View style={styles.container}>
-      <Header buttonName='Cancel' onPress={() => { goBack(props) }} leftadd={true} onAddPress={() => { addExpense(props) }} />
-      <View style={styles.textContainer}>
-        <Text style={styles.welcome}>
-            Mina utgifter
-        </Text>
+export default class ListExpenseScreen extends Component {
+  constructor(props) {
+    super(props)
+    this.state = createstore.getState()
+    this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe()
+  }
+
+  componentDidUpdate () {
+    if(this.state.userExpenses.expenseJustAdded) {
+      createstore.dispatch(getexpenses('5afdac99bc597a1defb10f23'))
+      this.expensesUpdated()
+    }
+  }
+
+  expensesUpdated = () => {
+    createstore.dispatch({
+      type: 'TURN_OFF_UPDATE_FLAG'
+    })
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Header buttonName='Cancel' onPress={() => { goBack(this.props) }} leftadd={true} onAddPress={() => { addExpense(this.props) }} />
+        <View style={styles.textContainer}>
+          <Text style={styles.welcome}>
+              Mina utgifter
+          </Text>
+        </View>
+        <View style={styles.expensesContainer} >
+          <ScrollView>
+            { renderExpenses(this.state.userExpenses.monthFormattedExpenses[this.props.navigation.state.params.monthIndex]) }
+          </ScrollView>
+        </View>
       </View>
-      <View style={styles.expensesContainer} >
-        <ScrollView>
-          { renderExpenses(props.navigation.state.params.expenses) }
-        </ScrollView>
-      </View>
-    </View>
-  )
-}
+      )
+    }
+  }
 
 const styles = StyleSheet.create({
   container: {

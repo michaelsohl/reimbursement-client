@@ -38,10 +38,9 @@ export default class ListScreen extends Component {
     this.props.navigation.navigate('Start')
   }
 
-
-  getMonthExpenses = (index) => {
+  setMonthScreen = (index) => {
     createstore.dispatch({
-      type: 'GET_MONTH_EXPENSES',
+      type: 'SET_MONTH_SCREEN',
       index
     })
   }
@@ -61,19 +60,8 @@ export default class ListScreen extends Component {
   }
 
   onMonthPress = (arr, index) => {
-    console.log('Arr:', index)
-
-    this.props.navigation.navigate('ExpensesList', {expenses: arr[index]})
-    //let cb = () => {
-    //  this.goBack()
-    // }
-    /*
-    if (this.state.userExpenses.monthIndex === index) {
-      this.getMonthExpenses(-1) 
-    } else {
-      this.getMonthExpenses(index) 
-    }
-    */
+    this.setMonthScreen(index)
+    this.props.navigation.navigate('ExpensesList', {monthIndex: index})
   }
 
   renderMonths = (arr) => {

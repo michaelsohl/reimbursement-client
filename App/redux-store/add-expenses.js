@@ -3,9 +3,9 @@ require('es6-promise').polyfill()
 const fetch = require('isomorphic-fetch')
 
 // action-creator
-function getUserExpenses (data) {
+function postUserExpenses (data) {
   return {
-    type: 'GET_USER_EXPENSES',
+    type: 'POST_USER_EXPENSES',
     data
   }
 }
@@ -18,9 +18,11 @@ function feedback (mess) {
 }
 
 // fetch
-const getUserExpensesFetch = (userId) => {
-  var data = { userId }
-  return fetch(`${config.host}getexpenses`, {
+// // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
+
+const postUserExpensesFetch = (userId, expensesProp) => {
+  var data = { userId, expensesProp }
+  return fetch(`${config.host}addexpense`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -32,11 +34,11 @@ const getUserExpensesFetch = (userId) => {
 }
 
 // thunk
-export default (userId) => {
+export default (userId, expensesProp) => {
   return function (dispatch) {
-    return getUserExpensesFetch(userId).then(
+    return postUserExpensesFetch(userId, expensesProp).then(
       data => {
-        return dispatch(getUserExpenses(data))
+        return dispatch(postUserExpenses(data))
       },
       error => dispatch(feedback(error))
     )

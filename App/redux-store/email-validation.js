@@ -1,3 +1,5 @@
+import config from '../config'
+
 require('es6-promise').polyfill()
 const fetch = require('isomorphic-fetch')
 
@@ -15,10 +17,11 @@ function feedback (mess) {
     mess
   }
 }
+
 // fetch
 const checkWithServerIfEmailValidFetch = (email) => {
   let data = { email }
-  return fetch('http://127.0.0.1:3000/authenticate', {
+  return fetch(`${config.host}authenticate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)

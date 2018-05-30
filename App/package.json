@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
+    "test": "jest",
+    "clean": "watchman watch-del-all && rm -rf node_modules/ && rm -rf ios/build/ && rm -rf android/build/ && rm -rf $TMPDIR/react-* rm package-lock.json && npm install && react-native link && npm start -- --reset-cache",
+    "ios": "react-native run-ios"
   },
   "dependencies": {
     "debounce": "^1.1.0",
@@ -12,8 +14,12 @@
     "es6-promise": "^4.2.4",
     "event-emitter": "^0.3.5",
     "isomorphic-fetch": "^2.2.1",
+    "moment": "^2.22.1",
     "react": "16.3.1",
+    "react-datepicker": "^1.5.0",
+    "react-dom": "^16.4.0",
     "react-native": "0.55.3",
+    "react-native-calendar": "^0.13.1",
     "react-native-elements": "^0.19.1",
     "react-native-form": "^2.1.2",
     "react-native-vector-icons": "^4.6.0",
