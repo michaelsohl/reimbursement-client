@@ -41,7 +41,7 @@ export default class StartScreen extends Component {
         <Header buttonName='Sign in' leftadd={false} onPress={this.onLogin}/>
         <Image style={styles.headerPicture} source={sylogPic} />
         <Text style={styles.welcome}>
-          Resify!
+          Resify
         </Text>
         <CreateAccountButton buttonName='Create account' onPress={this.onCreateAccount} buttonContainer={styles.buttonContainer} />
       </View>

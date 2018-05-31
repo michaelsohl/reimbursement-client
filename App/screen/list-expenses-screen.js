@@ -36,7 +36,7 @@ export default class ListExpenseScreen extends Component {
 
   componentDidUpdate () {
     if(this.state.userExpenses.expenseJustAdded) {
-      createstore.dispatch(getexpenses('5afdac99bc597a1defb10f23'))
+      createstore.dispatch(getexpenses('5b0ea0298f3dd36f387f40f4'))
       this.expensesUpdated()
     }
   }

@@ -26,7 +26,7 @@ export default class ListScreen extends Component {
     // console.log('componentDidMount')
     if(this.props.navigation) {
       // this.props.navigation.state.params.userId
-      createstore.dispatch(getexpenses('5afdac99bc597a1defb10f23'))
+      createstore.dispatch(getexpenses('5b0ea0298f3dd36f387f40f4'))
     }
   }
 
@@ -59,6 +59,23 @@ export default class ListScreen extends Component {
     })
   }
 
+  componentDidUpdate () {
+    if(this.state.userExpenses.expenseJustAdded) {
+      createstore.dispatch(getexpenses('5b0ea0298f3dd36f387f40f4'))
+      this.expensesUpdated()
+    }
+  }
+
+  expensesUpdated = () => {
+    createstore.dispatch({
+      type: 'TURN_OFF_UPDATE_FLAG'
+    })
+  }
+
+  addExpense = (props) => {
+    props.navigation.navigate('EditExpensesPage')
+  }
+
   onMonthPress = (arr, index) => {
     this.setMonthScreen(index)
     this.props.navigation.navigate('ExpensesList', {monthIndex: index})
@@ -83,7 +100,7 @@ export default class ListScreen extends Component {
     console.log('HERE IS LIST_SCREEN STATE:', this.state)
     return (
       <View style={styles.container}>
-        <Header buttonName='Sign out' onPress={this.signout} leftadd={false} />
+        <Header buttonName='Sign out' onPress={this.signout} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
         
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>

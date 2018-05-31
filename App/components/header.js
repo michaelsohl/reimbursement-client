@@ -4,13 +4,13 @@ import {
   Text
 } from 'react-native'
 import { sylogRed, backgroundColor } from '../themes'
-import IonIcon from 'react-native-vector-icons/Ionicons'
+import AddButton from './add-button'
 
 export default function (props) {
   return (
     <View style={styles.container}>
       <View style={styles.buttonLeftContainer} >
-        { props.leftadd ? <IonIcon onPress={props.onAddPress} color={sylogRed} size={40} name={'ios-add'} /> : null }
+        { props.leftadd ? <AddButton onPress={props.onAddPress} color={sylogRed} name={'ios-add'} /> : null }
       </View>
       <View style={styles.buttonRightContainer} >
         <Text style={styles.buttonRight} onPress={props.onPress}> {props.buttonName} </Text>
