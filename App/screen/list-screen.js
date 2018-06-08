@@ -26,7 +26,7 @@ export default class ListScreen extends Component {
     // console.log('componentDidMount')
     if(this.props.navigation) {
       // this.props.navigation.state.params.userId
-      createstore.dispatch(getexpenses('5b0ea0298f3dd36f387f40f4'))
+      createstore.dispatch(getexpenses('5b1a3041d0b073e34a45d855'))
     }
   }
 
@@ -61,7 +61,7 @@ export default class ListScreen extends Component {
 
   componentDidUpdate () {
     if(this.state.userExpenses.expenseJustAdded) {
-      createstore.dispatch(getexpenses('5b0ea0298f3dd36f387f40f4'))
+      createstore.dispatch(getexpenses('5b1a3041d0b073e34a45d855'))
       this.expensesUpdated()
     }
   }

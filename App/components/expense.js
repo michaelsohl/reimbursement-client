@@ -14,8 +14,9 @@ export default function (props) {
       <View style={styles.textAndPendingContainer}>
         <View style={{height: 50}}>
           <Text style={{fontSize: 10, color: 'grey'}}> { props.descr }  </Text>
-          <Text style={{fontSize: 10, color: 'grey'}}> Egen bil  </Text>
-          <Text style={{fontSize: 10, color: 'grey'}}> 475 km </Text>
+          <Text style={{fontSize: 10, color: 'grey'}}> {props.client}  </Text>
+          <Text style={{fontSize: 10, color: 'grey'}}> {props.km} </Text>
+          <Text style={{fontSize: 10, color: 'grey'}}> {props.car_type} </Text>
         </View>
         <StatusSquare color={props.attest ? 'green' : 'grey'} />
       </View>

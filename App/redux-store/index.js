@@ -4,6 +4,7 @@ import thunk from 'redux-thunk'
 import EmailValidation from './email-validation'
 import AddExpenses from './add-expenses'
 import deepFreeze from 'deep-freeze'
+import moment from 'moment'
 // import { reducer as formReducer } from 'redux-form'
 
 const userDefaultState = {
@@ -15,7 +16,8 @@ const userDefaultState = {
   formattedExpenses: [],
   monthFormattedExpenses: [],
   monthIndex: -1,
-  expenseJustAdded: false
+  expenseJustAdded: false,
+  date_modal_opened: false
 }
 
 const loginDefaultState = {
@@ -70,6 +72,11 @@ function getUserReducer (state = userDefaultState, action) {
         expenseJustAdded: false
       }
       return Object.assign({}, state, newObj)
+    case 'OPEN_DATE_MODAL':
+      newObj = {
+        date_modal_opened: true
+      }
+      return Object.assign({}, state, newObj)
     case 'POST_USER_EXPENSES':
       console.log('POST_USER_EXPENSES')
       newObj = {
@@ -77,6 +84,11 @@ function getUserReducer (state = userDefaultState, action) {
       }
       return Object.assign({}, state, newObj)
       // return state
+    case 'CLOSE_DATE_MODAL':
+      newObj = {
+        date_modal_opened: false
+      }
+      return Object.assign({}, state, newObj)
     case 'GET_USER_EXPENSES':
       console.log('data:', action.data.expenses)
       let expensesList = action.data.expenses.slice(0, action.data.expenses.length)
@@ -84,7 +96,13 @@ function getUserReducer (state = userDefaultState, action) {
       if (expensesList.length == 0) return state
       
       expensesList.sort(function (a, b) {
-        return new Date(b.date) - new Date(a.date)
+        let _a = moment(a.date)
+        let _b = moment(b.date)
+        console.log(_a.valueOf())
+        console.log(a)
+        console.log('apan1337:', moment(b.date).format())
+        return _b.valueOf() - _a.valueOf()
+        // return new Date(b.date) - new Date(a.date)
       })
 
       let index = 0
@@ -131,7 +149,6 @@ function getUserReducer (state = userDefaultState, action) {
       return Object.assign({}, state, newObj)
     case 'SETUP_FORMATTED_EXPENSES':
       const { expenses } = state
-      console.log('expenses:', expenses)
       newObj = {
         formattedExpenses: expenses
       }
@@ -152,6 +169,8 @@ function addExpensesReducer (state = defaultExpense, action) {
   let obj
   deepFreeze(state.addedExpense)
   switch (action.type) {
+    case 'CLEAR_ALL_EXPENSES':
+      return defaultExpense
     case 'ADD_NEW_EXPENSE_DATE':
       obj = Object.assign({}, state.addedExpense, {date: action.data})
       newObj = {
@@ -165,8 +184,6 @@ function addExpensesReducer (state = defaultExpense, action) {
       }
       return Object.assign({}, state, newObj)
     case 'ADD_NEW_EXPENSE_KM':
-      console.log('ADD_NEW_EXPENSE_KM')
-
       obj = Object.assign({}, state.addedExpense, {km: action.data})
       newObj = {
         addedExpense: obj
@@ -183,6 +200,7 @@ function addExpensesReducer (state = defaultExpense, action) {
       newObj = {
         addedExpense: obj
       }
+      console.log('CLIENT obj:', obj)
       return Object.assign({}, state, newObj)
     default:
       return state

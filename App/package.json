@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "clean": "watchman watch-del-all && rm -rf node_modules/ && rm -rf ios/build/ && rm -rf android/build/ && rm -rf $TMPDIR/react-* rm package-lock.json && npm install && react-native link && npm start -- --reset-cache",
+    "clean": "watchman watch-del-all && rm -rf node_modules/ && rm -rf ios/build/ && rm -rf android/build/ && rm -rf $TMPDIR/react-* rm package-lock.json && npm install && react-native link && npm start",
     "ios": "react-native run-ios"
   },
   "dependencies": {
@@ -20,8 +20,10 @@
     "react-dom": "^16.4.0",
     "react-native": "0.55.3",
     "react-native-calendar": "^0.13.1",
+    "react-native-calendars": "^1.19.3",
     "react-native-elements": "^0.19.1",
     "react-native-form": "^2.1.2",
+    "react-native-modal": "^6.1.0",
     "react-native-vector-icons": "^4.6.0",
     "react-navigation": "^1.5.12",
     "react-redux": "^5.0.7",

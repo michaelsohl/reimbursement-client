@@ -18,7 +18,7 @@ const renderExpenses = (arr) => {
   if (!arr) return null
   return arr.map((expense) => {
     return (
-      <Expense date={expense.date} attest={expense.attest} descr={expense.route_descr} key={expense._id} /> // Look out for issues with unique key
+      <Expense date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} car_type={expense.car_type} key={expense._id} /> // Look out for issues with unique key
     )
   })
 }

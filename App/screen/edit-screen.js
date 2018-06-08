@@ -3,17 +3,21 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   Text,
-  View
+  View,
+  DatePickerIOS
 } from 'react-native'
+
 import Header from '../components/header'
 import { NavigationActions } from 'react-navigation'
 import ExpenseForm from '../components/expense-form'
 import { createstore, addexpenses, getexpenses } from '../redux-store' 
 import AddExpenseButton from '../components/login-button'
+import moment from 'moment'
+
 
 // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
 const expenseProp = {
-  date: null,
+  date: moment().format(),
   car_type: '',
   km: '',
   route_descr: '',
@@ -38,21 +42,44 @@ export default class EditScreen extends Component {
   onChange (type) {
     let functions = {
       km: this.onKmChange,
-      client: this.onClientChange,
-      route: this.onRouteChange,
-      date: this.onDateChange
+      client: this.onClientChange, 
+      route_descr: this.onRouteChange,
+      date: this.onDateChange,
+      car_type: this.onCarChange
     }
     return functions[type]
   }
+
+  onDatePress (date) {
+    // console.log('date:', date)
+    createstore.dispatch({
+      type: 'OPEN_DATE_MODAL'
+    })
+  }
+
+  hideDate (date) {
+    // console.log('date:', date)
+    createstore.dispatch({
+      type: 'CLOSE_DATE_MODAL'
+    })
+  }
   
+  onPress = (type) => {
+    let functions = {
+      date: this.onDatePress
+    }
+    return functions[type]
+  }
   
   /** componentDidUpdate () {
     console.log('edit-screen did update!')
   }*/
 
   onPressSend = () => {
-    console.log('STATE in addExpense-screen:', this.state)
+    console.log('payload:', expenseProp)
     createstore.dispatch(addexpenses(this.state.userExpenses._id, expenseProp))
+    this.clearAllExpenses()
+    this.goBack(this.props)
   }
 
   goBack = (props) => {
@@ -68,6 +95,7 @@ export default class EditScreen extends Component {
   }
 
   onClientChange = (data) => {
+    // console.log('onClientChange!')
     createstore.dispatch({
       type: 'ADD_NEW_EXPENSE_CLIENT',
       data
@@ -99,10 +127,17 @@ export default class EditScreen extends Component {
     expenseProp.car_type = data
   }
 
+  clearAllExpenses = () => {
+    createstore.dispatch({
+      type: 'CLEAR_ALL_EXPENSES'
+    })
+  }
+
 
 
 
   render () {
+    // console.log('expenseProp666:', this.state)
     return (
       <View style={styles.container}>
         <Header buttonName='Cancel' onPress={() => { this.goBack(this.props) }} />
@@ -111,7 +146,7 @@ export default class EditScreen extends Component {
            Editera mina utgifter
           </Text>
         </View>
-        <ExpenseForm onChange={this.onChange}  expenseProp={expenseProp} />
+        <ExpenseForm _toggleModal={this.hideDate} onChange={this.onChange}  expenseProp={expenseProp} onPress={this.onPress} modelOpen={this.state.userExpenses.date_modal_opened} />
         <AddExpenseButton onPress={ this.onPressSend } buttonName='Skicka in' />
       </View>
     )
