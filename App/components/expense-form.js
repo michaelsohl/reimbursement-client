@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, Switch, Slider, Picker, DatePickerIOS, PickerIOS, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, Switch, Slider, Picker, DatePickerIOS, PickerIOS, TouchableOpacity, Animated } from 'react-native'
 import Form from 'react-native-form'
 import { Calendar } from 'react-native-calendars'
 import StdTextInput from './std-text-input'
@@ -8,13 +8,17 @@ import DateButton from '../components/date-button'
 import DatePicker from 'react-datepicker'
 import moment from 'moment'
 import { sylogRed } from '../themes'
+import CarButton from './car-button'
+import StdButton from './std-button'
+import Collapsible from 'react-native-collapsible'
+import Selectable from './select-component'
 
 // import { View, Text } from 'react-native'
 console.log('apa:', StdTextInput)
 export default class ExpenseForm extends Component {
   constructor(props) {
     super(props)
-    this.state = { language: "js", date: new Date(), kr: '', km: '', kund: '', route: '' }
+    this.state = { language: "js", date: moment(), kr: '', km: '', kund: '', route: '', animationVal: new Animated.Value(), minHeight: 200, maxHeight: 250 }
   }
   onDateChange = date => {
     this.setState({ date: date })
@@ -24,38 +28,65 @@ export default class ExpenseForm extends Component {
     this.setState({text})
   }
 
+  toggle = () => {
+    let initialValue    = this.props.carSelectOpen ? this.state.maxHeight + this.state.minHeight : this.state.minHeight,
+    finalValue      = this.props.carSelectOpen ? this.state.minHeight : this.state.maxHeight + this.state.minHeight
+
+    this.props.onCarPress()
+    this.state.animationVal.setValue(initialValue)
+    Animated.spring(
+      this.state.animationVal,
+      {
+        toValue: finalValue        // Make it take a while
+      }
+    ).start()
+  }
+
+  _setMaxHeight = (event) => {
+    this.setState({
+        maxHeight   : event.nativeEvent.layout.height
+    })
+}
+
+  _setMinHeight = (event) => {
+    this.setState({
+      minHeight   : event.nativeEvent.layout.height
+    })
+  }
+
   render() {
     let date = {}
-    if (this.props.expenseProp.date) {
-      date[this.props.expenseProp.date]= {
-        customStyles: {
-          container: {
-            backgroundColor: 'green'
-          },
-          text: {
-          color: 'black',
-          fontWeight: 'bold'
-          }
-        }
+    if (!(typeof(this.props.expenseProp.date) == 'string')) {
+      console.log('Kommer jag in hit!!??????')
+      date[this.props.expenseProp.date.dateString]= {
+        selected: true,
+        marked: true,
+        selectedColor: sylogRed
       }
     }
-    console.log('this.props.expenseProp.date:', this.props.expenseProp.date)
+
+    console.log('this.props.expenseProp.date:', typeof(this.props.expenseProp.date))
     console.log('date clicked:', date)
     return (
       <View style={styles.container}>
         <StdTextInput onChangeText={this.props.onChange('km')} label='km' value={this.props.expenseProp.km}  />
         <StdTextInput onChangeText={this.props.onChange('client')} label='kund' value={this.props.expenseProp.client}  />
         <StdTextInput onChangeText={this.props.onChange('route_descr')} label='Färdbeskr.' value={this.props.expenseProp.route_descr}  />
-        <StdTextInput onChangeText={this.props.onChange('car_type')} label='Biltyp.' value={this.props.expenseProp.car_type}  />
+        <CarButton onPress={ this.toggle } label={this.props.carTypeChosen}/>
+        <Collapsible collapsed={this.props.carSelectOpen}>
+        { this.props.renderSelectables(this.props.carType, this.props.carTypeChosen) }
+        </Collapsible>
         <DateButton date={null} text={this.props.expenseProp.date} onPress={this.props.onPress('date')} />
         <Modal isVisible={this.props.modelOpen}> 
-          <View style={{ flex: 1 }}>
-            <Text>I am the modal content!</Text>
+          <View style={{ flex: 1, alignItems: 'center' }}>
+            <View style={{margin: 20}}>
+              <Text style={{color: 'white'}}> Välj datum </Text>
+            </View>
             <Calendar
+              style= {{width: 300}}
               eventDates={['2018-06-13']}       // Optional array of moment() parseable dates that will show an event indicator
               events={[{ date: '2018-06-12' }]} // Optional array of event objects with a date property and custom styles for the event indicator
               onDayPress={this.props.onChange('date')}
-              onDateLongPress={(date) => this.onDateChange(date)} // Callback after date is long pressed
               theme={{arrowColor: sylogRed}}
               onSwipeNext={() => {}}    // Callback for forward swipe event
               onSwipePrev={() => {}}    // Callback for back swipe event
@@ -65,14 +96,16 @@ export default class ExpenseForm extends Component {
               prevButtonText={'Prev'}           // Text for previous button. Default: 'Prev'
               removeClippedSubviews={false}     // Set to false for us within Modals. Default: true
               scrollEnabled={true}              // False disables swiping. Default: False
-              selectedDate={this.state.date}       // Day to be selected
+              // selectedDate={this.state.date}       // Day to be selected
               showControls={true}               // False hides prev/next buttons. Default: False
               showEventIndicators={true}        // False hides event indicators. Default:False
               markedDates={date}
               titleFormat={'MMMM YYYY'}         // Format for displaying current month. Default: 'MMMM YYYY'
             />
-            <TouchableOpacity style={{height: 40, width: 100, backgroundColor: 'white', borderRadius: 10}} onPress={this.props._toggleModal} >
-              <Text>Hide me!</Text>
+            <TouchableOpacity style={{height: 40, width: 100, backgroundColor: 'white', borderRadius: 10, margin: 20}} onPress={this.props._toggleModal} >
+              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <Text> Stäng fönster </Text>
+              </View>
             </TouchableOpacity>
           </View>
         </Modal>

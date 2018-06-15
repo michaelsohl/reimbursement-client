@@ -17,8 +17,9 @@ const addExpense = (props) => {
 const renderExpenses = (arr) => {
   if (!arr) return null
   return arr.map((expense) => {
+    console.log('expense1337:', expense)
     return (
-      <Expense date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} car_type={expense.car_type} key={expense._id} /> // Look out for issues with unique key
+      <Expense km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} car_type={expense.car_type} key={expense._id} /> // Look out for issues with unique key
     )
   })
 }
@@ -36,7 +37,7 @@ export default class ListExpenseScreen extends Component {
 
   componentDidUpdate () {
     if(this.state.userExpenses.expenseJustAdded) {
-      createstore.dispatch(getexpenses('5b0ea0298f3dd36f387f40f4'))
+      createstore.dispatch(getexpenses('5b1a3041d0b073e34a45d855'))
       this.expensesUpdated()
     }
   }
@@ -68,7 +69,8 @@ export default class ListExpenseScreen extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: 'white'
   },
   textContainer: {
     height: 80,

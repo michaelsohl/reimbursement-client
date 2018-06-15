@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Text,
   View,
-  DatePickerIOS
+  DatePickerIOS,
+  ScrollView
 } from 'react-native'
 
 import Header from '../components/header'
@@ -13,17 +14,18 @@ import ExpenseForm from '../components/expense-form'
 import { createstore, addexpenses, getexpenses } from '../redux-store' 
 import AddExpenseButton from '../components/login-button'
 import moment from 'moment'
-
+import Selectable from '../components/select-component'
 
 // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
 const expenseProp = {
-  date: moment().format(),
+  date: date = moment().format().slice(0, 10),
   car_type: '',
   km: '',
   route_descr: '',
   attest: false,
   client: ''
 }
+
 
 export default class EditScreen extends Component {
 
@@ -51,7 +53,7 @@ export default class EditScreen extends Component {
   }
 
   onDatePress (date) {
-    // console.log('date:', date)
+    // console.log('date777777:', date)
     createstore.dispatch({
       type: 'OPEN_DATE_MODAL'
     })
@@ -119,7 +121,9 @@ export default class EditScreen extends Component {
     expenseProp.date = data
   }
 
-  onCarChange = (data) => {
+  onCarChange = (arr, index) => {
+    console.log('onCarChange method 1')
+    let data = arr[index]
     createstore.dispatch({
       type: 'ADD_NEW_EXPENSE_CARTYPE',
       data
@@ -133,11 +137,35 @@ export default class EditScreen extends Component {
     })
   }
 
+  onCarPress = () => {
+    // HERE !!!
+    createstore.dispatch({
+      type: 'OPEN_CAR_SELECT',
+    })
+  }
+
+  renderSelectables = (arr, carTypeChosen) => {
+    console.log('1:', arr)
+    if (!arr) return null
+    console.log(2)
+    return arr.map((carTypeName) => {
+      let attest = false
+      console.log(3)
+      if (carTypeName.match(carTypeChosen)) {
+        attest = true
+      }
+      return (
+        <Selectable onPress={() => { this.onCarChange(arr, arr.indexOf(carTypeName)) }} descr={carTypeName} attest={attest} key={carTypeName} /> // Look out for issues with unique key
+      )
+    })
+  }
+
 
 
 
   render () {
-    // console.log('expenseProp666:', this.state)
+    console.log('expenseProp666:', this.state.userExpenses.carType)
+    console.log('this.state.userExpenses.carSelectOpened:', this.state.userExpenses.carSelectOpened)
     return (
       <View style={styles.container}>
         <Header buttonName='Cancel' onPress={() => { this.goBack(this.props) }} />
@@ -146,7 +174,9 @@ export default class EditScreen extends Component {
            Editera mina utgifter
           </Text>
         </View>
-        <ExpenseForm _toggleModal={this.hideDate} onChange={this.onChange}  expenseProp={expenseProp} onPress={this.onPress} modelOpen={this.state.userExpenses.date_modal_opened} />
+        <ScrollView>
+          <ExpenseForm carTypeChosen={this.state.addExpenses.addedExpense.carType} renderSelectables={this.renderSelectables} carType={this.state.userExpenses.carType} onCarPress={this.onCarPress} _toggleModal={this.hideDate} onChange={this.onChange}  expenseProp={expenseProp} onPress={this.onPress} modelOpen={this.state.userExpenses.dateModalOpened} carSelectOpen={this.state.userExpenses.carSelectOpened} />
+        </ScrollView>
         <AddExpenseButton onPress={ this.onPressSend } buttonName='Skicka in' />
       </View>
     )
@@ -158,7 +188,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    backgroundColor: 'white'
   },
   welcome: {
     fontSize: 20,

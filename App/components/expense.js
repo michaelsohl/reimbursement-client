@@ -4,6 +4,7 @@ import StatusSquare from './status-square'
 import StdButton from './std-button'
 
 export default function (props) {
+  console.log('PROPS in an expense:', props)
   return (
     <StdButton>
       <View style={{height: 20, width: 100}}>
@@ -13,12 +14,12 @@ export default function (props) {
       </View>
       <View style={styles.textAndPendingContainer}>
         <View style={{height: 50}}>
-          <Text style={{fontSize: 10, color: 'grey'}}> { props.descr }  </Text>
+          <Text style={{fontSize: 10, color: 'grey'}}> { props.descr}  </Text>
           <Text style={{fontSize: 10, color: 'grey'}}> {props.client}  </Text>
-          <Text style={{fontSize: 10, color: 'grey'}}> {props.km} </Text>
+          <Text style={{fontSize: 10, color: 'grey'}}> {props.km + ' km'} </Text>
           <Text style={{fontSize: 10, color: 'grey'}}> {props.car_type} </Text>
         </View>
-        <StatusSquare color={props.attest ? 'green' : 'grey'} />
+        <StatusSquare size={20} color={props.attest ? 'green' : 'grey'} />
       </View>
     </StdButton>
   )

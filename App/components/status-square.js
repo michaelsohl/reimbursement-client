@@ -2,5 +2,5 @@ import React from 'react'
 import { View } from 'react-native'
 export default function (props) {
   return (
-    <View style={{ height: 20, width: 20, backgroundColor: props.color, right: 10 }} />)
+    <View style={{ height: props.size, width: props.size, borderRadius: 4, backgroundColor: props.color, right: 10 }} />)
 }

@@ -97,7 +97,7 @@ export default class ListScreen extends Component {
 
 
   render () {
-    console.log('HERE IS LIST_SCREEN STATE:', this.state)
+    // console.log('HERE IS LIST_SCREEN STATE:', this.state)
     return (
       <View style={styles.container}>
         <Header buttonName='Sign out' onPress={this.signout} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
@@ -120,7 +120,8 @@ export default class ListScreen extends Component {
 const buttonThemeColor = '#C21807'
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: 'white'
   },
   textContainer: {
     height: 80,

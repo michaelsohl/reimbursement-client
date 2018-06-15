@@ -4,4 +4,4 @@ const host = {
   deviceToLocalhost: 'http://10.0.1.81:3000/'
 }
 
-module.exports = { host: host.localhost }
+module.exports = { host: host.deviceToLocalhost }

@@ -8,7 +8,7 @@ import {
 export default function (props) {
   return (
     <View style={[styles.container, {backgroundColor: props.backgroundColor}]}>
-      <TextInput placeholder={props.placeholder} style={styles.textField} onChangeText={props.onChangeText} value={props.value} autoCapitalize='none' />
+      <TextInput placeholder={props.placeholder} style={styles.textField} onChangeText={props.onChangeText} value={props.value} autoCapitalize='none' multiline={true} numberOfLines={3} />
     </View>
   )
 }
@@ -19,7 +19,7 @@ const styles = {
   },
   textField: {
     height: 30,
-    width: 150,
+    width: 250,
     borderColor: 'white',
     borderWidth: 1,
     padding: 5,

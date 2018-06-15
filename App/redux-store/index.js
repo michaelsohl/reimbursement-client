@@ -17,7 +17,9 @@ const userDefaultState = {
   monthFormattedExpenses: [],
   monthIndex: -1,
   expenseJustAdded: false,
-  date_modal_opened: false
+  dateModalOpened: false,
+  carSelectOpened: true,
+  carType: []
 }
 
 const loginDefaultState = {
@@ -29,7 +31,7 @@ const loginDefaultState = {
 }
 
 const defaultExpense = {
-  addedExpense: { attest: false }
+  addedExpense: { attest: false, carType: 'Egen bil' }
 }
 
 const reducers = combineReducers({
@@ -67,6 +69,12 @@ function getUserReducer (state = userDefaultState, action) {
   let newObj
   let monthFormattedExpenses = []
   switch (action.type) {
+    case 'OPEN_CAR_SELECT':
+      console.log('OPEN_CAR_SELECT:', state)
+      newObj = {
+        carSelectOpened: !state.carSelectOpened
+      }
+      return Object.assign({}, state, newObj)
     case 'TURN_OFF_UPDATE_FLAG':
       newObj = {
         expenseJustAdded: false
@@ -74,7 +82,7 @@ function getUserReducer (state = userDefaultState, action) {
       return Object.assign({}, state, newObj)
     case 'OPEN_DATE_MODAL':
       newObj = {
-        date_modal_opened: true
+        dateModalOpened: true
       }
       return Object.assign({}, state, newObj)
     case 'POST_USER_EXPENSES':
@@ -86,11 +94,11 @@ function getUserReducer (state = userDefaultState, action) {
       // return state
     case 'CLOSE_DATE_MODAL':
       newObj = {
-        date_modal_opened: false
+        dateModalOpened: false
       }
       return Object.assign({}, state, newObj)
     case 'GET_USER_EXPENSES':
-      console.log('data:', action.data.expenses)
+      console.log('data:', action.data)
       let expensesList = action.data.expenses.slice(0, action.data.expenses.length)
       deepFreeze(action.data.expenses)
       if (expensesList.length == 0) return state
@@ -98,9 +106,6 @@ function getUserReducer (state = userDefaultState, action) {
       expensesList.sort(function (a, b) {
         let _a = moment(a.date)
         let _b = moment(b.date)
-        console.log(_a.valueOf())
-        console.log(a)
-        console.log('apan1337:', moment(b.date).format())
         return _b.valueOf() - _a.valueOf()
         // return new Date(b.date) - new Date(a.date)
       })
@@ -132,9 +137,9 @@ function getUserReducer (state = userDefaultState, action) {
         })
       })
 
-      monthFormattedExpenses.forEach(elem => {
-        console.log(elem)
-      })
+      // monthFormattedExpenses.forEach(elem => {
+      //  console.log(elem)
+      // })
 
       newObj = {
         _id: action.data._id,
@@ -143,7 +148,8 @@ function getUserReducer (state = userDefaultState, action) {
         admin: action.data.admin,
         expenses: action.data.expenses,
         formattedExpenses: expensesList,
-        monthFormattedExpenses: monthFormattedExpenses
+        monthFormattedExpenses: monthFormattedExpenses,
+        carType: action.data.car_type
       }
 
       return Object.assign({}, state, newObj)
@@ -178,7 +184,8 @@ function addExpensesReducer (state = defaultExpense, action) {
       }
       return Object.assign({}, state, newObj)
     case 'ADD_NEW_EXPENSE_CARTYPE':
-      obj = Object.assign({}, state.addedExpense, {car_type: action.data})
+      console.log('ADD_NEW_EXPENSE_CARTYPE')
+      obj = Object.assign({}, state.addedExpense, {carType: action.data})
       newObj = {
         addedExpense: obj
       }
