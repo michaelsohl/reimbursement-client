@@ -7,7 +7,9 @@ import { Platform,
   View,
   Image,
   ScrollView,
-  TextInput
+  TextInput,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native'
 import debounce from 'debounce'
 import { NavigationActions } from 'react-navigation'
@@ -69,6 +71,11 @@ class LoginScreen extends Component {
       button = <LoginButton buttonName='Login' onPress={this.login} />
     }
     return (
+      <TouchableWithoutFeedback 
+      onPress={() => {  
+        console.log('hejsan keybord dismiss #########################################') 
+        Keyboard.dismiss()} }
+      onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
       <View style={styles.container}>
         <Header buttonName='Cancel' leftadd={false} onPress={this.goBack}/>
         <Image style={styles.headerPicture} source={sylogPic} />
@@ -80,6 +87,7 @@ class LoginScreen extends Component {
         </View>
         { button }
       </View>
+      </ TouchableWithoutFeedback>
     )
   }
 }

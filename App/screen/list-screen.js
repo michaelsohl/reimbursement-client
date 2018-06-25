@@ -13,6 +13,7 @@ import Expense from '../components/expense'
 import Month from '../components/month'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import { NavigationActions } from 'react-navigation'
+import config from '../config'
 
 
 
@@ -26,7 +27,7 @@ export default class ListScreen extends Component {
     // console.log('componentDidMount')
     if(this.props.navigation) {
       // this.props.navigation.state.params.userId
-      createstore.dispatch(getexpenses('5b1a3041d0b073e34a45d855'))
+      createstore.dispatch(getexpenses(config.testUserId))
     }
   }
 
@@ -61,7 +62,7 @@ export default class ListScreen extends Component {
 
   componentDidUpdate () {
     if(this.state.userExpenses.expenseJustAdded) {
-      createstore.dispatch(getexpenses('5b1a3041d0b073e34a45d855'))
+      createstore.dispatch(getexpenses(config.testUserId))
       this.expensesUpdated()
     }
   }

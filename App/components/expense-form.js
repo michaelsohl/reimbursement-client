@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, Switch, Slider, Picker, DatePickerIOS, PickerIOS, TouchableOpacity, Animated } from 'react-native'
+import { View, Text, TextInput, Switch, Slider, Picker, DatePickerIOS, PickerIOS, TouchableOpacity, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import Form from 'react-native-form'
 import { Calendar } from 'react-native-calendars'
 import StdTextInput from './std-text-input'
@@ -68,7 +68,12 @@ export default class ExpenseForm extends Component {
     console.log('this.props.expenseProp.date:', typeof(this.props.expenseProp.date))
     console.log('date clicked:', date)
     return (
-      <View style={styles.container}>
+      <TouchableWithoutFeedback 
+        onPress={() => {  
+          console.log('hejsan keybord dismiss #########################################') 
+          Keyboard.dismiss()} }
+        onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
+      <View style={styles.container} >
         <StdTextInput onChangeText={this.props.onChange('km')} label='km' value={this.props.expenseProp.km}  />
         <StdTextInput onChangeText={this.props.onChange('client')} label='kund' value={this.props.expenseProp.client}  />
         <StdTextInput onChangeText={this.props.onChange('route_descr')} label='Färdbeskr.' value={this.props.expenseProp.route_descr}  />
@@ -110,6 +115,7 @@ export default class ExpenseForm extends Component {
           </View>
         </Modal>
       </View>
+      </ TouchableWithoutFeedback>
     )
   }
 }

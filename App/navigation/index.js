@@ -23,12 +23,13 @@ export default StackNavigator({
 })
 */
 
-import { StackNavigator, addNavigationHelpers } from 'react-navigation'
+// import { StackNavigator, addNavigationHelpers } from 'react-navigation'
+import { StackNavigator } from 'react-navigation'
 import StartScreen from '../screen/start-screen'
 import LoginScreen from '../screen/login-screen'
 import MainTabNavigator from './main-tab-navigator'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
+// import React, { Component } from 'react'
+// import { connect } from 'react-redux'
 
 const Nav = StackNavigator({
   Start: {
@@ -78,13 +79,7 @@ const mapStateToProps = state => ({
 // export default connect(mapStateToProps)(MainNavigator)
 export default Nav
 
-
-
-
-
 /**
- * 
- * 
  * GITHUB hjälp: class Nav extends Component {
   render() {
     return (

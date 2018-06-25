@@ -98,11 +98,20 @@ function getUserReducer (state = userDefaultState, action) {
       }
       return Object.assign({}, state, newObj)
     case 'GET_USER_EXPENSES':
+      console.log('GET_USER_EXPENSES')
       console.log('data:', action.data)
       let expensesList = action.data.expenses.slice(0, action.data.expenses.length)
       deepFreeze(action.data.expenses)
-      if (expensesList.length == 0) return state
-      
+      if (expensesList.length == 0) {
+        newObj = {
+          _id: action.data._id,
+          name: action.data.name,
+          email: action.data.email,
+          admin: action.data.admin,
+          carType: action.data.car_type
+        }
+        return Object.assign({}, state, newObj)
+      }
       expensesList.sort(function (a, b) {
         let _a = moment(a.date)
         let _b = moment(b.date)

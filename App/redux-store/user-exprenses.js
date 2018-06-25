@@ -27,6 +27,7 @@ const getUserExpensesFetch = (userId) => {
   }).then((res) => {
     return res.json()
   }).then(json => {
+    console.log('JSON response:', json)
     return json
   })
 }

@@ -5,7 +5,9 @@ import {
   Text,
   View,
   DatePickerIOS,
-  ScrollView
+  ScrollView,
+  Keyboard,
+  TouchableWithoutFeedback
 } from 'react-native'
 
 import Header from '../components/header'
@@ -15,6 +17,7 @@ import { createstore, addexpenses, getexpenses } from '../redux-store'
 import AddExpenseButton from '../components/login-button'
 import moment from 'moment'
 import Selectable from '../components/select-component'
+import config from '../config'
 
 // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
 const expenseProp = {
@@ -23,7 +26,8 @@ const expenseProp = {
   km: '',
   route_descr: '',
   attest: false,
-  client: ''
+  client: '',
+  userId: ''
 }
 
 
@@ -40,6 +44,10 @@ export default class EditScreen extends Component {
     this.unsubscribe()
   }
 
+  componentDidMount () {
+    expenseProp.car_type = this.state.addExpenses.addedExpense.carType
+    expenseProp.userId = this.state.userExpenses._id
+  }
 
   onChange (type) {
     let functions = {
@@ -79,7 +87,7 @@ export default class EditScreen extends Component {
 
   onPressSend = () => {
     console.log('payload:', expenseProp)
-    createstore.dispatch(addexpenses(this.state.userExpenses._id, expenseProp))
+    createstore.dispatch(addexpenses(config.testUserId, expenseProp))
     this.clearAllExpenses()
     this.goBack(this.props)
   }
@@ -129,6 +137,7 @@ export default class EditScreen extends Component {
       data
     })
     expenseProp.car_type = data
+    this.onCarPress()
   }
 
   clearAllExpenses = () => {
@@ -164,9 +173,13 @@ export default class EditScreen extends Component {
 
 
   render () {
-    console.log('expenseProp666:', this.state.userExpenses.carType)
-    console.log('this.state.userExpenses.carSelectOpened:', this.state.userExpenses.carSelectOpened)
+    console.log('bil!!!!!:', this.state.addExpenses.addedExpense)
     return (
+      <TouchableWithoutFeedback 
+      onPress={() => {  
+        console.log('hejsan keybord dismiss #########################################') 
+        Keyboard.dismiss()} }
+      onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
       <View style={styles.container}>
         <Header buttonName='Cancel' onPress={() => { this.goBack(this.props) }} />
         <View style={styles.textContainer}>
@@ -179,6 +192,7 @@ export default class EditScreen extends Component {
         </ScrollView>
         <AddExpenseButton onPress={ this.onPressSend } buttonName='Skicka in' />
       </View>
+      </ TouchableWithoutFeedback>
     )
   }
 }

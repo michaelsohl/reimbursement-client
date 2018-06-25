@@ -5,6 +5,7 @@ import Header from '../components/header'
 import { NavigationActions } from 'react-navigation'
 import { createstore } from '../redux-store'
 import getexpenses from '../redux-store/user-exprenses'
+import config from '../config'
 
 const goBack = (props) => {
   // console.log('Go Back was pressed!')
@@ -37,7 +38,7 @@ export default class ListExpenseScreen extends Component {
 
   componentDidUpdate () {
     if(this.state.userExpenses.expenseJustAdded) {
-      createstore.dispatch(getexpenses('5b1a3041d0b073e34a45d855'))
+      createstore.dispatch(getexpenses(config.testUserId))
       this.expensesUpdated()
     }
   }

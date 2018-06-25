@@ -1,6 +1,5 @@
 import React from 'react'
 import { View, Text } from 'react-native'
-import StatusSquare from './status-square'
 import StdButton from './std-button'
 
 const Months = {
