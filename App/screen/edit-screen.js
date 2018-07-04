@@ -13,7 +13,7 @@ import {
 import Header from '../components/header'
 import { NavigationActions } from 'react-navigation'
 import ExpenseForm from '../components/expense-form'
-import { createstore, addexpenses, getexpenses } from '../redux-store' 
+import { store, addexpenses, getexpenses } from '../redux-store' 
 import AddExpenseButton from '../components/login-button'
 import moment from 'moment'
 import Selectable from '../components/select-component'
@@ -21,7 +21,7 @@ import config from '../config'
 
 // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
 const expenseProp = {
-  date: date = moment().format().slice(0, 10),
+  date: moment().format().slice(0, 10),
   car_type: '',
   km: '',
   route_descr: '',
@@ -35,18 +35,26 @@ export default class EditScreen extends Component {
 
   constructor(props) {
     super(props)
-    this.state = createstore.getState()
-    this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
+    this.state = store.getState()
+    this.unsubscribe = store.subscribe(() => { this.setState(store.getState()) })
     this.onChange = this.onChange.bind(this) 
   }
 
   componentWillUnmount() {
     this.unsubscribe()
+    expenseProp.date = moment().format().slice(0, 10)
+    expenseProp.car_type = ''
+    expenseProp.km = ''
+    expenseProp.route_descr = ''
+    expenseProp.attest = false
+    expenseProp.client = ''
+    userId = ''
   }
 
   componentDidMount () {
     expenseProp.car_type = this.state.addExpenses.addedExpense.carType
     expenseProp.userId = this.state.userExpenses._id
+    this.userid = config.testUserId ? config.testUserId : this.state.userExpenses._id
   }
 
   onChange (type) {
@@ -62,14 +70,14 @@ export default class EditScreen extends Component {
 
   onDatePress (date) {
     // console.log('date777777:', date)
-    createstore.dispatch({
+    store.dispatch({
       type: 'OPEN_DATE_MODAL'
     })
   }
 
   hideDate (date) {
     // console.log('date:', date)
-    createstore.dispatch({
+    store.dispatch({
       type: 'CLOSE_DATE_MODAL'
     })
   }
@@ -86,10 +94,11 @@ export default class EditScreen extends Component {
   }*/
 
   onPressSend = () => {
+    console.log('POKEMPN GO:', this.state)
     console.log('payload:', expenseProp)
-    createstore.dispatch(addexpenses(config.testUserId, expenseProp))
+
+    store.dispatch(addexpenses(this.userid, expenseProp))
     this.clearAllExpenses()
-    this.goBack(this.props)
   }
 
   goBack = (props) => {
@@ -97,7 +106,7 @@ export default class EditScreen extends Component {
   }
 
   onKmChange = (data) => {
-    createstore.dispatch({
+    store.dispatch({
       type: 'ADD_NEW_EXPENSE_KM',
       data
     })
@@ -106,7 +115,7 @@ export default class EditScreen extends Component {
 
   onClientChange = (data) => {
     // console.log('onClientChange!')
-    createstore.dispatch({
+    store.dispatch({
       type: 'ADD_NEW_EXPENSE_CLIENT',
       data
     })
@@ -114,7 +123,7 @@ export default class EditScreen extends Component {
   }
 
   onRouteChange = (data) => {
-    createstore.dispatch({
+    store.dispatch({
       type: 'ADD_NEW_EXPENSE_ROUTEDESCR',
       data
     })
@@ -122,7 +131,7 @@ export default class EditScreen extends Component {
   }
 
   onDateChange = (data) => {
-    createstore.dispatch({
+    store.dispatch({
       type: 'ADD_NEW_EXPENSE_DATE',
       data
     })
@@ -132,7 +141,7 @@ export default class EditScreen extends Component {
   onCarChange = (arr, index) => {
     console.log('onCarChange method 1')
     let data = arr[index]
-    createstore.dispatch({
+    store.dispatch({
       type: 'ADD_NEW_EXPENSE_CARTYPE',
       data
     })
@@ -141,14 +150,15 @@ export default class EditScreen extends Component {
   }
 
   clearAllExpenses = () => {
-    createstore.dispatch({
+    store.dispatch({
       type: 'CLEAR_ALL_EXPENSES'
     })
+    setTimeout(() => {this.goBack(this.props)}, 100)
   }
 
   onCarPress = () => {
     // HERE !!!
-    createstore.dispatch({
+    store.dispatch({
       type: 'OPEN_CAR_SELECT',
     })
   }

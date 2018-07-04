@@ -6,7 +6,7 @@ import StdButton from './std-button'
 export default function (props) {
   console.log('PROPS in an expense:', props)
   return (
-    <StdButton>
+    <StdButton onPress={props.onPress}>
       <View style={{height: 20, width: 100}}>
         <Text style={{color: 'black', fontWeight: '700', right: 0}}>
           { props.date.slice(0, 10) }

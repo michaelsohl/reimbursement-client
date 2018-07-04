@@ -56,14 +56,22 @@ export default class ExpenseForm extends Component {
 
   render() {
     let date = {}
+    console.log('this.props.expenseProp.date:', this.props.expenseProp.date)
+    
     if (!(typeof(this.props.expenseProp.date) == 'string')) {
       console.log('Kommer jag in hit!!??????')
       date[this.props.expenseProp.date.dateString]= {
         selected: true,
-        marked: true,
+        //marked: true,
         selectedColor: sylogRed
       }
-    }
+    } else {
+      date[this.props.expenseProp.date]= {
+        selected: true,
+        //marked: true,
+        selectedColor: sylogRed
+    }}
+    // if (date && (Object.keys(date).length == 0)) console.log('Kom det hit!!??')
 
     console.log('this.props.expenseProp.date:', typeof(this.props.expenseProp.date))
     console.log('date clicked:', date)
@@ -89,8 +97,8 @@ export default class ExpenseForm extends Component {
             </View>
             <Calendar
               style= {{width: 300}}
-              eventDates={['2018-06-13']}       // Optional array of moment() parseable dates that will show an event indicator
-              events={[{ date: '2018-06-12' }]} // Optional array of event objects with a date property and custom styles for the event indicator
+              // eventDates={['2018-06-13']}       // Optional array of moment() parseable dates that will show an event indicator
+              // events={[{ date: '2018-06-12' }]} // Optional array of event objects with a date property and custom styles for the event indicator
               onDayPress={this.props.onChange('date')}
               theme={{arrowColor: sylogRed}}
               onSwipeNext={() => {}}    // Callback for forward swipe event
@@ -101,11 +109,12 @@ export default class ExpenseForm extends Component {
               prevButtonText={'Prev'}           // Text for previous button. Default: 'Prev'
               removeClippedSubviews={false}     // Set to false for us within Modals. Default: true
               scrollEnabled={true}              // False disables swiping. Default: False
-              // selectedDate={this.state.date}       // Day to be selected
+              selectedDate={date}       // Day to be selected
               showControls={true}               // False hides prev/next buttons. Default: False
               showEventIndicators={true}        // False hides event indicators. Default:False
               markedDates={date}
               titleFormat={'MMMM YYYY'}         // Format for displaying current month. Default: 'MMMM YYYY'
+              showWeekNumbers={true}
             />
             <TouchableOpacity style={{height: 40, width: 100, backgroundColor: 'white', borderRadius: 10, margin: 20}} onPress={this.props._toggleModal} >
               <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

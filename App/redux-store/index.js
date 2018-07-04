@@ -1,3 +1,5 @@
+// import AppNavigator from '../navigation'
+import Apa from '../navigation'
 import { logger } from 'redux-logger'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
@@ -5,7 +7,20 @@ import EmailValidation from './email-validation'
 import AddExpenses from './add-expenses'
 import deepFreeze from 'deep-freeze'
 import moment from 'moment'
-// import { reducer as formReducer } from 'redux-form'
+import {
+  createReactNavigationReduxMiddleware,
+  createNavigationReducer
+} from 'react-navigation-redux-helpers'
+
+console.log('createNavigationReducer:', createNavigationReducer)
+console.log('AppNavigator:', Apa)
+
+const navReducer = createNavigationReducer(Apa)
+
+const middleware = createReactNavigationReduxMiddleware(
+  'root',
+  state => state.nav
+)
 
 const userDefaultState = {
   _id: '',
@@ -34,10 +49,16 @@ const defaultExpense = {
   addedExpense: { attest: false, carType: 'Egen bil' }
 }
 
+const defaultAttestExpense = {
+  attests: []
+}
+
 const reducers = combineReducers({
   loginEmail: loginReducer,
   userExpenses: getUserReducer,
-  addExpenses: addExpensesReducer
+  addExpenses: addExpensesReducer,
+  attests: attestExpenses,
+  nav: navReducer
 })
 
 // AUTH reducer
@@ -155,8 +176,8 @@ function getUserReducer (state = userDefaultState, action) {
         name: action.data.name,
         email: action.data.email,
         admin: action.data.admin,
-        expenses: action.data.expenses,
-        formattedExpenses: expensesList,
+        // expenses: action.data.expenses,
+        // formattedExpenses: expensesList,
         monthFormattedExpenses: monthFormattedExpenses,
         carType: action.data.car_type
       }
@@ -173,6 +194,18 @@ function getUserReducer (state = userDefaultState, action) {
         monthIndex: action.index
       }
       return Object.assign({}, state, newObj)
+    case 'TOGGLE_ATTEST':
+      let copyExpenses = state.monthFormattedExpenses.slice(0, state.monthFormattedExpenses.length)
+      let expense = copyExpenses[action.data.monthIndex][action.data.expenseIndex]
+      let newExp = Object.assign({}, expense, {attest: !expense.attest})
+      copyExpenses[action.data.monthIndex][action.data.expenseIndex] = newExp
+    
+      newObj = {
+        monthFormattedExpenses: copyExpenses
+      }
+      console.log('expense:', newObj)
+      // console.log('toggled ATTEST obj:', obj)
+      return Object.assign({}, state, newObj)
     default:
       return state
   }
@@ -187,7 +220,7 @@ function addExpensesReducer (state = defaultExpense, action) {
     case 'CLEAR_ALL_EXPENSES':
       return defaultExpense
     case 'ADD_NEW_EXPENSE_DATE':
-      obj = Object.assign({}, state.addedExpense, {date: action.data})
+      obj = Object.assign({}, state.addedExpense, { date: action.data })
       newObj = {
         addedExpense: obj
       }
@@ -216,16 +249,45 @@ function addExpensesReducer (state = defaultExpense, action) {
       newObj = {
         addedExpense: obj
       }
-      console.log('CLIENT obj:', obj)
       return Object.assign({}, state, newObj)
     default:
       return state
   }
 }
 
-export const createstore = createStore(
+function attestExpenses (state = defaultAttestExpense, action) {
+  let newObj
+  switch (action.type) {
+    case 'TOGGLE_ATTESTS':
+      let attestsList = state.attests.slice(0, state.attests.length) || []
+      let index = attestsList.indexOf(action.data)
+      if (index > -1) {
+        attestsList.splice(index, 1)
+      } else {
+        attestsList.push(action.data)
+      }
+      newObj = {
+        attests: attestsList
+      }
+      return Object.assign({}, state, newObj)
+    default:
+      return state
+  }
+}
+
+/*
+function animationReducer (state = defaultAnimation, action) {
+  let newObj
+  switch(action.type) {
+    case: ''
+  }
+}
+*/
+
+export const store = createStore(
   reducers,
-  applyMiddleware(thunk, logger)
+  applyMiddleware(thunk, logger, middleware)
 )
+
 export const emailvalidation = EmailValidation
 export const addexpenses = AddExpenses

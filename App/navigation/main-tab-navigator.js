@@ -1,10 +1,10 @@
-import { StackNavigator } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation'
 import ListScreen from '../screen/list-screen'
 import EditScreen from '../screen/edit-screen'
 import ExpensiveListScreen from '../screen/list-expenses-screen'
 // import Ionicons from 'react-native-vector-icons/Ionicons'
 
-const mainTabNavigator = StackNavigator({
+export default createStackNavigator({
   ListPage: {
     screen: ListScreen
   },
@@ -20,8 +20,6 @@ const mainTabNavigator = StackNavigator({
     header: null
   }
 })
-
-export default mainTabNavigator
 
 /**
  * {

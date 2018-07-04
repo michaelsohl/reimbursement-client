@@ -15,12 +15,13 @@ import debounce from 'debounce'
 import { NavigationActions } from 'react-navigation'
 import LoginButton from '../components/login-button'
 import Header from '../components/header'
-import { createstore, emailvalidation } from '../redux-store'
+import { store, emailvalidation } from '../redux-store'
 import TextField from '../components/text-field'
 import EventEmitter from '../event-handler'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 const sylogPic = require('../media/Icon-App-83.5x83.5.png')
+import StdTextInput from '../components/std-text-input'
 
 const instructions = Platform.select({
     
@@ -33,13 +34,13 @@ const instructions = Platform.select({
 class LoginScreen extends Component {
   constructor(props, context){
     super(props, context)
-    this.state = createstore.getState()
-    this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
+    this.state = store.getState()
+    this.unsubscribe = store.subscribe(() => { this.setState(store.getState()) })
     this.validateEmail = debounce(this._validateEmail , 2000)
   }
 
   _validateEmail = (text) => {
-    createstore.dispatch(emailvalidation(text))
+    store.dispatch(emailvalidation(text))
   }
 
    goBack = () => {
@@ -49,7 +50,7 @@ class LoginScreen extends Component {
 
    onChangeText = (text) => {
     // this.props.onChangeLoginTextActionCreator(text)
-    createstore.dispatch({
+    store.dispatch({
       type: 'LOGIN_EMAIL',
       text
     })
@@ -83,7 +84,7 @@ class LoginScreen extends Component {
           <Text style={styles.welcome}>
             Enter the app here
           </Text>
-          <TextField label='Enter work-email' onChangeText={this.onChangeText} value={this.state.loginEmail.value} />
+          <StdTextInput label='Enter work-email' onChangeText={this.onChangeText} value={this.state.loginEmail.value} />
         </View>
         { button }
       </View>

@@ -1,18 +1,26 @@
 import React, { Component } from 'react'
-import MainNavigator from './navigation'
-// import { Provider } from 'react-redux'
-// import { createstore } from './redux-store'
+import AppNavigator from './navigation'
+import { Provider, connect } from 'react-redux'
+import { store } from './redux-store'
+import {
+  reduxifyNavigator
+} from 'react-navigation-redux-helpers'
+
+const NavApp = reduxifyNavigator(AppNavigator, 'root')
+
+const mapStateToProps = (state) => ({
+  state: state.nav
+})
+
+const AppWithNavigationState = connect(mapStateToProps)(NavApp)
 
 export default class App extends Component {
   render () {
+    console.log('AppNavigator i APP.js:', AppNavigator)
     return (
-      <MainNavigator />
+      <Provider store={store}>
+        <AppWithNavigationState />
+      </Provider>
     )
   }
 }
-
-/**
- * <Provider store={createstore}>
-        <MainNavigator />
-      </Provider>
- */

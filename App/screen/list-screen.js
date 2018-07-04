@@ -4,10 +4,11 @@ import {
   Text,
   View,
   ScrollView,
-  Divider
+  Divider,
+  Animated
 } from 'react-native'
 import Header from '../components/header'
-import { createstore } from '../redux-store'
+import { store } from '../redux-store'
 import getexpenses from '../redux-store/user-exprenses'
 import Expense from '../components/expense'
 import Month from '../components/month'
@@ -15,19 +16,22 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 import { NavigationActions } from 'react-navigation'
 import config from '../config'
 
+const HEADER_MAX_HEIGHT = 200;
+const HEADER_MIN_HEIGHT = 60;
+const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT
 
-
-export default class ListScreen extends Component {
+class ListScreen extends Component {
   constructor(props){
     super(props)
-    this.state = createstore.getState()
-    this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
+    // this.state = createstore.getState()
+    // this.unsubscribe = createstore.subscribe(() => { this.setState(createstore.getState()) })
   }
   componentDidMount() {
-    // console.log('componentDidMount')
+    const { getExpenses } = this.props
     if(this.props.navigation) {
-      // this.props.navigation.state.params.userId
-      createstore.dispatch(getexpenses(config.testUserId))
+      this.userid = config.testUserId ? config.testUserId : this.props.navigation.state.params.userId
+      // createstore.dispatch(getexpenses(this.userid))
+      getExpenses(this.userid)
     }
   }
 
@@ -40,10 +44,12 @@ export default class ListScreen extends Component {
   }
 
   setMonthScreen = (index) => {
-    createstore.dispatch({
-      type: 'SET_MONTH_SCREEN',
-      index
-    })
+    const { setMonthScreen } = this.props
+    //createstore.dispatch({
+    //  type: 'SET_MONTH_SCREEN',
+    //  index
+    //})
+    setMonthScreen(index)
   }
 
   goBack = () => {
@@ -61,30 +67,33 @@ export default class ListScreen extends Component {
   }
 
   componentDidUpdate () {
-    if(this.state.userExpenses.expenseJustAdded) {
-      createstore.dispatch(getexpenses(config.testUserId))
+    const { getExpenses, expenseJustAdded } = this.props
+    if(expenseJustAdded) {
+      // createstore.dispatch(getexpenses(this.userid))
+      getExpenses(this.userid)
       this.expensesUpdated()
     }
   }
 
   expensesUpdated = () => {
-    createstore.dispatch({
-      type: 'TURN_OFF_UPDATE_FLAG'
-    })
+    const { expensesUpdate } = this.props
+    expensesUpdate()
+    // createstore.dispatch({
+    //   type: 'TURN_OFF_UPDATE_FLAG'
+    //})
   }
 
   addExpense = (props) => {
-    props.navigation.navigate('EditExpensesPage')
+    props.navigation.navigate('EditExpensesPage', { replace: true })
   }
 
   onMonthPress = (arr, index) => {
     this.setMonthScreen(index)
-    this.props.navigation.navigate('ExpensesList', {monthIndex: index})
+    this.props.navigation.navigate('ExpensesList', {monthIndex: index, replace: true })
   }
 
   renderMonths = (arr) => {
     if(!arr) return null
-    let index = 0
     return arr.map((month) => { 
       let m = new Date(month[0].date)
       return (
@@ -98,7 +107,8 @@ export default class ListScreen extends Component {
 
 
   render () {
-    // console.log('HERE IS LIST_SCREEN STATE:', this.state)
+    const { monthFormattedExpenses } = this.props
+    console.log('HERE IS LIST_SCREEN PROPS:', this.props)
     return (
       <View style={styles.container}>
         <Header buttonName='Sign out' onPress={this.signout} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
@@ -110,13 +120,49 @@ export default class ListScreen extends Component {
         </View>
         <View style={styles.expensesContainer} >
           <ScrollView>
-            { this.renderMonths(this.state.userExpenses.monthFormattedExpenses) }
+            { this.renderMonths(monthFormattedExpenses) }
           </ScrollView>
+          <Animated.View style={styles.header}>
+            <View style={styles.bar}>
+              <Text style={styles.title}>Title</Text>
+            </View>
+          </Animated.View>
         </View>
       </View>
     )
   }
 }
+
+const mapStateToProps = (state) => {
+ return {
+  monthFormattedExpenses: state.userExpenses.monthFormattedExpenses,
+  expenseJustAdded: state.userExpenses.expenseJustAdded
+ }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getExpenses: (userId) => {
+      dispatch(getexpenses(userId))
+    },
+    expensesUpdate: () => {
+      dispatch({
+        type: 'TURN_OFF_UPDATE_FLAG'
+      })
+    },
+    setMonthScreen: (index) => {
+      dispatch({
+        type: 'SET_MONTH_SCREEN',
+        index
+      })
+    }
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ListScreen)
 
 const buttonThemeColor = '#C21807'
 const styles = StyleSheet.create({
@@ -149,5 +195,27 @@ const styles = StyleSheet.create({
   headerPicture: {
     height: 100,
     width: 100
+  },
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#03A9F4',
+    overflow: 'hidden',
+  },
+  bar: {
+    marginTop: 28,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    backgroundColor: 'transparent',
+    color: 'white',
+    fontSize: 18,
+  },
+  scrollViewContent: {
+    marginTop: HEADER_MAX_HEIGHT,
   }
 })

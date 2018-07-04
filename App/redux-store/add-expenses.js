@@ -1,7 +1,6 @@
 import config from '../config'
 require('es6-promise').polyfill()
 const fetch = require('isomorphic-fetch')
-
 // action-creator
 function postUserExpenses (data) {
   return {
