@@ -13,8 +13,6 @@ import StdButton from './std-button'
 import Collapsible from 'react-native-collapsible'
 import Selectable from './select-component'
 
-// import { View, Text } from 'react-native'
-console.log('apa:', StdTextInput)
 export default class ExpenseForm extends Component {
   constructor(props) {
     super(props)

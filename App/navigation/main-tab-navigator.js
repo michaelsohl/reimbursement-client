@@ -1,6 +1,6 @@
 import { createStackNavigator } from 'react-navigation'
 import ListScreen from '../screen/list-screen'
-import EditScreen from '../screen/edit-screen'
+// import EditScreen from '../screen/edit-screen'
 import ExpensiveListScreen from '../screen/list-expenses-screen'
 // import Ionicons from 'react-native-vector-icons/Ionicons'
 
@@ -10,9 +10,6 @@ export default createStackNavigator({
   },
   ExpensesList: {
     screen: ExpensiveListScreen
-  },
-  EditExpensesPage: {
-    screen: EditScreen
   }
 }, {
   initialRouteName: 'ListPage',
@@ -20,6 +17,13 @@ export default createStackNavigator({
     header: null
   }
 })
+
+/**
+ * ,
+  EditExpensesPage: {
+    screen: EditScreen
+  }
+ */
 
 /**
  * {

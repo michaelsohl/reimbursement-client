@@ -16,7 +16,6 @@ const AppWithNavigationState = connect(mapStateToProps)(NavApp)
 
 export default class App extends Component {
   render () {
-    console.log('AppNavigator i APP.js:', AppNavigator)
     return (
       <Provider store={store}>
         <AppWithNavigationState />

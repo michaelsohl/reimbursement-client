@@ -1,5 +1,5 @@
 // import AppNavigator from '../navigation'
-import Apa from '../navigation'
+import AppNavigator from '../navigation/index'
 import { logger } from 'redux-logger'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import thunk from 'redux-thunk'
@@ -12,11 +12,7 @@ import {
   createNavigationReducer
 } from 'react-navigation-redux-helpers'
 
-console.log('createNavigationReducer:', createNavigationReducer)
-console.log('AppNavigator:', Apa)
-
-const navReducer = createNavigationReducer(Apa)
-
+const navReducer = createNavigationReducer(AppNavigator)
 const middleware = createReactNavigationReduxMiddleware(
   'root',
   state => state.nav

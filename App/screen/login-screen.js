@@ -1,6 +1,4 @@
-
 import React, { Component } from 'react'
-
 import { Platform,
   StyleSheet,
   Text,
@@ -12,63 +10,49 @@ import { Platform,
   Keyboard
 } from 'react-native'
 import debounce from 'debounce'
-import { NavigationActions } from 'react-navigation'
+// import { NavigationActions } from 'react-navigation' 1
 import LoginButton from '../components/login-button'
 import Header from '../components/header'
-import { store, emailvalidation } from '../redux-store'
+import emailvalidation from '../redux-store/email-validation'
 import TextField from '../components/text-field'
-import EventEmitter from '../event-handler'
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 const sylogPic = require('../media/Icon-App-83.5x83.5.png')
 import StdTextInput from '../components/std-text-input'
 
-const instructions = Platform.select({
-    
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu'
-})
+// const _validateEmail = (text, cb) => {
+//  return debounce(cb , 2000)
+// }
 
 class LoginScreen extends Component {
-  constructor(props, context){
-    super(props, context)
-    this.state = store.getState()
-    this.unsubscribe = store.subscribe(() => { this.setState(store.getState()) })
-    this.validateEmail = debounce(this._validateEmail , 2000)
-  }
 
-  _validateEmail = (text) => {
-    store.dispatch(emailvalidation(text))
-  }
+  // _validateEmail = (text) => {
+  //  store.dispatch(emailvalidation(text))
+  // }
 
-   goBack = () => {
+   // goBack = () => {
     // console.log('Go Back was pressed!')
-    this.props.navigation.dispatch(NavigationActions.back())
-   }
+    //this.props.navigation.dispatch(NavigationActions.back())
+   //}
 
    onChangeText = (text) => {
+
+     const { loginEmail, validateEmail } = this.props
     // this.props.onChangeLoginTextActionCreator(text)
-    store.dispatch({
-      type: 'LOGIN_EMAIL',
-      text
-    })
-    this.validateEmail(text)
+    loginEmail(text)
+    validateEmail(text)
   }
 
   login = () => {
-    this.props.navigation.navigate('MainApp', {userId: this.state.loginEmail.userId})
+    const { userId } = this.props
+    console.log('this.state:', this.state)
+    this.props.navigation.navigate('MainApp', { userId })
   }
-
-   componentWillUnmount(){
-    // this.unsubscribe()
-   }
 
   render () {
     // console.log('STATE in login-screen:', this.state)
     let button = null
-    if(this.state.loginEmail.data) {
+    const { value, data } = this.props
+    if(data) {
       button = <LoginButton buttonName='Login' onPress={this.login} />
     }
     return (
@@ -84,7 +68,7 @@ class LoginScreen extends Component {
           <Text style={styles.welcome}>
             Enter the app here
           </Text>
-          <StdTextInput label='Enter work-email' onChangeText={this.onChangeText} value={this.state.loginEmail.value} />
+          <StdTextInput label='Enter work-email' onChangeText={this.onChangeText} value={value} />
         </View>
         { button }
       </View>
@@ -93,27 +77,34 @@ class LoginScreen extends Component {
   }
 }
 
-/*
-function onChangeLoginTextActionCreator(text) {
-  return {
-   type: 'LOGIN_EMAIL',
-   text
- }
-}
 
-function mapStateToProps(state) {
-  return {
-    loginEmail: state.loginEmail
+
+const mapStateToProps = (state) => {
+  return { 
+    value: state.loginEmail.value,
+    data: state.loginEmail.data,
+    userId: state.loginEmail.userId
   }
 }
 
-function matchDispatchToProps(dispatch) {
-  return bindActionCreators({onChangeLoginTextActionCreator: onChangeLoginTextActionCreator}, dispatch)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    loginEmail: (text) => {
+      dispatch({
+        type: 'LOGIN_EMAIL',
+        text
+      })
+    },
+    validateEmail: (text) => {
+      dispatch(emailvalidation(text))
+    }        
+  }
 }
-*/
-// export default connect(mapStateToProps, matchDispatchToProps)(LoginScreen)
 
-export default LoginScreen
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(LoginScreen)
 
 const styles = StyleSheet.create({
   container: {

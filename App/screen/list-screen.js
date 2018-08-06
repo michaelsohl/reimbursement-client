@@ -8,13 +8,13 @@ import {
   Animated
 } from 'react-native'
 import Header from '../components/header'
-import { store } from '../redux-store'
 import getexpenses from '../redux-store/user-exprenses'
 import Expense from '../components/expense'
 import Month from '../components/month'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import { NavigationActions } from 'react-navigation'
 import config from '../config'
+import { connect } from 'react-redux'
 
 const HEADER_MAX_HEIGHT = 200;
 const HEADER_MIN_HEIGHT = 60;
@@ -41,15 +41,6 @@ class ListScreen extends Component {
 
   signout = () => {
     this.props.navigation.navigate('Start')
-  }
-
-  setMonthScreen = (index) => {
-    const { setMonthScreen } = this.props
-    //createstore.dispatch({
-    //  type: 'SET_MONTH_SCREEN',
-    //  index
-    //})
-    setMonthScreen(index)
   }
 
   goBack = () => {
@@ -88,7 +79,8 @@ class ListScreen extends Component {
   }
 
   onMonthPress = (arr, index) => {
-    this.setMonthScreen(index)
+    const { setMonthScreen } = this.props
+    setMonthScreen(index)
     this.props.navigation.navigate('ExpensesList', {monthIndex: index, replace: true })
   }
 
@@ -122,16 +114,19 @@ class ListScreen extends Component {
           <ScrollView>
             { this.renderMonths(monthFormattedExpenses) }
           </ScrollView>
-          <Animated.View style={styles.header}>
-            <View style={styles.bar}>
-              <Text style={styles.title}>Title</Text>
-            </View>
-          </Animated.View>
         </View>
       </View>
     )
   }
 }
+
+/**
+ * <Animated.View style={styles.header}>
+            <View style={styles.bar}>
+              <Text style={styles.title}>Title</Text>
+            </View>
+          </Animated.View>
+ */
 
 const mapStateToProps = (state) => {
  return {
@@ -159,10 +154,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ListScreen)
+export default connect(mapStateToProps,mapDispatchToProps)(ListScreen)
 
 const buttonThemeColor = '#C21807'
 const styles = StyleSheet.create({

@@ -12,6 +12,7 @@ import CreateAccountButton from '../components/login-button'
 import Header from '../components/header'
 // import store from './redux-store'
 import { StackNavigator } from 'react-navigation'
+import { connect } from 'react-redux'
 
 const sylogPic = require('../media/Icon-App-83.5x83.5.png')
 
@@ -49,6 +50,22 @@ export default class StartScreen extends Component {
   }
 }
 
+/** 
+mapStateToProps = (state) => {
+  return {
+
+  }
+}
+
+mapDispatchToProps = (dispath) => {
+  return {}
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(StartScreen)
+*/
 const buttonThemeColor = '#C21807'
 const styles = StyleSheet.create({
   container: {

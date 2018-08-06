@@ -3,53 +3,21 @@ import { View, StyleSheet, Text, ScrollView } from 'react-native'
 import Expense from '../components/expense'
 import Header from '../components/header'
 import { NavigationActions } from 'react-navigation'
-import { store } from '../redux-store'
 import getexpenses from '../redux-store/user-exprenses'
 import config from '../config'
 import postattest from '../redux-store/attest'
+import { connect } from 'react-redux'
 
-export default class ListExpenseScreen extends Component {
-  constructor(props) {
-    super(props)
-    this.state = store.getState()
-    this.unsubscribe = store.subscribe(() => { this.setState(store.getState()) })
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
+class ListExpenseScreen extends Component {
 
   componentDidUpdate () {
-    if(this.state.userExpenses.expenseJustAdded) {
+    const { expenseJustAdded, getExpenses, expensesUpdated } = this.props
+    if(expenseJustAdded) {
       console.log('this particular state:', this.state)
       this.userid = config.testUserId ? config.testUserId : null
-      store.dispatch(getexpenses(this.userid))
-      this.expensesUpdated()
+      getExpenses(this.userid)
+      expensesUpdated()
     }
-  }
-
-  expensesUpdated = () => {
-    store.dispatch({
-      type: 'TURN_OFF_UPDATE_FLAG'
-    })
-  }
-
-  _setExpenseAttest = (attest) => {
-    store.dispatch({
-      type: 'TOGGLE_ATTESTS',
-      data: attest
-    })
-  }
-
-  setExpenseAttest = (expenseIndex, expenseId, userId) => {
-    store.dispatch({
-      type: 'TOGGLE_ATTEST',
-      data: {
-        monthIndex: this.props.navigation.state.params.monthIndex,
-        expenseIndex
-      }
-    })
-    store.dispatch(postattest(userId, expenseId))
   }
 
   editExpense = () => {
@@ -57,8 +25,11 @@ export default class ListExpenseScreen extends Component {
   }
 
   onExpensePress = (expenseIndex, admin, expenseId, userId) => {
+    const { setExpenseAttest, postToServer } = this.props
+    console.log('setExpenseAttest:', setExpenseAttest)
     if (admin) {
-      this.setExpenseAttest(expenseIndex, expenseId, userId)
+      setExpenseAttest(expenseIndex, this.props.navigation.state.params.monthIndex)
+      postToServer(userId, expenseId)
     } else {
       this.editExpense()
     }
@@ -73,16 +44,18 @@ export default class ListExpenseScreen extends Component {
     props.navigation.navigate('EditExpensesPage')
   }
   renderExpenses = (arr, admin) => {
+    console.log('this.state:', this.state)
     if (!arr) return null
     return arr.map((expense) => {
       console.log('expense1337:', expense)
       return (
-        <Expense onPress={() => { this.onExpensePress(arr.indexOf(expense), this.state.userExpenses.admin, expense._id, expense.userId) }} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} car_type={expense.car_type} key={expense._id} /> // Look out for issues with unique key
+        <Expense onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} car_type={expense.car_type} key={expense._id} /> // Look out for issues with unique key
       )
     })
   }
 
   render() {
+    const { monthFormattedExpenses, admin } = this.props
     return (
       <View style={styles.container}>
         <Header buttonName='Cancel' onPress={() => { this.goBack(this.props) }} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
@@ -93,13 +66,46 @@ export default class ListExpenseScreen extends Component {
         </View>
         <View style={styles.expensesContainer} >
           <ScrollView>
-            { this.renderExpenses(this.state.userExpenses.monthFormattedExpenses[this.props.navigation.state.params.monthIndex], this.state.userExpenses.admin) }
+            { this.renderExpenses(monthFormattedExpenses[this.props.navigation.state.params.monthIndex], admin) }
           </ScrollView>
         </View>
       </View>
       )
     }
   }
+
+  const mapStateToProps = (state) => {
+    console.log('state:', state)
+    return {
+      expenseJustAdded: state.userExpenses.expenseJustAdded,
+      monthFormattedExpenses: state.userExpenses.monthFormattedExpenses,
+      admin: state.userExpenses.admin
+    }
+  }
+
+  const mapDispatchToProps = (dispatch) => {
+    return {
+      getExpenses : (userId) => { dispatch(getexpenses(userId)) },
+      expensesUpdate : () => { 
+        dispatch({
+          type: 'TURN_OFF_UPDATE_FLAG'
+        })
+      },
+      setExpenseAttest: (expenseIndex, monthIndex) => {
+        dispatch({
+          type: 'TOGGLE_ATTEST',
+          data: {
+            monthIndex,
+            expenseIndex
+          }
+      })
+    },
+    postToServer: (userId, expenseId) => { dispatch(postattest(userId, expenseId)) }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListExpenseScreen)
+
 
 const styles = StyleSheet.create({
   container: {
