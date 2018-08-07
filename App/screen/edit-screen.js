@@ -19,16 +19,6 @@ import config from '../config'
 import { connect } from 'react-redux'
 
 // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
-const expenseProp = {
-  date: moment().format().slice(0, 10),
-  car_type: '',
-  km: '',
-  route_descr: '',
-  attest: false,
-  client: '',
-  userId: ''
-}
-
 
 class EditScreen extends Component {
 
@@ -38,20 +28,14 @@ class EditScreen extends Component {
   }
 
   componentWillUnmount() {
-    expenseProp.date = moment().format().slice(0, 10)
-    expenseProp.car_type = ''
-    expenseProp.km = ''
-    expenseProp.route_descr = ''
-    expenseProp.attest = false
-    expenseProp.client = ''
-    userId = ''
+    // clear expensesAdded screen
   }
 
   componentDidMount () {
     console.log('hit kommer jag ')
     const { chosenCarType, id } = this.props
-    expenseProp.car_type = chosenCarType
-    expenseProp.userId = id
+    // expenseProp.car_type = chosenCarType
+    // expenseProp.userId = id
     this.userid = config.testUserId ? config.testUserId : id
   }
 
@@ -75,11 +59,11 @@ class EditScreen extends Component {
   }
 
   onPressSend = () => {
-    console.log('POKEMPN GO:', this.state)
-    console.log('payload:', expenseProp)
-    const { addExpenses, clearExpenses } = this.props
+    const { addExpenses, clearExpenses, expenseProps } = this.props
+    console.log('payload:', expenseProps)
     console.log('addExpenses:', addExpenses)
-    addExpenses(this.userid, expenseProp)
+    addExpenses(this.userid, expenseProps)
+    setTimeout(() => {}, 100)
     clearExpenses()
     setTimeout(() => {this.goBack(this.props)}, 100)
   }
@@ -91,32 +75,27 @@ class EditScreen extends Component {
   onKmChange = (data) => {
     const { kmChange } = this.props
     kmChange(data)
-    expenseProp.km = data
   }
 
   onClientChange = (data) => {
     const { clientChange } = this.props
     clientChange(data)
-    expenseProp.client = data
   }
 
   onRouteChange = (data) => {
     const { routeChange } = this.props
     routeChange(data)
-    expenseProp.route_descr = data
   }
 
   onDateChange = (data) => {
-    const { dateChange } = this.props
-    dateChange(data)
-    expenseProp.date = data
+    const { dateChange, id } = this.props
+    dateChange(data, id)
   }
 
   onCarChange = (arr, index) => {
     let data = arr[index]
     const { carChange, onCarPress } = this.props
     carChange(data)
-    expenseProp.car_type = data
     onCarPress()
   }
 
@@ -138,7 +117,7 @@ class EditScreen extends Component {
 
 
   render () {
-    const { hideDate, chosenCarType, carType, dateModalOpened, carSelectOpened, onCarPress, chosenDate} = this.props
+    const { hideDate, carTypes, carType, dateModalOpened, carSelectOpened, onCarPress, expenseProps} = this.props
     return (
       <TouchableWithoutFeedback 
       onPress={() => {  
@@ -153,7 +132,7 @@ class EditScreen extends Component {
           </Text>
         </View>
         <ScrollView>
-          <ExpenseForm carTypeChosen={chosenCarType} renderSelectables={this.renderSelectables} carType={carType} chosenDate={chosenDate} onCarPress={onCarPress} _toggleModal={hideDate} onChange={this.onChange}  expenseProp={expenseProp} onPress={this.onPress} modelOpen={dateModalOpened} carSelectOpen={carSelectOpened} />
+          <ExpenseForm carTypes={carTypes} renderSelectables={this.renderSelectables} onCarPress={onCarPress} _toggleModal={hideDate} onChange={this.onChange}  expenseProps={expenseProps} onPress={this.onPress} modelOpen={dateModalOpened} carSelectOpen={carSelectOpened} />
         </ScrollView>
         <AddExpenseButton onPress={ this.onPressSend } buttonName='Skicka in' />
       </View>
@@ -164,12 +143,18 @@ class EditScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    chosenCarType: state.addExpenses.addedExpense.carType,
-    carType: state.userExpenses.carType,
+    carTypes: state.userExpenses.carType,
     dateModalOpened: state.userExpenses.dateModalOpened,
     carSelectOpened: state.userExpenses.carSelectOpened,
     id: state.userExpenses._id,
-    chosenDate: state.addExpenses.addedExpense.date
+    expenseProps: {
+      date: state.addExpenses.addedExpense.date,
+      attest: state.addExpenses.addedExpense.attest,
+      carType: state.addExpenses.addedExpense.carType,
+      km: state.addExpenses.addedExpense.km,
+      route_descr: state.addExpenses.addedExpense.route_descr,
+      client: state.addExpenses.addedExpense.client
+    }
   }
 }
 
@@ -192,10 +177,11 @@ const mapDispatchToProps = (dispatch) => {
       data
       })
     },
-    dateChange: (data) => { dispatch({
+    dateChange: (data, userId) => { dispatch({
       type: 'ADD_NEW_EXPENSE_DATE',
-      data
-      })
+      data,
+      userId 
+      }) // userId had to be added somewhere. This location was arbitarily chosen.
     },
     carChange: (data) => {
       dispatch({

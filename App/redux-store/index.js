@@ -42,7 +42,7 @@ const loginDefaultState = {
 }
 
 const defaultExpense = {
-  addedExpense: { attest: false, carType: 'Egen bil' }
+  addedExpense: { attest: false, carType: 'Egen bil', date: moment().format().slice(0, 10), userId: '' }
 }
 
 const defaultAttestExpense = {
@@ -216,7 +216,7 @@ function addExpensesReducer (state = defaultExpense, action) {
     case 'CLEAR_ALL_EXPENSES':
       return defaultExpense
     case 'ADD_NEW_EXPENSE_DATE':
-      obj = Object.assign({}, state.addedExpense, { date: action.data })
+      obj = Object.assign({}, state.addedExpense, { date: action.data, userId: action.id })
       newObj = {
         addedExpense: obj
       }

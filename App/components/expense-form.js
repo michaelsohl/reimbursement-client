@@ -16,26 +16,19 @@ import Selectable from './select-component'
 export default class ExpenseForm extends Component {
   constructor(props) {
     super(props)
-    this.state = { language: "js", date: moment(), kr: '', km: '', kund: '', route: '', animationVal: new Animated.Value(), minHeight: 200, maxHeight: 250 }
-  }
-  onDateChange = date => {
-    this.setState({ date: date })
-  }
-
-  onChangeText = text => {
-    this.setState({text})
+    this.state = { animationVal: new Animated.Value(), minHeight: 200, maxHeight: 250 }
   }
 
   toggle = () => {
-    let initialValue    = this.props.carSelectOpen ? this.state.maxHeight + this.state.minHeight : this.state.minHeight,
-    finalValue      = this.props.carSelectOpen ? this.state.minHeight : this.state.maxHeight + this.state.minHeight
+    let initialValue = this.props.carSelectOpen ? this.state.maxHeight + this.state.minHeight : this.state.minHeight,
+    finalValue = this.props.carSelectOpen ? this.state.minHeight : this.state.maxHeight + this.state.minHeight
 
     this.props.onCarPress()
     this.state.animationVal.setValue(initialValue)
     Animated.spring(
       this.state.animationVal,
       {
-        toValue: finalValue        // Make it take a while
+        toValue: finalValue       // Make it take a while
       }
     ).start()
   }
@@ -54,19 +47,20 @@ export default class ExpenseForm extends Component {
 
   render() {
     let date = {}
-    const { chosenDate } = this.props
-
+    const { expenseProps } = this.props
     
-    if (!(typeof(this.props.expenseProp.date) == 'string')) {
-      date[chosenDate.dateString]= {
+    if (!(typeof(expenseProps.date) == 'string')) {
+      date[expenseProps.date.dateString]= {
         selected: true,
         selectedColor: sylogRed
       }
     } else {
-      date[this.props.expenseProp.date]= {
+      date[expenseProps.date]= {
         selected: true,
         selectedColor: sylogRed
     }}
+    console.log('123:', this.props.carTypes)
+    console.log('456:', expenseProps.carType)
     return (
       <TouchableWithoutFeedback 
         onPress={() => {  
@@ -74,14 +68,14 @@ export default class ExpenseForm extends Component {
           Keyboard.dismiss()} }
         onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
       <View style={styles.container} >
-        <StdTextInput onChangeText={this.props.onChange('km')} label='km' value={this.props.expenseProp.km}  />
-        <StdTextInput onChangeText={this.props.onChange('client')} label='kund' value={this.props.expenseProp.client}  />
-        <StdTextInput onChangeText={this.props.onChange('route_descr')} label='Färdbeskr.' value={this.props.expenseProp.route_descr}  />
-        <CarButton onPress={ this.toggle } label={this.props.carTypeChosen}/>
+        <StdTextInput onChangeText={this.props.onChange('km')} label='km' value={expenseProps.km}  />
+        <StdTextInput onChangeText={this.props.onChange('client')} label='kund' value={expenseProps.client}  />
+        <StdTextInput onChangeText={this.props.onChange('route_descr')} label='Färdbeskr.' value={expenseProps.route_descr}  />
+        <CarButton onPress={ this.toggle } label={expenseProps.carType}/>
         <Collapsible collapsed={this.props.carSelectOpen}>
-        { this.props.renderSelectables(this.props.carType, this.props.carTypeChosen) }
+        { this.props.renderSelectables(this.props.carTypes, expenseProps.carType) }
         </Collapsible>
-        <DateButton date={null} text={this.props.expenseProp.date} onPress={this.props.onPress('date')} />
+        <DateButton date={null} text={expenseProps.date} onPress={this.props.onPress('date')} />
         <Modal isVisible={this.props.modelOpen}> 
           <View style={{ flex: 1, alignItems: 'center' }}>
             <View style={{margin: 20}}>
