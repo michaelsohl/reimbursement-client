@@ -35,10 +35,6 @@ class ListScreen extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.unsubscribe()
-  }
-
   signout = () => {
     this.props.navigation.navigate('Start')
   }
@@ -58,21 +54,17 @@ class ListScreen extends Component {
   }
 
   componentDidUpdate () {
-    const { getExpenses, expenseJustAdded } = this.props
+    const { getExpenses, expenseJustAdded, expensesUpdate } = this.props
     if(expenseJustAdded) {
       // createstore.dispatch(getexpenses(this.userid))
       getExpenses(this.userid)
-      this.expensesUpdated()
+      expensesUpdate()
     }
   }
-
-  expensesUpdated = () => {
-    const { expensesUpdate } = this.props
-    expensesUpdate()
     // createstore.dispatch({
     //   type: 'TURN_OFF_UPDATE_FLAG'
     //})
-  }
+  
 
   addExpense = (props) => {
     props.navigation.navigate('EditExpensesPage', { replace: true })

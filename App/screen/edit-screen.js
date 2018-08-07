@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 import {
   StyleSheet,
   Text,
@@ -9,15 +8,15 @@ import {
   Keyboard,
   TouchableWithoutFeedback
 } from 'react-native'
-
 import Header from '../components/header'
 import { NavigationActions } from 'react-navigation'
 import ExpenseForm from '../components/expense-form'
-import { store, addexpenses, getexpenses } from '../redux-store' 
+import addexpenses from '../redux-store/add-expenses' 
 import AddExpenseButton from '../components/login-button'
 import moment from 'moment'
 import Selectable from '../components/select-component'
 import config from '../config'
+import { connect } from 'react-redux'
 
 // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
 const expenseProp = {
@@ -31,17 +30,14 @@ const expenseProp = {
 }
 
 
-export default class EditScreen extends Component {
+class EditScreen extends Component {
 
   constructor(props) {
     super(props)
-    this.state = store.getState()
-    this.unsubscribe = store.subscribe(() => { this.setState(store.getState()) })
     this.onChange = this.onChange.bind(this) 
   }
 
   componentWillUnmount() {
-    this.unsubscribe()
     expenseProp.date = moment().format().slice(0, 10)
     expenseProp.car_type = ''
     expenseProp.km = ''
@@ -52,9 +48,11 @@ export default class EditScreen extends Component {
   }
 
   componentDidMount () {
-    expenseProp.car_type = this.state.addExpenses.addedExpense.carType
-    expenseProp.userId = this.state.userExpenses._id
-    this.userid = config.testUserId ? config.testUserId : this.state.userExpenses._id
+    console.log('hit kommer jag ')
+    const { chosenCarType, id } = this.props
+    expenseProp.car_type = chosenCarType
+    expenseProp.userId = id
+    this.userid = config.testUserId ? config.testUserId : id
   }
 
   onChange (type) {
@@ -68,37 +66,22 @@ export default class EditScreen extends Component {
     return functions[type]
   }
 
-  onDatePress (date) {
-    // console.log('date777777:', date)
-    store.dispatch({
-      type: 'OPEN_DATE_MODAL'
-    })
-  }
-
-  hideDate (date) {
-    // console.log('date:', date)
-    store.dispatch({
-      type: 'CLOSE_DATE_MODAL'
-    })
-  }
-  
   onPress = (type) => {
+    const { onDatePress } = this.props
     let functions = {
-      date: this.onDatePress
+      date: onDatePress
     }
     return functions[type]
   }
-  
-  /** componentDidUpdate () {
-    console.log('edit-screen did update!')
-  }*/
 
   onPressSend = () => {
     console.log('POKEMPN GO:', this.state)
     console.log('payload:', expenseProp)
-
-    store.dispatch(addexpenses(this.userid, expenseProp))
-    this.clearAllExpenses()
+    const { addExpenses, clearExpenses } = this.props
+    console.log('addExpenses:', addExpenses)
+    addExpenses(this.userid, expenseProp)
+    clearExpenses()
+    setTimeout(() => {this.goBack(this.props)}, 100)
   }
 
   goBack = (props) => {
@@ -106,61 +89,35 @@ export default class EditScreen extends Component {
   }
 
   onKmChange = (data) => {
-    store.dispatch({
-      type: 'ADD_NEW_EXPENSE_KM',
-      data
-    })
+    const { kmChange } = this.props
+    kmChange(data)
     expenseProp.km = data
   }
 
   onClientChange = (data) => {
-    // console.log('onClientChange!')
-    store.dispatch({
-      type: 'ADD_NEW_EXPENSE_CLIENT',
-      data
-    })
+    const { clientChange } = this.props
+    clientChange(data)
     expenseProp.client = data
   }
 
   onRouteChange = (data) => {
-    store.dispatch({
-      type: 'ADD_NEW_EXPENSE_ROUTEDESCR',
-      data
-    })
+    const { routeChange } = this.props
+    routeChange(data)
     expenseProp.route_descr = data
   }
 
   onDateChange = (data) => {
-    store.dispatch({
-      type: 'ADD_NEW_EXPENSE_DATE',
-      data
-    })
+    const { dateChange } = this.props
+    dateChange(data)
     expenseProp.date = data
   }
 
   onCarChange = (arr, index) => {
-    console.log('onCarChange method 1')
     let data = arr[index]
-    store.dispatch({
-      type: 'ADD_NEW_EXPENSE_CARTYPE',
-      data
-    })
+    const { carChange, onCarPress } = this.props
+    carChange(data)
     expenseProp.car_type = data
-    this.onCarPress()
-  }
-
-  clearAllExpenses = () => {
-    store.dispatch({
-      type: 'CLEAR_ALL_EXPENSES'
-    })
-    setTimeout(() => {this.goBack(this.props)}, 100)
-  }
-
-  onCarPress = () => {
-    // HERE !!!
-    store.dispatch({
-      type: 'OPEN_CAR_SELECT',
-    })
+    onCarPress()
   }
 
   renderSelectables = (arr, carTypeChosen) => {
@@ -180,10 +137,8 @@ export default class EditScreen extends Component {
   }
 
 
-
-
   render () {
-    console.log('bil!!!!!:', this.state.addExpenses.addedExpense)
+    const { hideDate, chosenCarType, carType, dateModalOpened, carSelectOpened, onCarPress, chosenDate} = this.props
     return (
       <TouchableWithoutFeedback 
       onPress={() => {  
@@ -198,7 +153,7 @@ export default class EditScreen extends Component {
           </Text>
         </View>
         <ScrollView>
-          <ExpenseForm carTypeChosen={this.state.addExpenses.addedExpense.carType} renderSelectables={this.renderSelectables} carType={this.state.userExpenses.carType} onCarPress={this.onCarPress} _toggleModal={this.hideDate} onChange={this.onChange}  expenseProp={expenseProp} onPress={this.onPress} modelOpen={this.state.userExpenses.dateModalOpened} carSelectOpen={this.state.userExpenses.carSelectOpened} />
+          <ExpenseForm carTypeChosen={chosenCarType} renderSelectables={this.renderSelectables} carType={carType} chosenDate={chosenDate} onCarPress={onCarPress} _toggleModal={hideDate} onChange={this.onChange}  expenseProp={expenseProp} onPress={this.onPress} modelOpen={dateModalOpened} carSelectOpen={carSelectOpened} />
         </ScrollView>
         <AddExpenseButton onPress={ this.onPressSend } buttonName='Skicka in' />
       </View>
@@ -206,6 +161,57 @@ export default class EditScreen extends Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    chosenCarType: state.addExpenses.addedExpense.carType,
+    carType: state.userExpenses.carType,
+    dateModalOpened: state.userExpenses.dateModalOpened,
+    carSelectOpened: state.userExpenses.carSelectOpened,
+    id: state.userExpenses._id,
+    chosenDate: state.addExpenses.addedExpense.date
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onDatePress: () => { dispatch({ type: 'OPEN_DATE_MODAL' }) },
+    hideDate: () => { dispatch({ type: 'CLOSE_DATE_MODAL' }) },
+    addExpenses: (userId, expenseProp) => { dispatch(addexpenses(userId, expenseProp)) },
+    clearExpenses: () => { dispatch({ type: 'CLEAR_ALL_EXPENSES' }) },
+    kmChange: (data) => { dispatch({
+      type: 'ADD_NEW_EXPENSE_KM',
+      data })  
+    },
+    clientChange: (data) => { dispatch({
+      type: 'ADD_NEW_EXPENSE_CLIENT',
+      data })
+    },
+    routeChange: (data) => { dispatch({
+      type: 'ADD_NEW_EXPENSE_ROUTEDESCR',
+      data
+      })
+    },
+    dateChange: (data) => { dispatch({
+      type: 'ADD_NEW_EXPENSE_DATE',
+      data
+      })
+    },
+    carChange: (data) => {
+      dispatch({
+        type: 'ADD_NEW_EXPENSE_CARTYPE',
+        data
+      })
+    },
+    onCarPress: () => {
+      dispatch({
+        type: 'OPEN_CAR_SELECT',
+      })
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditScreen)
 
 const buttonThemeColor = '#C21807'
 const styles = StyleSheet.create({

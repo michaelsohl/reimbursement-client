@@ -54,25 +54,19 @@ export default class ExpenseForm extends Component {
 
   render() {
     let date = {}
-    console.log('this.props.expenseProp.date:', this.props.expenseProp.date)
+    const { chosenDate } = this.props
+
     
     if (!(typeof(this.props.expenseProp.date) == 'string')) {
-      console.log('Kommer jag in hit!!??????')
-      date[this.props.expenseProp.date.dateString]= {
+      date[chosenDate.dateString]= {
         selected: true,
-        //marked: true,
         selectedColor: sylogRed
       }
     } else {
       date[this.props.expenseProp.date]= {
         selected: true,
-        //marked: true,
         selectedColor: sylogRed
     }}
-    // if (date && (Object.keys(date).length == 0)) console.log('Kom det hit!!??')
-
-    console.log('this.props.expenseProp.date:', typeof(this.props.expenseProp.date))
-    console.log('date clicked:', date)
     return (
       <TouchableWithoutFeedback 
         onPress={() => {  
