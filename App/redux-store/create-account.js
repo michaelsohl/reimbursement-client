@@ -1,28 +1,26 @@
 import config from '../config'
-
 require('es6-promise').polyfill()
 const fetch = require('isomorphic-fetch')
-
 // action-creator
-function getData (data) {
+function postCreateAccount (data) {
   return {
-    type: 'GET_DATA',
+    type: 'CREATE_ACCOUNT',
     data
   }
 }
 
 function feedback (mess) {
   return {
-    type: 'FEEDBACK',
+    type: 'feedback',
     mess
   }
 }
 
-// fetch
-const checkWithServerIfEmailValidFetch = (email, password) => {
-  let data = { email, password }
-  console.log('datat som skickas:', data)
-  return fetch(`${config.host}authenticate`, {
+const postCreateAccountFetch = (email, password) => {
+  console.log('apRÖV:', email + ' ' + password)
+  var data = { email, password }
+  console.log('data:', data)
+  return fetch(`${config.host}createaccount`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data)
@@ -36,9 +34,9 @@ const checkWithServerIfEmailValidFetch = (email, password) => {
 // thunk
 export default (data) => {
   return function (dispatch) {
-    return checkWithServerIfEmailValidFetch(data.email, data.password).then(
+    return postCreateAccountFetch(data.email, data.password).then(
       data => {
-        return dispatch(getData(data))
+        return dispatch(postCreateAccount(data))
       },
       error => dispatch(feedback(error))
     )

@@ -8,10 +8,14 @@ import {
 export default function (props) {
   return (
     <View style={[styles.container, {backgroundColor: props.backgroundColor}]}>
-      <TextInput placeholder={props.placeholder} style={styles.textField} onChangeText={props.onChangeText} value={props.value} autoCorrect={false} autoCapitalize='none' multiline={true} numberOfLines={3} />
+      <TextInput placeholder={props.placeholder} style={styles.textField} onChangeText={props.onChangeText} value={props.value} autoCorrect={false} autoCapitalize='none' secureTextEntry={props.secureTextEntry ? true : false} />
     </View>
   )
 }
+
+/**
+ * multiline={true} numberOfLines={3}
+ */
 
 const styles = {
   container: {

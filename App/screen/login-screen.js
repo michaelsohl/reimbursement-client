@@ -10,7 +10,7 @@ import { Platform,
   Keyboard
 } from 'react-native'
 import debounce from 'debounce'
-// import { NavigationActions } from 'react-navigation' 1
+import { NavigationActions } from 'react-navigation'
 import LoginButton from '../components/login-button'
 import Header from '../components/header'
 import emailvalidation from '../redux-store/email-validation'
@@ -18,6 +18,7 @@ import TextField from '../components/text-field'
 import { connect } from 'react-redux'
 const sylogPic = require('../media/Icon-App-83.5x83.5.png')
 import StdTextInput from '../components/std-text-input'
+import StdTextInputSecure from '../components/std-text-input-secure'
 
 // const _validateEmail = (text, cb) => {
 //  return debounce(cb , 2000)
@@ -29,17 +30,23 @@ class LoginScreen extends Component {
   //  store.dispatch(emailvalidation(text))
   // }
 
-   // goBack = () => {
-    // console.log('Go Back was pressed!')
-    //this.props.navigation.dispatch(NavigationActions.back())
-   //}
+   goBack = () => {
+     this.props.navigation.dispatch(NavigationActions.back())
+   }
 
    onChangeText = (text) => {
 
      const { loginEmail, validateEmail } = this.props
     // this.props.onChangeLoginTextActionCreator(text)
     loginEmail(text)
-    validateEmail(text)
+    // validateEmail({email: loginEmail, password: loginPassword}})
+  }
+
+  onChangePassword = (text) => {
+    const { value, validateEmail, loginPassword } = this.props
+    console.log('saker är goa:', value + ' ' + text)
+    loginPassword(text)
+    validateEmail({email: value, password: text})
   }
 
   login = () => {
@@ -51,7 +58,7 @@ class LoginScreen extends Component {
   render () {
     // console.log('STATE in login-screen:', this.state)
     let button = null
-    const { value, data } = this.props
+    const { value, data, password } = this.props
     if(data) {
       button = <LoginButton buttonName='Login' onPress={this.login} />
     }
@@ -69,6 +76,7 @@ class LoginScreen extends Component {
             Enter the app here
           </Text>
           <StdTextInput label='Enter work-email' onChangeText={this.onChangeText} value={value} />
+          <StdTextInputSecure label='Enter password' onChangeText={this.onChangePassword} value={password} />
         </View>
         { button }
       </View>
@@ -83,6 +91,8 @@ const mapStateToProps = (state) => {
   return { 
     value: state.loginEmail.value,
     data: state.loginEmail.data,
+    email: state.loginEmail.value,
+    password: state.loginEmail.password,
     userId: state.loginEmail.userId
   }
 }
@@ -95,8 +105,14 @@ const mapDispatchToProps = (dispatch) => {
         text
       })
     },
-    validateEmail: (text) => {
-      dispatch(emailvalidation(text))
+    loginPassword: (text) => {
+      dispatch({
+        type: 'LOGIN_PASSWORD',
+        text
+      })
+    },
+    validateEmail: (data) => {
+      dispatch(emailvalidation(data))
     }        
   }
 }

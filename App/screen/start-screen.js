@@ -28,7 +28,7 @@ export default class StartScreen extends Component {
   
    onCreateAccount = () => {
     // console.log('Create account button was pressed!')
-    this.props.navigation.navigate('Start')
+    this.props.navigation.navigate('Create')
    }
 
    onLogin = () => {
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#F5FCFF'
+    backgroundColor: 'white'
   },
   welcome: {
     fontSize: 20,

@@ -35,6 +35,7 @@ const userDefaultState = {
 
 const loginDefaultState = {
   value: '',
+  password: '',
   loggedIn: false,
   feedback: '',
   data: false,
@@ -49,11 +50,17 @@ const defaultAttestExpense = {
   attests: []
 }
 
+const defaultCreateAccount = {
+  email: '',
+  pass: ''
+}
+
 const reducers = combineReducers({
   loginEmail: loginReducer,
   userExpenses: getUserReducer,
   addExpenses: addExpensesReducer,
   attests: attestExpenses,
+  createAccount: createAccountReducer,
   nav: navReducer
 })
 
@@ -68,10 +75,15 @@ function loginReducer (state = loginDefaultState, action) {
       }
       return Object.assign({}, state, newObj)
     case 'GET_DATA':
-      console.log('DATA MF:', action.data)
+      console.log('DATA MF!!!1337:', action.data)
       newObj = {
         data: action.data.validEmail,
         userId: action.data.userId
+      }
+      return Object.assign({}, state, newObj)
+    case 'LOGIN_PASSWORD':
+      newObj = {
+        password: action.text
       }
       return Object.assign({}, state, newObj)
     case 'FEEDBACK':
@@ -266,6 +278,27 @@ function attestExpenses (state = defaultAttestExpense, action) {
         attests: attestsList
       }
       return Object.assign({}, state, newObj)
+    default:
+      return state
+  }
+}
+
+function createAccountReducer (state = defaultCreateAccount, action) {
+  let newObj
+  switch (action.type) {
+    case 'CHANGE_EMAIL_TEXT':
+      newObj = {
+        email: action.data
+      }
+      return Object.assign({}, state, newObj)
+    case 'CHANGE_PASSWORD_TEXT':
+      newObj = {
+        password: action.data
+      }
+      return Object.assign({}, state, newObj)
+    case 'CREATE_ACCOUNT':
+      console.log('CREATE_ACCOUNT')
+      return state
     default:
       return state
   }
