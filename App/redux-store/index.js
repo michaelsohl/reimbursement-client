@@ -43,7 +43,7 @@ const loginDefaultState = {
 }
 
 const defaultExpense = {
-  addedExpense: { attest: false, carType: 'Egen bil', date: moment().format().slice(0, 10), userId: '' }
+  addedExpense: { attest: false, carType: 'Egen bil', date: moment().format().slice(0, 10), userId: '', name: '' }
 }
 
 const defaultAttestExpense = {
@@ -228,7 +228,7 @@ function addExpensesReducer (state = defaultExpense, action) {
     case 'CLEAR_ALL_EXPENSES':
       return defaultExpense
     case 'ADD_NEW_EXPENSE_DATE':
-      obj = Object.assign({}, state.addedExpense, { date: action.data, userId: action.id })
+      obj = Object.assign({}, state.addedExpense, { date: action.data, userId: action.id, name: action.name })
       newObj = {
         addedExpense: obj
       }
@@ -254,6 +254,20 @@ function addExpensesReducer (state = defaultExpense, action) {
       return Object.assign({}, state, newObj)
     case 'ADD_NEW_EXPENSE_CLIENT':
       obj = Object.assign({}, state.addedExpense, {client: action.data})
+      newObj = {
+        addedExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'ATTACH_NAME_TO_EXPENSE':
+      console.log('körs2')
+      obj = Object.assign({}, state.addedExpense, {name: action.data})
+      newObj = {
+        addedExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'ATTACH_USERID_TO_EXPENSE':
+      console.log('körs1')
+      obj = Object.assign({}, state.addedExpense, {userId: action.data})
       newObj = {
         addedExpense: obj
       }

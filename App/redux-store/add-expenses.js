@@ -19,8 +19,8 @@ function feedback (mess) {
 // fetch
 // // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
 
-const postUserExpensesFetch = (userId, expensesProp) => {
-  var data = { userId, expensesProp }
+const postUserExpensesFetch = (expensesProp) => {
+  var data = { expensesProp }
   return fetch(`${config.host}addexpense`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -33,9 +33,9 @@ const postUserExpensesFetch = (userId, expensesProp) => {
 }
 
 // thunk
-export default (userId, expensesProp) => {
+export default (expensesProp) => {
   return function (dispatch) {
-    return postUserExpensesFetch(userId, expensesProp).then(
+    return postUserExpensesFetch(expensesProp).then(
       data => {
         return dispatch(postUserExpenses(data))
       },

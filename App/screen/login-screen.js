@@ -35,7 +35,6 @@ class LoginScreen extends Component {
    }
 
    onChangeText = (text) => {
-
      const { loginEmail, validateEmail } = this.props
     // this.props.onChangeLoginTextActionCreator(text)
     loginEmail(text)
@@ -44,7 +43,6 @@ class LoginScreen extends Component {
 
   onChangePassword = (text) => {
     const { value, validateEmail, loginPassword } = this.props
-    console.log('saker är goa:', value + ' ' + text)
     loginPassword(text)
     validateEmail({email: value, password: text})
   }
@@ -62,21 +60,24 @@ class LoginScreen extends Component {
     if(data) {
       button = <LoginButton buttonName='Login' onPress={this.login} />
     }
+ 
     return (
       <TouchableWithoutFeedback 
       onPress={() => {  
         console.log('hejsan keybord dismiss #########################################') 
-        Keyboard.dismiss()} }
+        Keyboard.dismiss() } }
       onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
       <View style={styles.container}>
         <Header buttonName='Cancel' leftadd={false} onPress={this.goBack}/>
         <Image style={styles.headerPicture} source={sylogPic} />
-        <View> style={styles.textFieldContainer}
+        <View style={styles.textFieldContainer} >
           <Text style={styles.welcome}>
             Enter the app here
           </Text>
-          <StdTextInput label='Enter work-email' onChangeText={this.onChangeText} value={value} />
-          <StdTextInputSecure label='Enter password' onChangeText={this.onChangePassword} value={password} />
+          <ScrollView>
+            <StdTextInput label='Enter work-email' onChangeText={this.onChangeText} value={value} />
+            <StdTextInputSecure label='Enter password' onChangeText={this.onChangePassword} value={password} />
+          </ScrollView>
         </View>
         { button }
       </View>
@@ -85,7 +86,10 @@ class LoginScreen extends Component {
   }
 }
 
-
+/**
+ * <StdTextInput label='Enter work-email' onChangeText={this.onChangeText} value={value} />
+          <StdTextInputSecure label='Enter password' onChangeText={this.onChangePassword} value={password} />
+ */
 
 const mapStateToProps = (state) => {
   return { 
@@ -141,5 +145,4 @@ const styles = StyleSheet.create({
   textFieldContainer: {
     flex: 1
   }
-
 })

@@ -5,10 +5,10 @@ const host = {
 }
 
 /**
- * fredrik: 5b30d3f179c424a80b44a5b5 (admin)
- * michael: 5b30e72932d80ead0854dc9f
+ * fredrik: 5b6c42a46bdee0ede68b0157 (admin)
+ * michael: 5b6acec3fd3ad4759689da42
  * null for real login userId
  */
-const testUserId = '5b30e72932d80ead0854dc9f'
+const testUserId = '5b6c42a46bdee0ede68b0157'
 
 module.exports = { host: host.deviceToLocalhost }

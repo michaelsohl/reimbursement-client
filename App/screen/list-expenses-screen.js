@@ -44,12 +44,13 @@ class ListExpenseScreen extends Component {
     props.navigation.navigate('EditExpensesPage')
   }
   renderExpenses = (arr, admin) => {
+    const { name } = this.props
     console.log('this.state:', this.state)
     if (!arr) return null
     return arr.map((expense) => {
       console.log('expense1337:', expense)
       return (
-        <Expense onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} car_type={expense.car_type} key={expense._id} /> // Look out for issues with unique key
+        <Expense name={expense.name} admin={admin} onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} car_type={expense.car_type} key={expense._id} /> // Look out for issues with unique key
       )
     })
   }
@@ -79,7 +80,8 @@ class ListExpenseScreen extends Component {
     return {
       expenseJustAdded: state.userExpenses.expenseJustAdded,
       monthFormattedExpenses: state.userExpenses.monthFormattedExpenses,
-      admin: state.userExpenses.admin
+      admin: state.userExpenses.admin,
+      name: state.userExpenses.name
     }
   }
 

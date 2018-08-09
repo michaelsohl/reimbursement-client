@@ -33,10 +33,12 @@ class EditScreen extends Component {
 
   componentDidMount () {
     console.log('hit kommer jag ')
-    const { chosenCarType, id } = this.props
+    const { chosenCarType, attachName, attachUserId, expenseProps, id } = this.props
     // expenseProp.car_type = chosenCarType
     // expenseProp.userId = id
     this.userid = config.testUserId ? config.testUserId : id
+    attachName(expenseProps.name)
+    attachUserId(expenseProps.id)
   }
 
   onChange (type) {
@@ -79,7 +81,7 @@ class EditScreen extends Component {
 
   onClientChange = (data) => {
     const { clientChange } = this.props
-    clientChange(data)
+    clientChange(data) 
   }
 
   onRouteChange = (data) => {
@@ -88,8 +90,8 @@ class EditScreen extends Component {
   }
 
   onDateChange = (data) => {
-    const { dateChange, id } = this.props
-    dateChange(data, id)
+    const { dateChange } = this.props
+    dateChange(data)
   }
 
   onCarChange = (arr, index) => {
@@ -146,14 +148,15 @@ const mapStateToProps = (state) => {
     carTypes: state.userExpenses.carType,
     dateModalOpened: state.userExpenses.dateModalOpened,
     carSelectOpened: state.userExpenses.carSelectOpened,
-    id: state.userExpenses._id,
     expenseProps: {
       date: state.addExpenses.addedExpense.date,
       attest: state.addExpenses.addedExpense.attest,
       carType: state.addExpenses.addedExpense.carType,
       km: state.addExpenses.addedExpense.km,
       route_descr: state.addExpenses.addedExpense.route_descr,
-      client: state.addExpenses.addedExpense.client
+      client: state.addExpenses.addedExpense.client,
+      userId: state.userExpenses._id,
+      name: state.userExpenses.name
     }
   }
 }
@@ -162,7 +165,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onDatePress: () => { dispatch({ type: 'OPEN_DATE_MODAL' }) },
     hideDate: () => { dispatch({ type: 'CLOSE_DATE_MODAL' }) },
-    addExpenses: (userId, expenseProp) => { dispatch(addexpenses(userId, expenseProp)) },
+    addExpenses: (userId, expenseProp) => { dispatch(addexpenses(expenseProp)) },
     clearExpenses: () => { dispatch({ type: 'CLEAR_ALL_EXPENSES' }) },
     kmChange: (data) => { dispatch({
       type: 'ADD_NEW_EXPENSE_KM',
@@ -179,8 +182,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     dateChange: (data, userId) => { dispatch({
       type: 'ADD_NEW_EXPENSE_DATE',
-      data,
-      userId 
+      data
       }) // userId had to be added somewhere. This location was arbitarily chosen.
     },
     carChange: (data) => {
@@ -193,6 +195,14 @@ const mapDispatchToProps = (dispatch) => {
       dispatch({
         type: 'OPEN_CAR_SELECT',
       })
+    },
+    attachName: (data) => {
+      type: 'ATTACH_NAME_TO_EXPENSE',
+      data
+    },
+    attachUserId: (data) => {
+      type: 'ATTACH_USERID_TO_EXPENSE',
+      data
     }
   }
 }
