@@ -61,10 +61,6 @@ class ListScreen extends Component {
       expensesUpdate()
     }
   }
-    // createstore.dispatch({
-    //   type: 'TURN_OFF_UPDATE_FLAG'
-    //})
-  
 
   addExpense = (props) => {
     props.navigation.navigate('EditExpensesPage', { replace: true })
@@ -91,19 +87,19 @@ class ListScreen extends Component {
 
 
   render () {
-    const { monthFormattedExpenses } = this.props
-    console.log('HERE IS LIST_SCREEN PROPS:', this.props)
+    const { monthFormattedExpenses, admin, name } = this.props
     return (
       <View style={styles.container}>
-        <Header buttonName='Sign out' onPress={this.signout} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
+        <Header buttonName='Logga ut' onPress={this.signout} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
         
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
-            Mina utgifter
+            { admin ? 'Reseutlägg' : `${name}s reseutlägg`  }
           </Text>
         </View>
         <View style={styles.expensesContainer} >
           <ScrollView>
+            { monthFormattedExpenses.length == 0 ? <Text> Inga reseutlägg </Text> : null }
             { this.renderMonths(monthFormattedExpenses) }
           </ScrollView>
         </View>
@@ -123,7 +119,9 @@ class ListScreen extends Component {
 const mapStateToProps = (state) => {
  return {
   monthFormattedExpenses: state.userExpenses.monthFormattedExpenses,
-  expenseJustAdded: state.userExpenses.expenseJustAdded
+  expenseJustAdded: state.userExpenses.expenseJustAdded,
+  admin: state.userExpenses.admin,
+  name: state.userExpenses.name
  }
 }
 

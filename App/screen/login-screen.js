@@ -68,15 +68,15 @@ class LoginScreen extends Component {
         Keyboard.dismiss() } }
       onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
       <View style={styles.container}>
-        <Header buttonName='Cancel' leftadd={false} onPress={this.goBack}/>
+        <Header buttonName='Avbryt' leftadd={false} onPress={this.goBack}/>
         <Image style={styles.headerPicture} source={sylogPic} />
         <View style={styles.textFieldContainer} >
           <Text style={styles.welcome}>
-            Enter the app here
+            Login
           </Text>
           <ScrollView>
-            <StdTextInput label='Enter work-email' onChangeText={this.onChangeText} value={value} />
-            <StdTextInputSecure label='Enter password' onChangeText={this.onChangePassword} value={password} />
+            <StdTextInput label='Skriv in din jobbmejl' onChangeText={this.onChangeText} value={value} />
+            <StdTextInputSecure label='Lösenord' onChangeText={this.onChangePassword} value={password} />
           </ScrollView>
         </View>
         { button }

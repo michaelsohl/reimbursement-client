@@ -127,7 +127,7 @@ class EditScreen extends Component {
         Keyboard.dismiss()} }
       onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
       <View style={styles.container}>
-        <Header buttonName='Cancel' onPress={() => { this.goBack(this.props) }} />
+        <Header buttonName='Avbryt' onPress={() => { this.goBack(this.props) }} />
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
            Editera mina utgifter

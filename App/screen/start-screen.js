@@ -39,12 +39,12 @@ export default class StartScreen extends Component {
   render () {
     return (
       <View style={styles.container}>
-        <Header buttonName='Sign in' leftadd={false} onPress={this.onLogin}/>
+        <Header buttonName='Logga in' leftadd={false} onPress={this.onLogin}/>
         <Image style={styles.headerPicture} source={sylogPic} />
         <Text style={styles.welcome}>
-          Resify
+          Reseersättningsappen
         </Text>
-        <CreateAccountButton buttonName='Create account' onPress={this.onCreateAccount} buttonContainer={styles.buttonContainer} />
+        <CreateAccountButton buttonName='Skapa konto' onPress={this.onCreateAccount} buttonContainer={styles.buttonContainer} />
       </View>
     )
   }

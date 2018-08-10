@@ -7,6 +7,7 @@ import getexpenses from '../redux-store/user-exprenses'
 import config from '../config'
 import postattest from '../redux-store/attest'
 import { connect } from 'react-redux'
+import { Months } from '../lib/dates' 
 
 class ListExpenseScreen extends Component {
 
@@ -44,7 +45,6 @@ class ListExpenseScreen extends Component {
     props.navigation.navigate('EditExpensesPage')
   }
   renderExpenses = (arr, admin) => {
-    const { name } = this.props
     console.log('this.state:', this.state)
     if (!arr) return null
     return arr.map((expense) => {
@@ -56,13 +56,15 @@ class ListExpenseScreen extends Component {
   }
 
   render() {
-    const { monthFormattedExpenses, admin } = this.props
+    const { monthFormattedExpenses, admin, monthIndex } = this.props
+    let month = (new Date(monthFormattedExpenses[monthIndex][0].date)).getMonth()
+    // console.log('monthFormattedExpenses[monthIndex][0]):', monthFormattedExpenses[monthIndex][0])
     return (
       <View style={styles.container}>
-        <Header buttonName='Cancel' onPress={() => { this.goBack(this.props) }} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
+        <Header buttonName='Tillbaka' onPress={() => { this.goBack(this.props) }} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
-              Mina utgifter
+              { Months[month + 1] }
           </Text>
         </View>
         <View style={styles.expensesContainer} >
@@ -81,7 +83,8 @@ class ListExpenseScreen extends Component {
       expenseJustAdded: state.userExpenses.expenseJustAdded,
       monthFormattedExpenses: state.userExpenses.monthFormattedExpenses,
       admin: state.userExpenses.admin,
-      name: state.userExpenses.name
+      name: state.userExpenses.name,
+      monthIndex: state.userExpenses.monthIndex
     }
   }
 
