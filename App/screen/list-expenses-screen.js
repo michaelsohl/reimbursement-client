@@ -7,7 +7,7 @@ import getexpenses from '../redux-store/user-exprenses'
 import config from '../config'
 import postattest from '../redux-store/attest'
 import { connect } from 'react-redux'
-import { Months } from '../lib/dates' 
+import { Months } from '../lib/dates'
 
 class ListExpenseScreen extends Component {
 
@@ -21,18 +21,23 @@ class ListExpenseScreen extends Component {
     }
   }
 
-  editExpense = () => {
+  editExpense = (expenseIndex, userId, expenseId) => {
     console.log('editExpense')
+    const { toggleSetToEditExpense, monthIndex } = this.props
+    toggleSetToEditExpense(userId, expenseIndex, monthIndex, expenseId)
+    this.props.navigation.navigate('EditExpensesPage')
+    // Expense should be give someting to tell it that edit is going down
   }
 
   onExpensePress = (expenseIndex, admin, expenseId, userId) => {
-    const { setExpenseAttest, postToServer } = this.props
+    const { setExpenseAttest, postToServer, monthIndex } = this.props
     console.log('setExpenseAttest:', setExpenseAttest)
     if (admin) {
-      setExpenseAttest(expenseIndex, this.props.navigation.state.params.monthIndex)
+      setExpenseAttest(expenseIndex, monthIndex)
+      console.log('expenseID:', expenseId)
       postToServer(userId, expenseId)
     } else {
-      this.editExpense()
+      this.editExpense(expenseIndex, userId, expenseId)
     }
   }
 
@@ -45,6 +50,7 @@ class ListExpenseScreen extends Component {
     props.navigation.navigate('EditExpensesPage')
   }
   renderExpenses = (arr, admin) => {
+    const { isExpenseNew } = this.props
     console.log('this.state:', this.state)
     if (!arr) return null
     return arr.map((expense) => {
@@ -69,7 +75,7 @@ class ListExpenseScreen extends Component {
         </View>
         <View style={styles.expensesContainer} >
           <ScrollView>
-            { this.renderExpenses(monthFormattedExpenses[this.props.navigation.state.params.monthIndex], admin) }
+            { this.renderExpenses(monthFormattedExpenses[monthIndex], admin) }
           </ScrollView>
         </View>
       </View>
@@ -105,9 +111,15 @@ class ListExpenseScreen extends Component {
           }
       })
     },
-    postToServer: (userId, expenseId) => { dispatch(postattest(userId, expenseId)) }
+    postToServer: (userId, expenseId) => { dispatch(postattest(userId, expenseId)) },
+    toggleSetToEditExpense: (userId, expenseIndex, monthIndex, expenseId) => { 
+      dispatch({
+        type: 'TOGGLE_SET_TO_EDIT_EXPENSE', 
+        data: { userId, expenseIndex, monthIndex, expenseId }} )
+      }
+    }
   }
-}
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListExpenseScreen)
 

@@ -43,7 +43,17 @@ const loginDefaultState = {
 }
 
 const defaultExpense = {
-  addedExpense: { attest: false, carType: 'Egen bil', date: moment().format().slice(0, 10), userId: '', name: '' }
+  addedExpense: {
+    attest: false,
+    carType: 'Egen bil',
+    date: moment().format().slice(0, 10),
+    userId: '',
+    name: '' },
+  editExpense: {
+    setToEdit: false,
+    userId: '',
+    expenseId: ''
+  }
 }
 
 const defaultAttestExpense = {
@@ -121,6 +131,11 @@ function getUserReducer (state = userDefaultState, action) {
       }
       return Object.assign({}, state, newObj)
       // return state
+    case 'POST_UPDATE_EXPENSE':
+      newObj = {
+        expenseJustAdded: true
+      }
+      return Object.assign({}, state, newObj)
     case 'CLOSE_DATE_MODAL':
       newObj = {
         dateModalOpened: false
@@ -203,9 +218,9 @@ function getUserReducer (state = userDefaultState, action) {
       }
       return Object.assign({}, state, newObj)
     case 'TOGGLE_ATTEST':
-      let copyExpenses = state.monthFormattedExpenses.slice(0, state.monthFormattedExpenses.length)
+      let copyExpenses = state.monthFormattedExpenses.slice(0, state.monthFormattedExpenses.length) // why do I do slice??
       let expense = copyExpenses[action.data.monthIndex][action.data.expenseIndex]
-      let newExp = Object.assign({}, expense, {attest: !expense.attest})
+      let newExp = Object.assign({}, expense, { attest: !expense.attest })
       copyExpenses[action.data.monthIndex][action.data.expenseIndex] = newExp
     
       newObj = {
@@ -259,19 +274,31 @@ function addExpensesReducer (state = defaultExpense, action) {
       }
       return Object.assign({}, state, newObj)
     case 'ATTACH_NAME_TO_EXPENSE':
-      console.log('körs2')
       obj = Object.assign({}, state.addedExpense, {name: action.data})
       newObj = {
         addedExpense: obj
       }
       return Object.assign({}, state, newObj)
     case 'ATTACH_USERID_TO_EXPENSE':
-      console.log('körs1')
       obj = Object.assign({}, state.addedExpense, {userId: action.data})
       newObj = {
         addedExpense: obj
       }
       return Object.assign({}, state, newObj)
+    case 'TOGGLE_SET_TO_EDIT_EXPENSE':
+      console.log('SET_TO_EDIT_EXPENSE')
+      if (state.editExpense.setToEdit) {
+        return defaultExpense
+      }
+      console.log('kom vidare!')
+      
+      obj = Object.assign({}, state.editExpense, { setToEdit: true, userId: action.data.userId, expenseIndex: action.data.expenseIndex, monthIndex: action.data.monthIndex, expenseId: action.data.expenseId })
+      newObj = {
+        editExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'POST_EXPENSE_UPDATE':
+      return state
     default:
       return state
   }

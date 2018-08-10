@@ -69,7 +69,7 @@ class ListScreen extends Component {
   onMonthPress = (arr, index) => {
     const { setMonthScreen } = this.props
     setMonthScreen(index)
-    this.props.navigation.navigate('ExpensesList', {monthIndex: index, replace: true })
+    this.props.navigation.navigate('ExpensesList', {replace: true })
   }
 
   renderMonths = (arr) => {
