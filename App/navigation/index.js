@@ -18,7 +18,7 @@ export default createStackNavigator({
   MainApp: MainTabNavigator
 },
 {
-  initialRouteName: 'MainApp',
+  initialRouteName: 'Start',
   navigationOptions: {
     header: null
   }

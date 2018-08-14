@@ -152,7 +152,8 @@ function getUserReducer (state = userDefaultState, action) {
           name: action.data.name,
           email: action.data.email,
           admin: action.data.admin,
-          carType: action.data.car_type
+          carTypes: action.data.car_types,
+          monthFormattedExpenses: []
         }
         return Object.assign({}, state, newObj)
       }
@@ -190,19 +191,14 @@ function getUserReducer (state = userDefaultState, action) {
         })
       })
 
-      // monthFormattedExpenses.forEach(elem => {
-      //  console.log(elem)
-      // })
-
       newObj = {
         _id: action.data._id,
         name: action.data.name,
         email: action.data.email,
         admin: action.data.admin,
-        // expenses: action.data.expenses,
-        // formattedExpenses: expensesList,
         monthFormattedExpenses: monthFormattedExpenses,
-        carType: action.data.car_type
+        carType: action.data.car_type,
+        carTypes: action.data.car_types
       }
 
       return Object.assign({}, state, newObj)
@@ -228,6 +224,11 @@ function getUserReducer (state = userDefaultState, action) {
       }
       console.log('expense:', newObj)
       // console.log('toggled ATTEST obj:', obj)
+      return Object.assign({}, state, newObj)
+    case 'REMOVE_EXPENSE':
+      newObj = {
+        expenseJustAdded: true
+      }
       return Object.assign({}, state, newObj)
     default:
       return state

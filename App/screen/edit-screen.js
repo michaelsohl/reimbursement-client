@@ -13,6 +13,7 @@ import { NavigationActions } from 'react-navigation'
 import ExpenseForm from '../components/expense-form'
 import addexpenses from '../redux-store/add-expenses'
 import updateexpense from '../redux-store/update-expense'
+import removeexpense from '../redux-store/remove-expense'
 import AddExpenseButton from '../components/login-button'
 import moment from 'moment'
 import Selectable from '../components/select-component'
@@ -33,10 +34,8 @@ class EditScreen extends Component {
   }
 
   componentDidMount () {
-    const { chosenCarType, attachName, attachUserId, expenseProps, id, carChange, editExpense, expenses, kmChange, clientChange, routeChange, dateChange } = this.props
-    console.log('hit kommer jag :', editExpense.setToEdit)
-    // expenseProp.car_type = chosenCarType
-    // expenseProp.userId = id
+    const { chosenCarType, attachName, attachUserId, expenseProps, id, carChange, editExpense, expenses, kmChange, clientChange, routeChange, dateChange, e } = this.props
+
     if (editExpense.setToEdit) {
       let expense = expenses[editExpense.monthIndex][editExpense.expenseIndex]
       console.log('EXPENSE HEJHEJEHEJEHEJ:', expense)
@@ -45,10 +44,14 @@ class EditScreen extends Component {
       routeChange(expense.route_descr)
       dateChange(expense.date.slice(0, 10))
       carChange(expense.car_type) 
+      attachName(e.name)
+      attachUserId(e._id)
+    } else {
+      attachName(expenseProps.name)
+      attachUserId(expenseProps.id)
     }
+
     this.userid = config.testUserId ? config.testUserId : id
-    attachName(expenseProps.name)
-    attachUserId(expenseProps.id)
   }
 
   onChange (type) {
@@ -70,31 +73,44 @@ class EditScreen extends Component {
     return functions[type]
   }
 
+  // onPressSend2 = () => {
+  //   const { updateExpense, editExpense, expenseProps } = this.props
+  //  updateExpense(editExpense.userId, editExpense.expenseId, expenseProps)
+  // }
+
   onPress2 = () => {
-    const { updateExpense, editExpense, expenseProps } = this.props
-    updateExpense(editExpense.userId, editExpense.expenseId, expenseProps)
+    console.log('ON PRESS 2 RUNS')
+    const { removeExpense, editExpense, clearExpenses } = this.props
+    removeExpense(editExpense.userId, editExpense.expenseId)
+
+    setTimeout(() => {}, 100)
+    clearExpenses()
+    setTimeout(() => {this.goBack()}, 100)
   }
 
   onPressSend = () => {
     const { addExpenses, clearExpenses, expenseProps, editExpense, updateExpense } = this.props
-    console.log('payload:', expenseProps)
-    console.log('addExpenses:', addExpenses)
+    
     if(editExpense.setToEdit) {
-      updateExpense(this.userid, expenseProps)
+      console.log('HIT KOM VI 131337:', editExpense)
+      console.log('expenseProps:', expenseProps)
+      updateExpense(editExpense.userId, editExpense.expenseId, expenseProps)
+      // updateExpense(this.userid, expenseProps)
     } else {
       addExpenses(this.userid, expenseProps)
     }
     setTimeout(() => {}, 100)
     clearExpenses()
-    setTimeout(() => {this.goBack(this.props)}, 100)
+    setTimeout(() => {this.goBack()}, 100)
   }
 
-  goBack = (props) => {
-    const { toggleSetToEditExpense, editExpense } = this.props
+  goBack = () => {
+    const { toggleSetToEditExpense, editExpense, navigation } = this.props
+    console.log('this is correct right? :',)
     if (editExpense.setToEdit) {
       toggleSetToEditExpense()
     }
-    props.navigation.dispatch(NavigationActions.back())
+    navigation.dispatch(NavigationActions.back())
   }
 
   onKmChange = (data) => {
@@ -114,7 +130,7 @@ class EditScreen extends Component {
 
   onDateChange = (data) => {
     const { dateChange } = this.props
-    dateChange(data)
+    dateChange(data.dateString)
   }
 
   onCarChange = (arr, index) => {
@@ -143,6 +159,8 @@ class EditScreen extends Component {
 
   render () {
     const { hideDate, carTypes, carType, dateModalOpened, carSelectOpened, onCarPress, expenseProps, editExpense } = this.props
+    console.log('carTypes:', carTypes)
+    console.log('carType:', carType)
     return (
       <TouchableWithoutFeedback 
       onPress={() => {  
@@ -150,7 +168,7 @@ class EditScreen extends Component {
         Keyboard.dismiss()} }
       onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
       <View style={styles.container}>
-        <Header lefttrash={true} onPress2={() => { }} buttonName='Avbryt' onPress={() => { this.goBack(this.props) }} />
+        <Header lefttrash={ editExpense.setToEdit ? true : false} onPress2={this.onPress2} buttonName='Avbryt' onPress={this.goBack } />
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
            Editera mina utgifter
@@ -159,7 +177,7 @@ class EditScreen extends Component {
         <ScrollView>
           <ExpenseForm carTypes={carTypes} renderSelectables={this.renderSelectables} onCarPress={onCarPress} _toggleModal={hideDate} onChange={this.onChange}  expenseProps={expenseProps} onPress={this.onPress} modelOpen={dateModalOpened} carSelectOpen={carSelectOpened} />
         </ScrollView>
-        <AddExpenseButton onPress={ editExpense.setToEdit ? this.onPressSend2 : this.onPressSend } buttonName={ editExpense.setToEdit ? 'Uppdatera' : 'Skicka in'} />
+        <AddExpenseButton onPress={ this.onPressSend } buttonName={ editExpense.setToEdit ? 'Uppdatera' : 'Skicka in'} />
       </View>
       </ TouchableWithoutFeedback>
     )
@@ -168,7 +186,8 @@ class EditScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    carTypes: state.userExpenses.carType,
+    e: state.userExpenses,
+    carTypes: state.userExpenses.carTypes,
     dateModalOpened: state.userExpenses.dateModalOpened,
     carSelectOpened: state.userExpenses.carSelectOpened,
     editExpense: state.addExpenses.editExpense,
@@ -191,7 +210,8 @@ const mapDispatchToProps = (dispatch) => {
     onDatePress: () => { dispatch({ type: 'OPEN_DATE_MODAL' }) },
     hideDate: () => { dispatch({ type: 'CLOSE_DATE_MODAL' }) },
     addExpenses: (userId, expenseProp) => { dispatch(addexpenses(expenseProp)) },
-    updateExpense: (userId, expenseId, expenseProps) => { dispatch(updateexpense({ data: { userId, expenseId, expenseProps} })) }, 
+    updateExpense: (userId, expenseId, expenseProps) => { dispatch(updateexpense({ userId, expenseId, expenseProps} )) }, 
+    removeExpense: (userId, expenseId) => { dispatch(removeexpense({ userId, expenseId })) },
     clearExpenses: () => { dispatch({ type: 'CLEAR_ALL_EXPENSES' }) },
     toggleSetToEditExpense: () => { 
       dispatch({

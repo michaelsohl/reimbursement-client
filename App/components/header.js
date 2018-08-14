@@ -19,7 +19,7 @@ export default function (props) {
       </View>
       <View style={styles.buttonRightContainer} >
         { props.leftadd ? <AddButton onPress={props.onAddPress} color={sylogRed} /> : null }
-        { props.lefttrash ? <TrashButton onPress={props.onPress} color={sylogRed} /> : null }
+        { props.lefttrash ? <TrashButton onPress={props.onPress2} color={sylogRed} /> : null }
       </View>
     </View>
   )

@@ -17,7 +17,7 @@ export default function (props) {
           <Text style={{fontSize: 10, color: 'grey'}}> { props.descr}  </Text>
           <Text style={{fontSize: 10, color: 'grey'}}> {props.client}  </Text>
           <Text style={{fontSize: 10, color: 'grey'}}> {props.km + ' km'} </Text>
-          <Text style={{fontSize: 10, color: 'grey'}}> {props.car_type} </Text>
+          <Text style={{fontSize: 10, color: 'grey'}}> {props.carType} </Text>
         </View>
         <Text style={{left: 100, top: -17, position: 'absolute', fontSize: 10, color: 'grey'}}> { props.admin ? props.name : ' '} </Text>
         <StatusSquare size={20} color={props.attest ? 'green' : 'grey'} />

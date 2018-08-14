@@ -9,6 +9,6 @@ const host = {
  * michael: 5b6acec3fd3ad4759689da42
  * null for real login userId
  */
-const testUserId = '5b6c4b37fee09deeaffcf802'
+const testUserId = '5b72839d0253da40f89c7e6b'
 
-module.exports = { host: host.deviceToLocalhost, testUserId }
+module.exports = { host: host.deviceToLocalhost }

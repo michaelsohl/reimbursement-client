@@ -12,12 +12,12 @@ import { Months } from '../lib/dates'
 class ListExpenseScreen extends Component {
 
   componentDidUpdate () {
-    const { expenseJustAdded, getExpenses, expensesUpdated } = this.props
+    const { expenseJustAdded, getExpenses, expensesUpdate } = this.props
     if(expenseJustAdded) {
       console.log('this particular state:', this.state)
       this.userid = config.testUserId ? config.testUserId : null
       getExpenses(this.userid)
-      expensesUpdated()
+      expensesUpdate()
     }
   }
 
@@ -50,27 +50,30 @@ class ListExpenseScreen extends Component {
     props.navigation.navigate('EditExpensesPage')
   }
   renderExpenses = (arr, admin) => {
-    const { isExpenseNew } = this.props
+    const { isExpenseNew, carTypes } = this.props
     console.log('this.state:', this.state)
     if (!arr) return null
     return arr.map((expense) => {
       console.log('expense1337:', expense)
       return (
-        <Expense name={expense.name} admin={admin} onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} car_type={expense.car_type} key={expense._id} /> // Look out for issues with unique key
+        <Expense name={expense.name} admin={admin} onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} carType={expense.car_type} carTypes={carTypes} key={expense._id} /> // Look out for issues with unique key
       )
     })
   }
 
   render() {
     const { monthFormattedExpenses, admin, monthIndex } = this.props
-    let month = (new Date(monthFormattedExpenses[monthIndex][0].date)).getMonth()
+    let month
+    if (monthFormattedExpenses.length != 0) {
+      month = (new Date(monthFormattedExpenses[monthIndex][0].date)).getMonth()
+    }
     // console.log('monthFormattedExpenses[monthIndex][0]):', monthFormattedExpenses[monthIndex][0])
     return (
       <View style={styles.container}>
         <Header buttonName='Tillbaka' onPress={() => { this.goBack(this.props) }} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
-              { Months[month + 1] }
+              { month ? Months[month + 1] : null }
           </Text>
         </View>
         <View style={styles.expensesContainer} >
@@ -90,7 +93,9 @@ class ListExpenseScreen extends Component {
       monthFormattedExpenses: state.userExpenses.monthFormattedExpenses,
       admin: state.userExpenses.admin,
       name: state.userExpenses.name,
-      monthIndex: state.userExpenses.monthIndex
+      monthIndex: state.userExpenses.monthIndex,
+      carType: state.userExpenses.carType,
+      carTypes: state.userExpenses.carTypes
     }
   }
 
