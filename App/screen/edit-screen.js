@@ -14,11 +14,16 @@ import ExpenseForm from '../components/expense-form'
 import addexpenses from '../redux-store/add-expenses'
 import updateexpense from '../redux-store/update-expense'
 import removeexpense from '../redux-store/remove-expense'
+import addfavorite from '../redux-store/add-favorite'
+import getfavorites from '../redux-store/get-favorites'
+import removefavorite from '../redux-store/remove-favorite'
 import AddExpenseButton from '../components/login-button'
 import moment from 'moment'
 import Selectable from '../components/select-component'
 import config from '../config'
 import { connect } from 'react-redux'
+import StdTextInput from '../components/std-text-input'
+import FavoriteButton from '../components/favorite-button'
 
 // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
 
@@ -30,12 +35,14 @@ class EditScreen extends Component {
   }
 
   componentWillUnmount() {
-    // clear expensesAdded screen
+    console.log('componentWillUnmount EditScreen')
+    const { onFavoritePress } = this.props
+    onFavoritePress(-1)
   }
 
   componentDidMount () {
-    const { chosenCarType, attachName, attachUserId, expenseProps, id, carChange, editExpense, expenses, kmChange, clientChange, routeChange, dateChange, e } = this.props
-
+    const { chosenCarType, attachName, attachUserId, expenseProps, id, carChange, editExpense, expenses, kmChange, clientChange, routeChange, dateChange, e, getFavorites } = this.props
+    console.log('kommer hit!')
     if (editExpense.setToEdit) {
       let expense = expenses[editExpense.monthIndex][editExpense.expenseIndex]
       console.log('EXPENSE HEJHEJEHEJEHEJ:', expense)
@@ -47,6 +54,7 @@ class EditScreen extends Component {
       attachName(e.name)
       attachUserId(e._id)
     } else {
+      getFavorites(e._id)
       attachName(expenseProps.name)
       attachUserId(expenseProps.id)
     }
@@ -60,7 +68,8 @@ class EditScreen extends Component {
       client: this.onClientChange, 
       route_descr: this.onRouteChange,
       date: this.onDateChange,
-      car_type: this.onCarChange
+      car_type: this.onCarChange,
+      nick: this.onNickChange
     }
     return functions[type]
   }
@@ -78,30 +87,35 @@ class EditScreen extends Component {
   //  updateExpense(editExpense.userId, editExpense.expenseId, expenseProps)
   // }
 
+
   onPress2 = () => {
     console.log('ON PRESS 2 RUNS')
-    const { removeExpense, editExpense, clearExpenses } = this.props
+    const { removeExpense, editExpense, clearExpenses, navigation } = this.props
     removeExpense(editExpense.userId, editExpense.expenseId)
-
     setTimeout(() => {}, 100)
     clearExpenses()
-    setTimeout(() => {this.goBack()}, 100)
+    setTimeout(() => {navigation.navigate('ListPage'), {replace: true}}, 100)
   }
 
   onPressSend = () => {
-    const { addExpenses, clearExpenses, expenseProps, editExpense, updateExpense } = this.props
-    
-    if(editExpense.setToEdit) {
-      console.log('HIT KOM VI 131337:', editExpense)
-      console.log('expenseProps:', expenseProps)
-      updateExpense(editExpense.userId, editExpense.expenseId, expenseProps)
-      // updateExpense(this.userid, expenseProps)
+    const { addExpenses, clearExpenses, expenseProps, editExpense, updateExpense, favoriteMode, addFavorite, e, favoriteProps, onStarPress, getFavorites } = this.props
+    if (favoriteMode) {
+      addFavorite(e._id, favoriteProps)
+      onStarPress()
+      setTimeout(() => { getFavorites(e._id)}, 100)
     } else {
-      addExpenses(this.userid, expenseProps)
+      if(editExpense.setToEdit) {
+        console.log('HIT KOM VI 131337:', editExpense)
+        console.log('expenseProps:', expenseProps)
+        updateExpense(editExpense.userId, editExpense.expenseId, expenseProps)
+      // updateExpense(this.userid, expenseProps)
+      } else {
+        addExpenses(this.userid, expenseProps)
+      }
+      setTimeout(() => {}, 100)
+      clearExpenses()
+      setTimeout(() => {this.goBack()}, 100)
     }
-    setTimeout(() => {}, 100)
-    clearExpenses()
-    setTimeout(() => {this.goBack()}, 100)
   }
 
   goBack = () => {
@@ -140,6 +154,30 @@ class EditScreen extends Component {
     onCarPress()
   }
 
+  onNickChange = (data) => {
+    const { nickChange } = this.props
+    nickChange(data)
+  }
+
+  onFavoritePress = (arr, index) => {
+    // const { }
+    const { onFavoritePress } = this.props
+    let favorite = arr[index]
+    onFavoritePress(index)
+    this.onKmChange((favorite.km).toString())
+    this.onClientChange(favorite.client)
+    this.onRouteChange(favorite.route_descr)
+    this.onNickChange(favorite.nick)
+  }
+
+  removeFavorite = () => {
+    const { getFavorites, removeFavorite, e, favorites, currentFavoriteIndex, clearExpenses, onFavoritePress } = this.props
+    removeFavorite(e._id, favorites[currentFavoriteIndex]._id)
+    getFavorites(e._id)
+    clearExpenses()
+    onFavoritePress(-1)
+  }
+
   renderSelectables = (arr, carTypeChosen) => {
     console.log('1:', arr)
     if (!arr) return null
@@ -156,28 +194,56 @@ class EditScreen extends Component {
     })
   }
 
+  renderFavorites = (arr) => {
+    const { currentFavoriteIndex } = this.props 
+    if (!arr) return null
+    return arr.map((favorite) => {
+      return (
+        <FavoriteButton isButtonPressed={ currentFavoriteIndex == arr.indexOf(favorite) ? true : false } text={favorite.nick} key={favorite._id} onPress={ () => { this.onFavoritePress(arr, arr.indexOf(favorite))}} />
+      )
+    })
+  }
+
 
   render () {
-    const { hideDate, carTypes, carType, dateModalOpened, carSelectOpened, onCarPress, expenseProps, editExpense } = this.props
+    const { hideDate, carTypes, carType, dateModalOpened, carSelectOpened, onCarPress, expenseProps, editExpense, onStarPress, favoriteMode, favoriteNick, favorites, currentFavoriteIndex, isFavoritePressed, clearExpenses, onFavoritePress, removeFavorite } = this.props
     console.log('carTypes:', carTypes)
     console.log('carType:', carType)
+    let addText
+    if (favoriteMode) {
+      addText = 'Lägg till favorit'
+    } else {
+      if (editExpense.setToEdit) {
+        addText = 'Uppdatera'
+      } else {
+        addText = 'Skicka in'
+      }
+    }
     return (
       <TouchableWithoutFeedback 
       onPress={() => {  
         console.log('hejsan keybord dismiss #########################################') 
+        clearExpenses()
+        onFavoritePress(-1)
         Keyboard.dismiss()} }
       onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
       <View style={styles.container}>
-        <Header lefttrash={ editExpense.setToEdit ? true : false} onPress2={this.onPress2} buttonName='Avbryt' onPress={this.goBack } />
+        <Header removeFavorite={this.removeFavorite} isFavoritePressed={isFavoritePressed} favoriteMode={favoriteMode} lefttrash={ editExpense.setToEdit ? true : false} rightstar={ editExpense.setToEdit ? false : true } onStarPress={onStarPress} onPress2={this.onPress2} buttonName='Avbryt' onPress={this.goBack } />
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
            Editera mina utgifter
           </Text>
         </View>
-        <ScrollView>
-          <ExpenseForm carTypes={carTypes} renderSelectables={this.renderSelectables} onCarPress={onCarPress} _toggleModal={hideDate} onChange={this.onChange}  expenseProps={expenseProps} onPress={this.onPress} modelOpen={dateModalOpened} carSelectOpen={carSelectOpened} />
+        { favorites.length == 0 ? <Text color={'grey'} style={{fontSize: 12, fontWeight: '100'}}> Favoriter </Text> : null }
+        <ScrollView horizontal={true}>
+          <View style={{flex: 1,flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', backgroundColor:'white', width: 300}}>
+            { this.renderFavorites(favorites) }
+          </View>
         </ScrollView>
-        <AddExpenseButton onPress={ this.onPressSend } buttonName={ editExpense.setToEdit ? 'Uppdatera' : 'Skicka in'} />
+        <ScrollView>
+          <ExpenseForm favoriteNick={favoriteNick} favoriteMode={favoriteMode} carTypes={carTypes} renderSelectables={this.renderSelectables} onCarPress={onCarPress} _toggleModal={hideDate} onChange={this.onChange}  expenseProps={expenseProps} onPress={this.onPress} modelOpen={dateModalOpened} carSelectOpen={carSelectOpened} />
+        </ScrollView>
+        <AddExpenseButton onPress={ this.onPressSend } buttonName={ addText } />
       </View>
       </ TouchableWithoutFeedback>
     )
@@ -186,6 +252,11 @@ class EditScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    isFavoritePressed: state.favorites.favoriteChosenIndex != -1 ? true : false,
+    currentFavoriteIndex: state.favorites.favoriteChosenIndex,
+    favorites: state.favorites.favorites,
+    favoriteMode: state.favorites.favoriteMode, 
+    favoriteNick: state.favorites.favoriteNick,
     e: state.userExpenses,
     carTypes: state.userExpenses.carTypes,
     dateModalOpened: state.userExpenses.dateModalOpened,
@@ -201,6 +272,13 @@ const mapStateToProps = (state) => {
       client: state.addExpenses.addedExpense.client,
       userId: state.userExpenses._id,
       name: state.userExpenses.name
+    },
+    favoriteProps: {
+      carType: state.addExpenses.addedExpense.carType,
+      km: state.addExpenses.addedExpense.km,
+      route_descr: state.addExpenses.addedExpense.route_descr,
+      client: state.addExpenses.addedExpense.client,
+      nick: state.favorites.favoriteNick
     }
   }
 }
@@ -210,7 +288,16 @@ const mapDispatchToProps = (dispatch) => {
     onDatePress: () => { dispatch({ type: 'OPEN_DATE_MODAL' }) },
     hideDate: () => { dispatch({ type: 'CLOSE_DATE_MODAL' }) },
     addExpenses: (userId, expenseProp) => { dispatch(addexpenses(expenseProp)) },
+    getFavorites: (userId) => { dispatch(getfavorites(userId))},
+    addFavorite: (userId, favoriteProps) => { dispatch(addfavorite(userId, favoriteProps))}, 
     updateExpense: (userId, expenseId, expenseProps) => { dispatch(updateexpense({ userId, expenseId, expenseProps} )) }, 
+    onStarPress: () => { dispatch({type: 'ON_STAR_PRESS'}) },
+    onFavoritePress: (data) => { 
+      dispatch({
+        type: 'ON_FAVORITE_PRESS',
+        data }) 
+    },
+    removeFavorite: (userId, favoriteId) => { dispatch(removefavorite({ userId, favoriteId })) },
     removeExpense: (userId, expenseId) => { dispatch(removeexpense({ userId, expenseId })) },
     clearExpenses: () => { dispatch({ type: 'CLEAR_ALL_EXPENSES' }) },
     toggleSetToEditExpense: () => { 
@@ -238,6 +325,12 @@ const mapDispatchToProps = (dispatch) => {
     carChange: (data) => {
       dispatch({
         type: 'ADD_NEW_EXPENSE_CARTYPE',
+        data
+      })
+    },
+    nickChange: (data) => {
+      dispatch({
+        type: 'ADD_NEW_FAVORITE_NICK',
         data
       })
     },
@@ -272,7 +365,7 @@ const styles = StyleSheet.create({
     margin: 10
   },
   textContainer: {
-    height: 80,
+    height: 50,
     alignItems: 'center',
   },
   buttonContainer: {

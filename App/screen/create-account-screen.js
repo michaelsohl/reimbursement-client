@@ -15,6 +15,12 @@ class CreateAccount extends Component {
     this.props.navigation.dispatch(NavigationActions.back())
   }
 
+  _createAccount = (data) => {
+    const { createAccount} = this.props
+    createAccount(data)
+    this.goBack()
+  }
+
   render () {
     const { changeEmailText, changePasswordText, email, password, createAccount } = this.props
     return (
@@ -29,7 +35,7 @@ class CreateAccount extends Component {
           <StdTextInput onChangeText={changeEmailText} label={'workmail'} value={email} />
           <StdTextInputSecure onChangeText={changePasswordText} label={'password'} />
         </ScrollView>
-        <CreateAccountButton buttonName='Skapa konto' onPress={() => { createAccount({email, password}) }} buttonContainer={styles.buttonContainer} />
+        <CreateAccountButton buttonName='Skapa konto' onPress={() => { this._createAccount({email, password}) }} buttonContainer={styles.buttonContainer} />
       </View>
     )
   }
@@ -69,7 +75,7 @@ const styles = {
     margin: 10
   },
   textContainer: {
-    height: 80,
+    height: 50,
     alignItems: 'center'
   },
   buttonContainer: {

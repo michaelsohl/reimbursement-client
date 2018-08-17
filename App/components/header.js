@@ -7,6 +7,8 @@ import {
 import { sylogRed, backgroundColor } from '../themes'
 import AddButton from './add-button'
 import TrashButton from './trash-button'
+import StarButton from './star-button'
+import TrashWithStartButton from './trash-star-button'
 
 const headerImage = require('../media/SylogHeader.png')
 
@@ -20,6 +22,8 @@ export default function (props) {
       <View style={styles.buttonRightContainer} >
         { props.leftadd ? <AddButton onPress={props.onAddPress} color={sylogRed} /> : null }
         { props.lefttrash ? <TrashButton onPress={props.onPress2} color={sylogRed} /> : null }
+        { props.rightstar && !props.isFavoritePressed ? <StarButton colorFill={props.favoriteMode} onPress={props.onStarPress} color={sylogRed} /> : null }
+        { props.isFavoritePressed ? <TrashWithStartButton onPress={props.removeFavorite} /> : null}
       </View>
     </View>
   )

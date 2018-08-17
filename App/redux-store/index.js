@@ -64,6 +64,12 @@ const defaultCreateAccount = {
   email: '',
   pass: ''
 }
+const defaultFavorite = {
+  favoriteMode: false,
+  favorites: [],
+  favoriteNick: '',
+  favoriteChosenIndex: -1
+}
 
 const reducers = combineReducers({
   loginEmail: loginReducer,
@@ -71,6 +77,7 @@ const reducers = combineReducers({
   addExpenses: addExpensesReducer,
   attests: attestExpenses,
   createAccount: createAccountReducer,
+  favorites: favoriteReducer,
   nav: navReducer
 })
 
@@ -145,6 +152,7 @@ function getUserReducer (state = userDefaultState, action) {
       console.log('GET_USER_EXPENSES')
       console.log('data:', action.data)
       let expensesList = action.data.expenses.slice(0, action.data.expenses.length)
+      console.log('1')
       deepFreeze(action.data.expenses)
       if (expensesList.length == 0) {
         newObj = {
@@ -157,12 +165,14 @@ function getUserReducer (state = userDefaultState, action) {
         }
         return Object.assign({}, state, newObj)
       }
+      console.log('2')
       expensesList.sort(function (a, b) {
         let _a = moment(a.date)
         let _b = moment(b.date)
         return _b.valueOf() - _a.valueOf()
         // return new Date(b.date) - new Date(a.date)
       })
+      console.log('3')
 
       let index = 0
       expensesList.forEach(elem => {
@@ -179,6 +189,7 @@ function getUserReducer (state = userDefaultState, action) {
           }
         }
       })
+      console.log('4')
 
       monthFormattedExpenses.forEach(elem => {
         elem.sort(function (a, b) {
@@ -190,6 +201,7 @@ function getUserReducer (state = userDefaultState, action) {
           return -1
         })
       })
+      console.log('5')
 
       newObj = {
         _id: action.data._id,
@@ -200,7 +212,7 @@ function getUserReducer (state = userDefaultState, action) {
         carType: action.data.car_type,
         carTypes: action.data.car_types
       }
-
+      console.log('6')
       return Object.assign({}, state, newObj)
     case 'SETUP_FORMATTED_EXPENSES':
       const { expenses } = state
@@ -299,6 +311,38 @@ function addExpensesReducer (state = defaultExpense, action) {
       }
       return Object.assign({}, state, newObj)
     case 'POST_EXPENSE_UPDATE':
+      return state
+    default:
+      return state
+  }
+}
+
+function favoriteReducer (state = defaultFavorite, action) {
+  let newObj
+  switch (action.type) {
+    case 'ON_STAR_PRESS':
+      newObj = {
+        favoriteMode: !state.favoriteMode
+      }
+      return Object.assign({}, state, newObj)
+    case 'ON_FAVORITE_PRESS':
+      newObj = {
+        favoriteChosenIndex: action.data
+      }
+      return Object.assign({}, state, newObj)
+    case 'GET_FAVORITES':
+      newObj = {
+        favorites: action.data.favorites
+      }
+      return Object.assign({}, state, newObj)
+    case 'REMOVE_FAVORITE':
+      return state
+    case 'ADD_NEW_FAVORITE_NICK':
+      newObj = {
+        favoriteNick: action.data
+      }
+      return Object.assign({}, state, newObj)
+    case 'POST_FAVORITE':
       return state
     default:
       return state

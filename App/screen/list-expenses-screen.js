@@ -29,10 +29,10 @@ class ListExpenseScreen extends Component {
     // Expense should be give someting to tell it that edit is going down
   }
 
-  onExpensePress = (expenseIndex, admin, expenseId, userId) => {
-    const { setExpenseAttest, postToServer, monthIndex } = this.props
+  onExpensePress = (expenseIndex, admin, expenseId, expenseUserId) => {
+    const { setExpenseAttest, postToServer, monthIndex, userId } = this.props
     console.log('setExpenseAttest:', setExpenseAttest)
-    if (admin) {
+    if (admin && (userId != expenseUserId)) {
       setExpenseAttest(expenseIndex, monthIndex)
       console.log('expenseID:', expenseId)
       postToServer(userId, expenseId)
@@ -64,7 +64,7 @@ class ListExpenseScreen extends Component {
   render() {
     const { monthFormattedExpenses, admin, monthIndex } = this.props
     let month
-    if (monthFormattedExpenses.length != 0) {
+    if (monthFormattedExpenses[monthIndex]) {
       month = (new Date(monthFormattedExpenses[monthIndex][0].date)).getMonth()
     }
     // console.log('monthFormattedExpenses[monthIndex][0]):', monthFormattedExpenses[monthIndex][0])
@@ -89,6 +89,7 @@ class ListExpenseScreen extends Component {
   const mapStateToProps = (state) => {
     console.log('state:', state)
     return {
+      userId: state.userExpenses._id,
       expenseJustAdded: state.userExpenses.expenseJustAdded,
       monthFormattedExpenses: state.userExpenses.monthFormattedExpenses,
       admin: state.userExpenses.admin,
@@ -135,7 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   textContainer: {
-    height: 80,
+    height: 50,
     alignItems: 'center'
   },
   welcome: {

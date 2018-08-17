@@ -75,37 +75,37 @@ export default class ExpenseForm extends Component {
         <Collapsible collapsed={this.props.carSelectOpen}>
         { this.props.renderSelectables(this.props.carTypes, expenseProps.carType) }
         </Collapsible>
-        <DateButton date={null} text={expenseProps.date} onPress={this.props.onPress('date')} />
+        { !this.props.favoriteMode ? <DateButton date={null} text={expenseProps.date} onPress={this.props.onPress('date')} /> :  <StdTextInput onChangeText={this.props.onChange('nick')} label='Namn för favorit' value={this.props.favoriteNick}  /> }
         <Modal isVisible={this.props.modelOpen}> 
           <View style={{ flex: 1, alignItems: 'center' }}>
-            <View style={{margin: 20}}>
+             <View style={{margin: 20}}>
               <Text style={{color: 'white'}}> Välj datum </Text>
-            </View>
-            <Calendar
-              style= {{width: 300}}
-              // eventDates={['2018-06-13']}       // Optional array of moment() parseable dates that will show an event indicator
-              // events={[{ date: '2018-06-12' }]} // Optional array of event objects with a date property and custom styles for the event indicator
-              onDayPress={this.props.onChange('date')}
-              theme={{arrowColor: sylogRed}}
-              onSwipeNext={() => {}}    // Callback for forward swipe event
-              onSwipePrev={() => {}}    // Callback for back swipe event
-              onTouchNext={() => {}}    // Callback for next touch event
-              onTouchPrev={() => {}}    // Callback for prev touch event
-              onTitlePress={() => {}}  // Callback on title press
-              prevButtonText={'Prev'}           // Text for previous button. Default: 'Prev'
-              removeClippedSubviews={false}     // Set to false for us within Modals. Default: true
-              scrollEnabled={true}              // False disables swiping. Default: False
-              selectedDate={date}       // Day to be selected
-              showControls={true}               // False hides prev/next buttons. Default: False
-              showEventIndicators={true}        // False hides event indicators. Default:False
-              markedDates={date}
-              titleFormat={'MMMM YYYY'}         // Format for displaying current month. Default: 'MMMM YYYY'
-              showWeekNumbers={true}
-            />
-            <TouchableOpacity style={{height: 40, width: 100, backgroundColor: 'white', borderRadius: 10, margin: 20}} onPress={this.props._toggleModal} >
-              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <Text> Stäng fönster </Text>
-              </View>
+             </View>
+             <Calendar
+               style= {{width: 300}}
+               // eventDates={['2018-06-13']}       // Optional array of moment() parseable dates that will show an event indicator
+               // events={[{ date: '2018-06-12' }]} // Optional array of event objects with a date property and custom styles for the event indicator
+               onDayPress={this.props.onChange('date')}
+               theme={{arrowColor: sylogRed}}
+               onSwipeNext={() => {}}    // Callback for forward swipe event
+               onSwipePrev={() => {}}    // Callback for back swipe event
+               onTouchNext={() => {}}    // Callback for next touch event
+               onTouchPrev={() => {}}    // Callback for prev touch event
+               onTitlePress={() => {}}  // Callback on title press
+               prevButtonText={'Prev'}           // Text for previous button. Default: 'Prev'
+               removeClippedSubviews={false}     // Set to false for us within Modals. Default: true
+               scrollEnabled={true}              // False disables swiping. Default: False
+               selectedDate={date}       // Day to be selected
+               showControls={true}               // False hides prev/next buttons. Default: False
+               showEventIndicators={true}        // False hides event indicators. Default:False
+               markedDates={date}
+               titleFormat={'MMMM YYYY'}         // Format for displaying current month. Default: 'MMMM YYYY'
+               showWeekNumbers={true}
+             /> 
+             <TouchableOpacity style={{height: 40, width: 100, backgroundColor: 'white', borderRadius: 10, margin: 20}} onPress={this.props._toggleModal} >
+             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+               <Text> Stäng fönster </Text>
+             </View>
             </TouchableOpacity>
           </View>
         </Modal>

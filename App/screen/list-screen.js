@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white'
   },
   textContainer: {
-    height: 80,
+    height: 50,
     alignItems: 'center',
   },
   expensesContainer: {
