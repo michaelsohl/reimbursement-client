@@ -15,6 +15,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 import { NavigationActions } from 'react-navigation'
 import config from '../config'
 import { connect } from 'react-redux'
+import { SylogHeader } from '../media'
 
 const HEADER_MAX_HEIGHT = 200;
 const HEADER_MIN_HEIGHT = 60;
@@ -91,7 +92,6 @@ class ListScreen extends Component {
     return (
       <View style={styles.container}>
         <Header buttonName='Logga ut' onPress={this.signout} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
-        
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
             { admin ? 'Reseutlägg' : `${name}s reseutlägg`  }

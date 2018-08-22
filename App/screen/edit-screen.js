@@ -16,7 +16,9 @@ import updateexpense from '../redux-store/update-expense'
 import removeexpense from '../redux-store/remove-expense'
 import addfavorite from '../redux-store/add-favorite'
 import getfavorites from '../redux-store/get-favorites'
+import getexpenses from '../redux-store/user-exprenses'
 import removefavorite from '../redux-store/remove-favorite'
+import updatecomment from '../redux-store/update-comment'
 import AddExpenseButton from '../components/login-button'
 import moment from 'moment'
 import Selectable from '../components/select-component'
@@ -98,7 +100,7 @@ class EditScreen extends Component {
   }
 
   onPressSend = () => {
-    const { addExpenses, clearExpenses, expenseProps, editExpense, updateExpense, favoriteMode, addFavorite, e, favoriteProps, onStarPress, getFavorites } = this.props
+    const { addExpenses, clearExpenses, expenseProps, editExpense, updateExpense, favoriteMode, addFavorite, e, favoriteProps, onStarPress, getFavorites, updateComment } = this.props
     if (favoriteMode) {
       addFavorite(e._id, favoriteProps)
       onStarPress()
@@ -108,6 +110,8 @@ class EditScreen extends Component {
         console.log('HIT KOM VI 131337:', editExpense)
         console.log('expenseProps:', expenseProps)
         updateExpense(editExpense.userId, editExpense.expenseId, expenseProps)
+        updateComment(editExpense.userId, editExpense.expenseId, '')
+
       // updateExpense(this.userid, expenseProps)
       } else {
         addExpenses(this.userid, expenseProps)
@@ -234,13 +238,13 @@ class EditScreen extends Component {
            Editera mina utgifter
           </Text>
         </View>
-        { favorites.length == 0 ? <Text color={'grey'} style={{fontSize: 12, fontWeight: '100'}}> Favoriter </Text> : null }
-        <ScrollView horizontal={true}>
-          <View style={{flex: 1,flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', backgroundColor:'white', width: 300}}>
-            { this.renderFavorites(favorites) }
-          </View>
-        </ScrollView>
         <ScrollView>
+          { favorites.length == 0 ? <Text color={'grey'} style={{fontSize: 12, fontWeight: '100'}}> Favoriter </Text> : null }
+          <ScrollView style={{left: 20}} horizontal={true} contentContainerStyle={{flexGrow: 1}} >
+            <View style={{flex: 1,flexDirection: 'row', alignItems:'center', backgroundColor:'white', width: 300}}>
+              { this.renderFavorites(favorites) }
+            </View>
+          </ScrollView>
           <ExpenseForm favoriteNick={favoriteNick} favoriteMode={favoriteMode} carTypes={carTypes} renderSelectables={this.renderSelectables} onCarPress={onCarPress} _toggleModal={hideDate} onChange={this.onChange}  expenseProps={expenseProps} onPress={this.onPress} modelOpen={dateModalOpened} carSelectOpen={carSelectOpened} />
         </ScrollView>
         <AddExpenseButton onPress={ this.onPressSend } buttonName={ addText } />
@@ -288,6 +292,7 @@ const mapDispatchToProps = (dispatch) => {
     onDatePress: () => { dispatch({ type: 'OPEN_DATE_MODAL' }) },
     hideDate: () => { dispatch({ type: 'CLOSE_DATE_MODAL' }) },
     addExpenses: (userId, expenseProp) => { dispatch(addexpenses(expenseProp)) },
+    getExpenses : (userId) => { dispatch(getexpenses(userId)) },
     getFavorites: (userId) => { dispatch(getfavorites(userId))},
     addFavorite: (userId, favoriteProps) => { dispatch(addfavorite(userId, favoriteProps))}, 
     updateExpense: (userId, expenseId, expenseProps) => { dispatch(updateexpense({ userId, expenseId, expenseProps} )) }, 
@@ -297,6 +302,7 @@ const mapDispatchToProps = (dispatch) => {
         type: 'ON_FAVORITE_PRESS',
         data }) 
     },
+    updateComment: (userId, expenseId, comment) => { dispatch(updatecomment({userId, expenseId, comment})) },
     removeFavorite: (userId, favoriteId) => { dispatch(removefavorite({ userId, favoriteId })) },
     removeExpense: (userId, expenseId) => { dispatch(removeexpense({ userId, expenseId })) },
     clearExpenses: () => { dispatch({ type: 'CLEAR_ALL_EXPENSES' }) },

@@ -1,30 +1,34 @@
 import React from 'react'
 import { Text, TouchableOpacity } from 'react-native'
+import { sylogRed } from '../themes'
 
 export default function (props) {
-  let color
+  let containerColor
+  let textColor
   if (props.isButtonPressed) {
-    color = { backgroundColor: 'blue' }
+    containerColor = {backgroundColor: sylogRed}
+    textColor = {color: 'white'}
   } else {
-    color = {}
+    containerColor = {}
+    textColor = {}
   }
   return (
-    <TouchableOpacity style={[styles.buttonStyle, color]} onPress={props.onPress}>
-      <Text style={styles.textStyle}> {props.text} </Text>
+    <TouchableOpacity style={[styles.buttonStyle, containerColor]} onPress={props.onPress}>
+      <Text style={[styles.textStyle, textColor]}> { props.text } </Text>
     </TouchableOpacity>
   )
 }
 
 const styles = {
   buttonStyle: {
-    flex: 1,
     borderRadius: 10,
     height: 40,
-    right: 10,
-    left: 10,
+    borderColor: sylogRed,
+    borderWidth: 1,
     paddingRight: 10,
     paddingLeft: 10,
-    backgroundColor: 'grey',
+    margin: 2,
+    backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'center'
   },

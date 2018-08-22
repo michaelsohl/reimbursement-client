@@ -1,12 +1,20 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 import StatusSquare from './status-square'
+import StatusQuestionSquare from './state-question-square'
 import StdButton from './std-button'
 
 export default function (props) {
   console.log('PROPS in an expense:', props)
+  let status
+  if (props.comment) {
+    status = <StatusQuestionSquare size={20} color={'orange'} />
+  } else {
+    status = <StatusSquare size={20} color={props.attest ? 'green' : 'grey'} />
+  }
+
   return (
-    <StdButton onPress={props.onPress}>
+    <StdButton onPress={props.onPress} onLongPress={props.onLongPress}>
       <View style={{height: 20, width: 100}}>
         <Text style={{color: 'black', fontWeight: '700', right: 0}}>
           { props.date.slice(0, 10) }
@@ -20,7 +28,7 @@ export default function (props) {
           <Text style={{fontSize: 10, color: 'grey'}}> {props.carType} </Text>
         </View>
         <Text style={{left: 100, top: -17, position: 'absolute', fontSize: 10, color: 'grey'}}> { props.admin ? props.name : ' '} </Text>
-        <StatusSquare size={20} color={props.attest ? 'green' : 'grey'} />
+        { status }
       </View>
     </StdButton>
   )

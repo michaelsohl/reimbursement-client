@@ -14,6 +14,7 @@ import Header from '../components/header'
 import { StackNavigator } from 'react-navigation'
 import { connect } from 'react-redux'
 
+
 const sylogPic = require('../media/Icon-App-83.5x83.5.png')
 
 const instructions = Platform.select({

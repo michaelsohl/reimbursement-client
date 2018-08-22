@@ -52,7 +52,9 @@ const defaultExpense = {
   editExpense: {
     setToEdit: false,
     userId: '',
-    expenseId: ''
+    expenseId: '',
+    showReportModal: false,
+    comment: ''
   }
 }
 
@@ -311,6 +313,32 @@ function addExpensesReducer (state = defaultExpense, action) {
       }
       return Object.assign({}, state, newObj)
     case 'POST_EXPENSE_UPDATE':
+      return state
+    case 'OPEN_REPORT_MODAL':
+      obj = Object.assign({}, state.editExpense, { showReportModal: true })
+      newObj = {
+        editExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'CLOSE_REPORT_MODAL':
+      obj = Object.assign({}, state.editExpense, { showReportModal: false })
+      newObj = {
+        editExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'SET_REPORT':
+      obj = Object.assign({}, state.editExpense, { userId: action.data.userId ? action.data.userId : '', expenseId: action.data.expenseId ? action.data.expenseId : '' })
+      newObj = {
+        editExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'ON_CHANGE_COMMENT':
+      obj = Object.assign({}, state.editExpense, { comment: action.data })
+      newObj = {
+        editExpense: obj
+      }
+      return Object.assign({}, state, newObj)
+    case 'UPDATE_COMMENT':
       return state
     default:
       return state

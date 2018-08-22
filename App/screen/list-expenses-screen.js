@@ -1,5 +1,5 @@
 import React, { Component }from 'react'
-import { View, StyleSheet, Text, ScrollView } from 'react-native'
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native'
 import Expense from '../components/expense'
 import Header from '../components/header'
 import { NavigationActions } from 'react-navigation'
@@ -7,7 +7,10 @@ import getexpenses from '../redux-store/user-exprenses'
 import config from '../config'
 import postattest from '../redux-store/attest'
 import { connect } from 'react-redux'
+import updatecomment from '../redux-store/update-comment'
 import { Months } from '../lib/dates'
+import Modal from 'react-native-modal'
+import CommentTextField from '../components/comment-text-field'
 
 class ListExpenseScreen extends Component {
 
@@ -41,6 +44,17 @@ class ListExpenseScreen extends Component {
     }
   }
 
+  onExpenseLongPress = (expenseIndex, admin, expenseId, expenseUserId) => {
+    console.log('onExpenseLongPress')
+    const { toggleReportModal, setReport, openReportModal } = this.props
+    if (admin) {
+      console.log('expenseID:', expenseId, expenseUserId)
+      setReport(expenseUserId, expenseId)
+      openReportModal()
+      toggleReportModal(expenseUserId, expenseId)
+    }
+  }
+
   goBack = (props) => {
     // console.log('Go Back was pressed!')
     props.navigation.dispatch(NavigationActions.back())
@@ -50,24 +64,32 @@ class ListExpenseScreen extends Component {
     props.navigation.navigate('EditExpensesPage')
   }
   renderExpenses = (arr, admin) => {
-    const { isExpenseNew, carTypes } = this.props
+    const { isExpenseNew, carTypes, comment, expenseId } = this.props
     console.log('this.state:', this.state)
     if (!arr) return null
     return arr.map((expense) => {
       console.log('expense1337:', expense)
       return (
-        <Expense name={expense.name} admin={admin} onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} carType={expense.car_type} carTypes={carTypes} key={expense._id} /> // Look out for issues with unique key
+        <Expense comment={ expense.comment } name={expense.name} admin={admin} onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} onLongPress={() => { this.onExpenseLongPress(arr.indexOf(expense), admin, expense._id, expense.userId)}} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} carType={expense.car_type} carTypes={carTypes} key={expense._id} /> // Look out for issues with unique key
       )
     })
   }
 
+  postComment = () => {
+    const { updateComment, expenseUserId, expenseId, comment, getExpenses, userId, closeReportModal} = this.props
+    updateComment(expenseUserId, expenseId, comment)
+    console.log('userId:', this.userid, expenseUserId, userId)
+    getExpenses(userId)
+    closeReportModal()
+  }
+
   render() {
-    const { monthFormattedExpenses, admin, monthIndex } = this.props
+    const { monthFormattedExpenses, admin, monthIndex, showReportModal, comment, onCommentChange } = this.props
     let month
     if (monthFormattedExpenses[monthIndex]) {
       month = (new Date(monthFormattedExpenses[monthIndex][0].date)).getMonth()
     }
-    // console.log('monthFormattedExpenses[monthIndex][0]):', monthFormattedExpenses[monthIndex][0])
+    console.log('showReportModal:', showReportModal)
     return (
       <View style={styles.container}>
         <Header buttonName='Tillbaka' onPress={() => { this.goBack(this.props) }} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
@@ -80,6 +102,19 @@ class ListExpenseScreen extends Component {
           <ScrollView>
             { this.renderExpenses(monthFormattedExpenses[monthIndex], admin) }
           </ScrollView>
+          <Modal isVisible={showReportModal}> 
+            <View style={{justifyContent: 'center', alignItems:'center'}}>
+            <View style={{margin: 20}}>
+              <Text style={{color: 'white'}}> Kommentera utlägg </Text>
+             </View>
+              <CommentTextField comment={comment} onChangeText={onCommentChange} />
+              <TouchableOpacity style={{height: 40, width: 100, backgroundColor: 'white', borderRadius: 10, margin: 20}} onPress={() => { this.postComment() }} >
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                  <Text> Lägg till </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </Modal>
         </View>
       </View>
       )
@@ -89,6 +124,9 @@ class ListExpenseScreen extends Component {
   const mapStateToProps = (state) => {
     console.log('state:', state)
     return {
+      expenseUserId: state.addExpenses.editExpense.userId,
+      expenseId: state.addExpenses.editExpense.expenseId,
+      comment: state.addExpenses.editExpense.comment,
       userId: state.userExpenses._id,
       expenseJustAdded: state.userExpenses.expenseJustAdded,
       monthFormattedExpenses: state.userExpenses.monthFormattedExpenses,
@@ -96,7 +134,8 @@ class ListExpenseScreen extends Component {
       name: state.userExpenses.name,
       monthIndex: state.userExpenses.monthIndex,
       carType: state.userExpenses.carType,
-      carTypes: state.userExpenses.carTypes
+      carTypes: state.userExpenses.carTypes,
+      showReportModal: state.addExpenses.editExpense.showReportModal
     }
   }
 
@@ -122,7 +161,16 @@ class ListExpenseScreen extends Component {
       dispatch({
         type: 'TOGGLE_SET_TO_EDIT_EXPENSE', 
         data: { userId, expenseIndex, monthIndex, expenseId }} )
-      }
+      },
+    toggleReportModal: (userId, expenseId) => { dispatch({ type: 'TOGGLE_REPORT_MODAL', data: {userId, expenseId}}) },
+    openReportModal: () => { dispatch({type: 'OPEN_REPORT_MODAL'}) },
+    closeReportModal: () => { dispatch({type: 'CLOSE_REPORT_MODAL'}) },
+    setReport: (userId, expenseId) => { dispatch({type:'SET_REPORT', data: {userId, expenseId}})},
+    onCommentChange: (data) => { dispatch({
+      type: 'ON_CHANGE_COMMENT', 
+      data
+    })},
+    updateComment: (userId, expenseId, comment) => { dispatch(updatecomment({userId, expenseId, comment})) } 
     }
   }
 
