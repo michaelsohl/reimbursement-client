@@ -17,9 +17,7 @@ function feedback (mess) {
 }
 
 const postCreateAccountFetch = (email, password) => {
-  console.log('apRÖV:', email + ' ' + password)
   var data = { email, password }
-  console.log('data:', data)
   return fetch(`${config.host}createaccount`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -17,7 +17,6 @@ class ListExpenseScreen extends Component {
   componentDidUpdate () {
     const { expenseJustAdded, getExpenses, expensesUpdate } = this.props
     if(expenseJustAdded) {
-      console.log('this particular state:', this.state)
       this.userid = config.testUserId ? config.testUserId : null
       getExpenses(this.userid)
       expensesUpdate()
@@ -25,7 +24,6 @@ class ListExpenseScreen extends Component {
   }
 
   editExpense = (expenseIndex, userId, expenseId) => {
-    console.log('editExpense')
     const { toggleSetToEditExpense, monthIndex } = this.props
     toggleSetToEditExpense(userId, expenseIndex, monthIndex, expenseId)
     this.props.navigation.navigate('EditExpensesPage')
@@ -34,10 +32,8 @@ class ListExpenseScreen extends Component {
 
   onExpensePress = (expenseIndex, admin, expenseId, expenseUserId) => {
     const { setExpenseAttest, postToServer, monthIndex, userId } = this.props
-    console.log('setExpenseAttest:', setExpenseAttest)
     if (admin && (userId != expenseUserId)) {
       setExpenseAttest(expenseIndex, monthIndex)
-      console.log('expenseID:', expenseId)
       postToServer(userId, expenseId)
     } else {
       this.editExpense(expenseIndex, userId, expenseId)
@@ -45,10 +41,8 @@ class ListExpenseScreen extends Component {
   }
 
   onExpenseLongPress = (expenseIndex, admin, expenseId, expenseUserId) => {
-    console.log('onExpenseLongPress')
     const { toggleReportModal, setReport, openReportModal } = this.props
     if (admin) {
-      console.log('expenseID:', expenseId, expenseUserId)
       setReport(expenseUserId, expenseId)
       openReportModal()
       toggleReportModal(expenseUserId, expenseId)
@@ -56,7 +50,6 @@ class ListExpenseScreen extends Component {
   }
 
   goBack = (props) => {
-    // console.log('Go Back was pressed!')
     props.navigation.dispatch(NavigationActions.back())
   }
   
@@ -65,12 +58,10 @@ class ListExpenseScreen extends Component {
   }
   renderExpenses = (arr, admin) => {
     const { isExpenseNew, carTypes, comment, expenseId } = this.props
-    console.log('this.state:', this.state)
     if (!arr) return null
     return arr.map((expense) => {
-      console.log('expense1337:', expense)
       return (
-        <Expense comment={ expense.comment } name={expense.name} admin={admin} onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} onLongPress={() => { this.onExpenseLongPress(arr.indexOf(expense), admin, expense._id, expense.userId)}} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} carType={expense.car_type} carTypes={carTypes} key={expense._id} /> // Look out for issues with unique key
+        <Expense comment={ expense.comment } name={expense.name} admin={admin} onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} onLongPress={() => { this.onExpenseLongPress(arr.indexOf(expense), admin, expense._id, expense.userId)}} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} carType={expense.car_type} carTypes={carTypes} key={expense._id} />
       )
     })
   }
@@ -78,7 +69,6 @@ class ListExpenseScreen extends Component {
   postComment = () => {
     const { updateComment, expenseUserId, expenseId, comment, getExpenses, userId, closeReportModal} = this.props
     updateComment(expenseUserId, expenseId, comment)
-    console.log('userId:', this.userid, expenseUserId, userId)
     getExpenses(userId)
     closeReportModal()
   }
@@ -89,7 +79,6 @@ class ListExpenseScreen extends Component {
     if (monthFormattedExpenses[monthIndex]) {
       month = (new Date(monthFormattedExpenses[monthIndex][0].date)).getMonth()
     }
-    console.log('showReportModal:', showReportModal)
     return (
       <View style={styles.container}>
         <Header buttonName='Tillbaka' onPress={() => { this.goBack(this.props) }} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
@@ -98,10 +87,11 @@ class ListExpenseScreen extends Component {
               { month ? Months[month + 1] : null }
           </Text>
         </View>
-        <View style={styles.expensesContainer} >
-          <ScrollView>
+        <View style={{flex: 1,width:'100%'}} >
+          <ScrollView contentContainerStyle={{paddingBottom: 100, paddingLeft:20}}>
             { this.renderExpenses(monthFormattedExpenses[monthIndex], admin) }
           </ScrollView>
+          </View>
           <Modal isVisible={showReportModal}> 
             <View style={{justifyContent: 'center', alignItems:'center'}}>
             <View style={{margin: 20}}>
@@ -115,14 +105,12 @@ class ListExpenseScreen extends Component {
               </TouchableOpacity>
             </View>
           </Modal>
-        </View>
       </View>
       )
     }
   }
 
   const mapStateToProps = (state) => {
-    console.log('state:', state)
     return {
       expenseUserId: state.addExpenses.editExpense.userId,
       expenseId: state.addExpenses.editExpense.expenseId,
@@ -181,7 +169,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(ListExpenseScreen)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    alignItems: 'center',
+    backgroundColor: 'white',
+    width: '100%'
   },
   textContainer: {
     height: 50,

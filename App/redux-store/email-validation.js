@@ -21,7 +21,6 @@ function feedback (mess) {
 // fetch
 const checkWithServerIfEmailValidFetch = (email, password) => {
   let data = { email, password }
-  console.log('datat som skickas:', data)
   return fetch(`${config.host}authenticate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

@@ -59,27 +59,24 @@ export default class ExpenseForm extends Component {
         selected: true,
         selectedColor: sylogRed
     }}
-    console.log('123:', this.props.carTypes)
-    console.log('456:', expenseProps.carType)
     return (
       <TouchableWithoutFeedback 
         onPress={() => {  
-          console.log('hejsan keybord dismiss #########################################') 
           Keyboard.dismiss()} }
-        onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
+        onPressOut={() => { } } >
       <View style={styles.container} >
         <StdTextInput onChangeText={this.props.onChange('km')} label='km' value={expenseProps.km}  />
         <StdTextInput onChangeText={this.props.onChange('client')} label='kund' value={expenseProps.client}  />
         <StdTextInput onChangeText={this.props.onChange('route_descr')} label='Färdbeskr.' value={expenseProps.route_descr}  />
         <CarButton onPress={ this.toggle } label={expenseProps.carType}/>
-        <Collapsible collapsed={this.props.carSelectOpen}>
+        <Collapsible style={{position: 'relative', top: 50, height: 130}} collapsed={this.props.carSelectOpen}>
         { this.props.renderSelectables(this.props.carTypes, expenseProps.carType) }
         </Collapsible>
         { !this.props.favoriteMode ? <DateButton date={null} text={expenseProps.date} onPress={this.props.onPress('date')} /> :  <StdTextInput onChangeText={this.props.onChange('nick')} label='Namn för favorit' value={this.props.favoriteNick}  /> }
-        <Modal isVisible={this.props.modelOpen}> 
+        <Modal isVisible={this.props.modelOpen}>
           <View style={{ flex: 1, alignItems: 'center' }}>
              <View style={{margin: 20}}>
-              <Text style={{color: 'white'}}> Välj datum </Text>
+              <Text style={styles.modalTitle}> Välj datum </Text>
              </View>
              <Calendar
                style= {{width: 300}}
@@ -104,7 +101,7 @@ export default class ExpenseForm extends Component {
              /> 
              <TouchableOpacity style={{height: 40, width: 100, backgroundColor: 'white', borderRadius: 10, margin: 20}} onPress={this.props._toggleModal} >
              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-               <Text> Stäng fönster </Text>
+               <Text style={styles.buttonText}> Stäng fönster </Text>
              </View>
             </TouchableOpacity>
           </View>
@@ -120,46 +117,16 @@ const styles = {
     flex: 1,
     alignItems: 'center',
     width: '100%'
+  },
+  buttonText: {
+    fontFamily: 'Helvetica',
+    fontWeight: '100',
+    fontSize: 15
+  },
+  modalTitle: {
+    color: 'white',
+    fontFamily: 'Helvetica',
+    fontSize: 25,
+    fontWeight: '400'
   }
 }
-
-/**
- *
- *   
- *     <Calendar
-              // Initially visible month. Default = Date()
-    
-              current={'2012-03-01'}
-              // Minimum date that can be selected, dates before minDate will be grayed out. Default = undefined
-              minDate={'2012-05-10'}
-              // Maximum date that can be selected, dates after maxDate will be grayed out. Default = undefined
-              maxDate={'2012-05-30'}
-              // Handler which gets executed on day press. Default = undefined
-              onDayPress={(day) => {this.props.onChange('date')(date)}}
-              // Handler which gets executed on day long press. Default = undefined
-              onDayLongPress={(day) => {console.log('selected day', day)}}
-              // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-              monthFormat={'yyyy MM'}
-              // Handler which gets executed when visible month changes in calendar. Default = undefined
-              onMonthChange={(month) => {console.log('month changed', month)}}
-              // Hide month navigation arrows. Default = false
-              hideArrows={true}
-              // Replace default arrows with custom ones (direction can be 'left' or 'right')
-              renderArrow={(direction) => (<Arrow />)}
-              // Do not show days of other months in month page. Default = false
-              hideExtraDays={true}
-              // If hideArrows=false and hideExtraDays=false do not switch month when tapping on greyed out
-              // day from another month that is visible in calendar page. Default = false
-              disableMonthChange={true}
-              // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
-              firstDay={1}
-              // Hide day names. Default = false
-              hideDayNames={true}
-              // Show week numbers to the left. Default = false
-              showWeekNumbers={true}
-              // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-              onPressArrowLeft={substractMonth => substractMonth()}
-              // Handler which gets executed when press arrow icon left. It receive a callback can go next month
-              onPressArrowRight={addMonth => addMonth()}
-              />
- */

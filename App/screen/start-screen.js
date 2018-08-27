@@ -28,12 +28,10 @@ const instructions = Platform.select({
 export default class StartScreen extends Component {
   
    onCreateAccount = () => {
-    // console.log('Create account button was pressed!')
     this.props.navigation.navigate('Create')
    }
 
    onLogin = () => {
-    // console.log('Login button was pressed!')
     this.props.navigation.navigate('Login')
    }
 
@@ -51,22 +49,6 @@ export default class StartScreen extends Component {
   }
 }
 
-/** 
-mapStateToProps = (state) => {
-  return {
-
-  }
-}
-
-mapDispatchToProps = (dispath) => {
-  return {}
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(StartScreen)
-*/
 const buttonThemeColor = '#C21807'
 const styles = StyleSheet.create({
   container: {
@@ -76,8 +58,10 @@ const styles = StyleSheet.create({
   },
   welcome: {
     fontSize: 20,
+    fontFamily: 'Helvetica',
+    fontWeight: '400',
     textAlign: 'center',
-    margin: 10
+    marginBottom: 20,
   },
   buttonContainer: {
     position: 'absolute',
@@ -92,5 +76,4 @@ const styles = StyleSheet.create({
     width: 100,
     margin: 40
   }
-
 })

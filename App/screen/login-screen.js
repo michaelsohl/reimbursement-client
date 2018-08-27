@@ -49,12 +49,10 @@ class LoginScreen extends Component {
 
   login = () => {
     const { userId } = this.props
-    console.log('this.state:', this.state)
     this.props.navigation.navigate('MainApp', { userId })
   }
 
   render () {
-    // console.log('STATE in login-screen:', this.state)
     let button = null
     const { value, data, password } = this.props
     if(data) {
@@ -62,23 +60,19 @@ class LoginScreen extends Component {
     }
  
     return (
-      <TouchableWithoutFeedback 
-      onPress={() => {  
-        console.log('hejsan keybord dismiss #########################################') 
-        Keyboard.dismiss() } }
-      onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
+      <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss() } } onPressOut={() => { } } >
       <View style={styles.container}>
         <Header buttonName='Avbryt' leftadd={false} onPress={this.goBack}/>
         <Image style={styles.headerPicture} source={sylogPic} />
-        <View style={styles.textFieldContainer} >
           <Text style={styles.welcome}>
             Login
           </Text>
+          <View style={{flex: 1,width:'100%', left: 20}} >
           <ScrollView>
             <StdTextInput label='Skriv in din jobbmejl' onChangeText={this.onChangeText} value={value} />
             <StdTextInputSecure label='Lösenord' onChangeText={this.onChangePassword} value={password} />
           </ScrollView>
-        </View>
+          </View>
         { button }
       </View>
       </ TouchableWithoutFeedback>
@@ -130,14 +124,18 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    width: '100%'
   },
   welcome: {
     fontSize: 20,
+    fontFamily: 'Helvetica',
+    fontWeight: '400',
     textAlign: 'center',
     marginBottom: 20,
   },
   headerPicture: {
+    alignItems: 'center',
     height: 100,
     width: 100,
     margin: 40

@@ -22,11 +22,13 @@ const styles = {
     flex: 1
   },
   textField: {
-    height: 30,
-    width: 250,
+    height: '100%',
+    width: '100%',
     borderColor: 'white',
-    borderWidth: 1,
     padding: 5,
-    fontSize: 12
+    fontSize: 20,
+    fontFamily: 'Helvetica',
+    fontWeight: '100'
   }
 }
+// fontFamily: Arial, Helvetica, sans-serif

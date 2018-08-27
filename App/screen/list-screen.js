@@ -41,7 +41,6 @@ class ListScreen extends Component {
   }
 
   goBack = () => {
-    // console.log('Go Back was pressed!')
     this.props.navigation.dispatch(NavigationActions.back())
    }
   
@@ -78,7 +77,7 @@ class ListScreen extends Component {
     return arr.map((month) => { 
       let m = new Date(month[0].date)
       return (
-        <Month onPress={() => { this.onMonthPress(arr, arr.indexOf(month)) }} year={m.getFullYear()} month={m.getMonth()} attest={month[0].attest} descr={month[0].route_descr} key={month[0]._id} />
+        <Month onPress={() => { this.onMonthPress(arr, arr.indexOf(month)) }} year={m.getFullYear()} month={m.getMonth()} attest={month[0].attest} descr={month[0].route_descr} key={month[0]._id} />   
       )
     })
   }
@@ -97,12 +96,12 @@ class ListScreen extends Component {
             { admin ? 'Reseutlägg' : `${name}s reseutlägg`  }
           </Text>
         </View>
-        <View style={styles.expensesContainer} >
-          <ScrollView>
+          <ScrollView style={{width:'100%', right: 10, left: 10}}>
+            <View style={{flex: 1, flexDirection: 'column'}}>
             { monthFormattedExpenses.length == 0 ? <Text> Inga reseutlägg </Text> : null }
             { this.renderMonths(monthFormattedExpenses) }
+            </View>
           </ScrollView>
-        </View>
       </View>
     )
   }
@@ -150,19 +149,23 @@ const buttonThemeColor = '#C21807'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    alignItems: 'center',
+    backgroundColor: 'white',
+    width: '100%'
   },
   textContainer: {
     height: 50,
     alignItems: 'center',
   },
-  expensesContainer: {
+  expensesContainer: { 
     flex: 1,
     alignItems: 'center',
     width: '100%'
   },
   welcome: {
-    fontSize: 20,
+    fontSize: 25,
+    fontWeight: '500',
+    fontFamily: 'Helvetica',
     textAlign: 'center',
     margin: 10
   },

@@ -4,19 +4,20 @@ import { Divider } from 'react-native-elements'
 
 export default function (props) {
   return (
-    <TouchableOpacity onPress={props.onPress} onLongPress={props.onLongPress}>
-      <View style={styles.container}>
+    <View style={styles.container}>
+      <TouchableOpacity onPress={props.onPress} onLongPress={props.onLongPress}>
         { props.children }
         <Divider style={{backgroundColor: 'grey'}} />
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   )
 }
 
 const styles = {
   container: {
-    width: 300,
-    height: 80
+    height: 80,
+    width: '100%',
+    top: 40
     // backgroundColor: '#C21807'
   }
 }

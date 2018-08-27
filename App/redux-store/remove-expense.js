@@ -21,7 +21,6 @@ function feedback (mess) {
 
 const postRemoveExpenseFetch = (userId, expenseId) => {
   var data = { userId, expenseId }
-  console.log('detta skickas:', data)
   return fetch(`${config.host}removeexpense`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

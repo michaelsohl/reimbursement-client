@@ -14,8 +14,9 @@ export default function (props) {
 
 const styles = {
   container: {
+    position: 'relative',
     height: 35,
-    width: 300,
-    margin: 20
+    width: '100%',
+    top: 40
   }
 }

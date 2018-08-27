@@ -21,7 +21,6 @@ function feedback (mess) {
 
 const postRemoveFavoriteFetch = (userId, favoriteId) => {
   var data = { userId, favoriteId }
-  console.log('detta skickas:', data)
   return fetch(`${config.host}removefavorite`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

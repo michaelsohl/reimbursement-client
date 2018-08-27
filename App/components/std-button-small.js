@@ -14,7 +14,7 @@ export default function (props) {
 const styles = {
   container: {
     width: 300,
-    height: 40,
+    height: 30,
     marginLeft: 20
     // backgroundColor: '#C21807'
   }

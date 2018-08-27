@@ -37,17 +37,14 @@ class EditScreen extends Component {
   }
 
   componentWillUnmount() {
-    console.log('componentWillUnmount EditScreen')
     const { onFavoritePress } = this.props
     onFavoritePress(-1)
   }
 
   componentDidMount () {
     const { chosenCarType, attachName, attachUserId, expenseProps, id, carChange, editExpense, expenses, kmChange, clientChange, routeChange, dateChange, e, getFavorites } = this.props
-    console.log('kommer hit!')
     if (editExpense.setToEdit) {
       let expense = expenses[editExpense.monthIndex][editExpense.expenseIndex]
-      console.log('EXPENSE HEJHEJEHEJEHEJ:', expense)
       kmChange(`${expense.km}`)
       clientChange(expense.client)
       routeChange(expense.route_descr)
@@ -91,7 +88,6 @@ class EditScreen extends Component {
 
 
   onPress2 = () => {
-    console.log('ON PRESS 2 RUNS')
     const { removeExpense, editExpense, clearExpenses, navigation } = this.props
     removeExpense(editExpense.userId, editExpense.expenseId)
     setTimeout(() => {}, 100)
@@ -107,8 +103,6 @@ class EditScreen extends Component {
       setTimeout(() => { getFavorites(e._id)}, 100)
     } else {
       if(editExpense.setToEdit) {
-        console.log('HIT KOM VI 131337:', editExpense)
-        console.log('expenseProps:', expenseProps)
         updateExpense(editExpense.userId, editExpense.expenseId, expenseProps)
         updateComment(editExpense.userId, editExpense.expenseId, '')
 
@@ -124,7 +118,6 @@ class EditScreen extends Component {
 
   goBack = () => {
     const { toggleSetToEditExpense, editExpense, navigation } = this.props
-    console.log('this is correct right? :',)
     if (editExpense.setToEdit) {
       toggleSetToEditExpense()
     }
@@ -183,12 +176,9 @@ class EditScreen extends Component {
   }
 
   renderSelectables = (arr, carTypeChosen) => {
-    console.log('1:', arr)
     if (!arr) return null
-    console.log(2)
     return arr.map((carTypeName) => {
       let attest = false
-      console.log(3)
       if (carTypeName.match(carTypeChosen)) {
         attest = true
       }
@@ -211,8 +201,6 @@ class EditScreen extends Component {
 
   render () {
     const { hideDate, carTypes, carType, dateModalOpened, carSelectOpened, onCarPress, expenseProps, editExpense, onStarPress, favoriteMode, favoriteNick, favorites, currentFavoriteIndex, isFavoritePressed, clearExpenses, onFavoritePress, removeFavorite } = this.props
-    console.log('carTypes:', carTypes)
-    console.log('carType:', carType)
     let addText
     if (favoriteMode) {
       addText = 'Lägg till favorit'
@@ -226,11 +214,10 @@ class EditScreen extends Component {
     return (
       <TouchableWithoutFeedback 
       onPress={() => {  
-        console.log('hejsan keybord dismiss #########################################') 
         clearExpenses()
         onFavoritePress(-1)
         Keyboard.dismiss()} }
-      onPressOut={() => { console.log('hejsan keybord dismiss 22222 #########################################')  } } >
+      onPressOut={() => {  } } >
       <View style={styles.container}>
         <Header removeFavorite={this.removeFavorite} isFavoritePressed={isFavoritePressed} favoriteMode={favoriteMode} lefttrash={ editExpense.setToEdit ? true : false} rightstar={ editExpense.setToEdit ? false : true } onStarPress={onStarPress} onPress2={this.onPress2} buttonName='Avbryt' onPress={this.goBack } />
         <View style={styles.textContainer}>
@@ -238,10 +225,10 @@ class EditScreen extends Component {
            Editera mina utgifter
           </Text>
         </View>
-        <ScrollView>
-          { favorites.length == 0 ? <Text color={'grey'} style={{fontSize: 12, fontWeight: '100'}}> Favoriter </Text> : null }
-          <ScrollView style={{left: 20}} horizontal={true} contentContainerStyle={{flexGrow: 1}} >
-            <View style={{flex: 1,flexDirection: 'row', alignItems:'center', backgroundColor:'white', width: 300}}>
+        { favorites.length == 0 ? <Text color={'grey'} style={{fontSize: 12, fontWeight: '100'}}> Favoriter </Text> : null }
+        <ScrollView style={{width:'100%', right: 10, left: 10}}>
+          <ScrollView style={{left: 20}} horizontal={true} contentContainerStyle={{paddingRight: 50}} >
+            <View style={{flex: 1,flexDirection: 'row', alignItems:'center', backgroundColor:'white', width:'100%'}}>
               { this.renderFavorites(favorites) }
             </View>
           </ScrollView>
@@ -363,10 +350,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+    width: '100%'
   },
   welcome: {
-    fontSize: 20,
+    fontSize: 25,
+    fontFamily: 'Helvetica',
+    fontWeight: '400',
     textAlign: 'center',
     margin: 10
   },

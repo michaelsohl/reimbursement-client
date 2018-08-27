@@ -8,9 +8,7 @@ export default function (props) {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={props.onPress} >
-        <View style={{width: 200, height: 40}}>
-          <Text> { date } </Text>
-        </View>
+        <Text style={{ fontFamily: 'Helvetica', fontSize: 20, fontWeight: '100', padding: 5, left: -5 }}> { date } </Text>
       </TouchableOpacity>
       <Divider style={{backgroundColor: 'grey'}} />
     </View>
@@ -33,7 +31,8 @@ const getDateString = (input) => {
 const styles = {
   container: {
     height: 35,
-    width: 300,
-    margin: 20
+    position: 'relative',
+    width: '100%',
+    top: 40
   }
 }

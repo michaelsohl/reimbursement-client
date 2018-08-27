@@ -94,7 +94,6 @@ function loginReducer (state = loginDefaultState, action) {
       }
       return Object.assign({}, state, newObj)
     case 'GET_DATA':
-      console.log('DATA MF!!!1337:', action.data)
       newObj = {
         data: action.data.validEmail,
         userId: action.data.userId
@@ -118,7 +117,6 @@ function getUserReducer (state = userDefaultState, action) {
   let monthFormattedExpenses = []
   switch (action.type) {
     case 'OPEN_CAR_SELECT':
-      console.log('OPEN_CAR_SELECT:', state)
       newObj = {
         carSelectOpened: !state.carSelectOpened
       }
@@ -134,7 +132,6 @@ function getUserReducer (state = userDefaultState, action) {
       }
       return Object.assign({}, state, newObj)
     case 'POST_USER_EXPENSES':
-      console.log('POST_USER_EXPENSES')
       newObj = {
         expenseJustAdded: true
       }
@@ -151,10 +148,7 @@ function getUserReducer (state = userDefaultState, action) {
       }
       return Object.assign({}, state, newObj)
     case 'GET_USER_EXPENSES':
-      console.log('GET_USER_EXPENSES')
-      console.log('data:', action.data)
       let expensesList = action.data.expenses.slice(0, action.data.expenses.length)
-      console.log('1')
       deepFreeze(action.data.expenses)
       if (expensesList.length == 0) {
         newObj = {
@@ -167,14 +161,12 @@ function getUserReducer (state = userDefaultState, action) {
         }
         return Object.assign({}, state, newObj)
       }
-      console.log('2')
       expensesList.sort(function (a, b) {
         let _a = moment(a.date)
         let _b = moment(b.date)
         return _b.valueOf() - _a.valueOf()
         // return new Date(b.date) - new Date(a.date)
       })
-      console.log('3')
 
       let index = 0
       expensesList.forEach(elem => {
@@ -191,7 +183,6 @@ function getUserReducer (state = userDefaultState, action) {
           }
         }
       })
-      console.log('4')
 
       monthFormattedExpenses.forEach(elem => {
         elem.sort(function (a, b) {
@@ -203,7 +194,6 @@ function getUserReducer (state = userDefaultState, action) {
           return -1
         })
       })
-      console.log('5')
 
       newObj = {
         _id: action.data._id,
@@ -214,7 +204,6 @@ function getUserReducer (state = userDefaultState, action) {
         carType: action.data.car_type,
         carTypes: action.data.car_types
       }
-      console.log('6')
       return Object.assign({}, state, newObj)
     case 'SETUP_FORMATTED_EXPENSES':
       const { expenses } = state
@@ -236,8 +225,6 @@ function getUserReducer (state = userDefaultState, action) {
       newObj = {
         monthFormattedExpenses: copyExpenses
       }
-      console.log('expense:', newObj)
-      // console.log('toggled ATTEST obj:', obj)
       return Object.assign({}, state, newObj)
     case 'REMOVE_EXPENSE':
       newObj = {
@@ -264,7 +251,6 @@ function addExpensesReducer (state = defaultExpense, action) {
       }
       return Object.assign({}, state, newObj)
     case 'ADD_NEW_EXPENSE_CARTYPE':
-      console.log('ADD_NEW_EXPENSE_CARTYPE')
       obj = Object.assign({}, state.addedExpense, {carType: action.data})
       newObj = {
         addedExpense: obj
@@ -301,12 +287,9 @@ function addExpensesReducer (state = defaultExpense, action) {
       }
       return Object.assign({}, state, newObj)
     case 'TOGGLE_SET_TO_EDIT_EXPENSE':
-      console.log('SET_TO_EDIT_EXPENSE')
       if (state.editExpense.setToEdit) {
         return defaultExpense
       }
-      console.log('kom vidare!')
-      
       obj = Object.assign({}, state.editExpense, { setToEdit: true, userId: action.data.userId, expenseIndex: action.data.expenseIndex, monthIndex: action.data.monthIndex, expenseId: action.data.expenseId })
       newObj = {
         editExpense: obj
@@ -411,7 +394,6 @@ function createAccountReducer (state = defaultCreateAccount, action) {
       }
       return Object.assign({}, state, newObj)
     case 'CREATE_ACCOUNT':
-      console.log('CREATE_ACCOUNT')
       return state
     default:
       return state

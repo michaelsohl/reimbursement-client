@@ -5,7 +5,7 @@ export default function (props) {
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.button} onPress={props.onPress}>
-        <Text style={{color: 'white', textAlign: 'center'}}> { props.buttonName } </Text>
+        <Text style={{color: 'white', fontFamily: 'Helvetica', fontWeight: '200', fontSize: 15, textAlign: 'center'}}> { props.buttonName } </Text>
       </TouchableOpacity>
     </View>
   )

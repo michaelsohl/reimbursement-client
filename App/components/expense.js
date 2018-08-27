@@ -5,7 +5,6 @@ import StatusQuestionSquare from './state-question-square'
 import StdButton from './std-button'
 
 export default function (props) {
-  console.log('PROPS in an expense:', props)
   let status
   if (props.comment) {
     status = <StatusQuestionSquare size={20} color={'orange'} />
@@ -15,20 +14,22 @@ export default function (props) {
 
   return (
     <StdButton onPress={props.onPress} onLongPress={props.onLongPress}>
-      <View style={{height: 20, width: 100}}>
-        <Text style={{color: 'black', fontWeight: '700', right: 0}}>
-          { props.date.slice(0, 10) }
-        </Text>
-      </View>
-      <View style={styles.textAndPendingContainer}>
-        <View style={{height: 50}}>
-          <Text style={{fontSize: 10, color: 'grey'}}> { props.descr}  </Text>
-          <Text style={{fontSize: 10, color: 'grey'}}> {props.client}  </Text>
-          <Text style={{fontSize: 10, color: 'grey'}}> {props.km + ' km'} </Text>
-          <Text style={{fontSize: 10, color: 'grey'}}> {props.carType} </Text>
+      <View style={{height: 70}}>
+        <View style={{height: 20, width: 100}}>
+          <Text style={{fontSize: 15, fontFamily: 'Helvetica', fontWeight: '400', right: 0}}>
+            { props.date.slice(0, 10) }
+          </Text>
         </View>
-        <Text style={{left: 100, top: -17, position: 'absolute', fontSize: 10, color: 'grey'}}> { props.admin ? props.name : ' '} </Text>
-        { status }
+        <View style={styles.textAndPendingContainer}>
+          <View style={{height: 50}}>
+            <Text style={styles.textStyle}> { props.descr}  </Text>
+            <Text style={styles.textStyle}> {props.client}  </Text>
+            <Text style={styles.textStyle}> {props.km + ' km'} </Text>
+            <Text style={styles.textStyle}> {props.carType} </Text>
+          </View>
+          <Text style={{left: 250, top: -17, position: 'absolute', fontSize: 10, fontFamily: 'Helvetica', fontWeight: '100'}}> { props.admin ? props.name : ' '} </Text>
+          { status }
+        </View>
       </View>
     </StdButton>
   )
@@ -40,5 +41,10 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  textStyle: {
+    fontSize: 10,
+    fontFamily: 'Helvetica',
+    fontWeight: '100'
   }
 }

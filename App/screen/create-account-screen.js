@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, ScrollView, Text } from 'react-native'
+import { View, ScrollView, Text, Image } from 'react-native'
 import { connect } from 'react-redux'
 import StdTextInput from '../components/std-text-input'
 import StdTextInputSecure from '../components/std-text-input-secure'
@@ -8,6 +8,7 @@ import { NavigationActions } from 'react-navigation'
 import IonIcon from 'react-native-vector-icons/Ionicons'
 import CreateAccountButton from '../components/login-button'
 import createaccount from '../redux-store/create-account'
+const sylogPic = require('../media/Icon-App-83.5x83.5.png')
 
 class CreateAccount extends Component {
 
@@ -26,15 +27,18 @@ class CreateAccount extends Component {
     return (
       <View style={styles.container}>
         <Header buttonName='Cancel' onPress={() => { this.goBack(this.props) }} />
+        <Image style={styles.headerPicture} source={sylogPic} />
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
             Fyll i personuppgifter
           </Text>
         </View>
+        <View style={{flex: 1,width:'100%', left: 20}} >
         <ScrollView>
-          <StdTextInput onChangeText={changeEmailText} label={'workmail'} value={email} />
-          <StdTextInputSecure onChangeText={changePasswordText} label={'password'} />
+          <StdTextInput onChangeText={changeEmailText} label={'Skriv in din jobbmejl'} value={email} />
+          <StdTextInputSecure onChangeText={changePasswordText} label={'Välj ett lösenord'} />
         </ScrollView>
+        </View>
         <CreateAccountButton buttonName='Skapa konto' onPress={() => { this._createAccount({email, password}) }} buttonContainer={styles.buttonContainer} />
       </View>
     )
@@ -71,8 +75,10 @@ const styles = {
   },
   welcome: {
     fontSize: 20,
+    fontFamily: 'Helvetica',
+    fontWeight: '400',
     textAlign: 'center',
-    margin: 10
+    marginBottom: 20,
   },
   textContainer: {
     height: 50,
@@ -85,5 +91,10 @@ const styles = {
     backgroundColor: buttonThemeColor,
     alignItems: 'center',
     width: '100%'
+  },
+  headerPicture: {
+    height: 100,
+    width: 100,
+    margin: 40
   }
 }

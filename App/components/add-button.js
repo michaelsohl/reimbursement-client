@@ -6,7 +6,7 @@ import { sylogRed } from '../themes'
 export default function (props) {
   return (
     <TouchableOpacity style={styles.touchableOpacity} onPress={props.onPress}>
-      <IonIcon color={sylogRed} size={25} name={'ios-add'} />
+      <IonIcon color={sylogRed} size={34} name={'ios-add'} />
     </TouchableOpacity>
   )
 }
@@ -14,8 +14,9 @@ export default function (props) {
 const styles = {
   touchableOpacity: {
     flex: 1,
-    width: 35,
-    height: 35,
+    // width: 35,
+    // height: 35,
+    right: 10,
     borderRadius: 100 / 2,
     backgroundColor: 'white',
     justifyContent: 'center',
