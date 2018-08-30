@@ -13,4 +13,4 @@ const host = {
  */
 const testUserId = '5b6c42a46bdee0ede68b0157'
 
-module.exports = { host: host.localhost }
+module.exports = { host: host.localhost, testUserId }

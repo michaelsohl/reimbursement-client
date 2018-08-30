@@ -5,7 +5,8 @@ import {
   View,
   ScrollView,
   Divider,
-  Animated
+  Animated,
+  TouchableOpacity
 } from 'react-native'
 import Header from '../components/header'
 import getexpenses from '../redux-store/user-exprenses'
@@ -15,7 +16,11 @@ import IonIcon from 'react-native-vector-icons/Ionicons'
 import { NavigationActions } from 'react-navigation'
 import config from '../config'
 import { connect } from 'react-redux'
+import createpdf from '../redux-store/create-pdf'
 import { SylogHeader } from '../media'
+import Modal from 'react-native-modal'
+import moment from 'moment'
+
 
 const HEADER_MAX_HEIGHT = 200;
 const HEADER_MIN_HEIGHT = 60;
@@ -72,12 +77,33 @@ class ListScreen extends Component {
     this.props.navigation.navigate('ExpensesList', {replace: true })
   }
 
+  onMonthLongPress = (months, index) => {
+    const { setPdfDate, openPdfModal } = this.props
+    console.log(months, ' ', index)
+    let firstExpense = months[index][0]
+    setPdfDate(firstExpense.date)
+    openPdfModal()
+  }
+
+  closeModal = () => {
+    const { closePdfModal } = this.props
+    closePdfModal()
+  }
+
+  createPdf = () => {
+    // skicka ett anrop till servern som skapar och skickar en pdf till admin skicka med månad som ska skrivas ut.
+    // 
+    const { createPdf, pdfDate } = this.props
+    console.log(1)
+    createPdf(pdfDate)
+  }
+
   renderMonths = (arr) => {
     if(!arr) return null
     return arr.map((month) => { 
       let m = new Date(month[0].date)
       return (
-        <Month onPress={() => { this.onMonthPress(arr, arr.indexOf(month)) }} year={m.getFullYear()} month={m.getMonth()} attest={month[0].attest} descr={month[0].route_descr} key={month[0]._id} />   
+        <Month onPress={() => { this.onMonthPress(arr, arr.indexOf(month)) }} year={m.getFullYear()} month={m.getMonth()} attest={month[0].attest} descr={month[0].route_descr} key={month[0]._id} onLongPress={ () => this.onMonthLongPress(arr, arr.indexOf(month)) } />   
       )
     })
   }
@@ -87,7 +113,7 @@ class ListScreen extends Component {
 
 
   render () {
-    const { monthFormattedExpenses, admin, name } = this.props
+    const { monthFormattedExpenses, admin, name, pdfModalOpen } = this.props
     return (
       <View style={styles.container}>
         <Header buttonName='Logga ut' onPress={this.signout} leftadd={true} onAddPress={() => { this.addExpense(this.props) }} />
@@ -102,6 +128,22 @@ class ListScreen extends Component {
             { this.renderMonths(monthFormattedExpenses) }
             </View>
           </ScrollView>
+          <Modal isVisible={pdfModalOpen}>
+            <View style={{flex: 1, alignItems: 'center'}}>
+            <View style={{ position: 'absolute', bottom: 0}}>
+            <TouchableOpacity style={{height: 40, width: 100, backgroundColor: 'white', borderRadius: 10, margin: 20}} onPress={this.createPdf} >
+             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+               <Text style={styles.buttonText}> Skapa pdf </Text>
+               </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{height: 40, width: 100, backgroundColor: 'white', borderRadius: 10, margin: 20}} onPress={this.closeModal } >
+             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+               <Text style={styles.buttonText}> Stäng fönster </Text>
+               </View>
+            </TouchableOpacity>
+            </View>
+          </View>
+          </Modal>
       </View>
     )
   }
@@ -120,7 +162,9 @@ const mapStateToProps = (state) => {
   monthFormattedExpenses: state.userExpenses.monthFormattedExpenses,
   expenseJustAdded: state.userExpenses.expenseJustAdded,
   admin: state.userExpenses.admin,
-  name: state.userExpenses.name
+  name: state.userExpenses.name,
+  pdfModalOpen: state.pdf.modalOn,
+  pdfDate: state.pdf.date
  }
 }
 
@@ -139,6 +183,25 @@ const mapDispatchToProps = (dispatch) => {
         type: 'SET_MONTH_SCREEN',
         index
       })
+    },
+    openPdfModal: () => {
+      dispatch({
+        type: 'OPEN_PDF_MODAL'
+      })
+    },
+    closePdfModal: () => {
+      dispatch({
+        type: 'CLOSE_PDF_MODAL'
+      })
+    },
+    setPdfDate: (date) => {
+      dispatch({
+        type: 'SET_PDF_DATE',
+        date
+      })
+    },
+    createPdf: (date) => {
+      dispatch(createpdf(date))
     }
   }
 }

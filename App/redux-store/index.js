@@ -73,6 +73,11 @@ const defaultFavorite = {
   favoriteChosenIndex: -1
 }
 
+const defaultPdf = {
+  modalOn: false,
+  date: {}
+}
+
 const reducers = combineReducers({
   loginEmail: loginReducer,
   userExpenses: getUserReducer,
@@ -80,6 +85,7 @@ const reducers = combineReducers({
   attests: attestExpenses,
   createAccount: createAccountReducer,
   favorites: favoriteReducer,
+  pdf: pdfReducer,
   nav: navReducer
 })
 
@@ -94,9 +100,11 @@ function loginReducer (state = loginDefaultState, action) {
       }
       return Object.assign({}, state, newObj)
     case 'GET_DATA':
+      console.log('get_data:', action.data)
       newObj = {
         data: action.data.validEmail,
-        userId: action.data.userId
+        userId: action.data.userId,
+        feedback: action.data.reason ? action.data.reason : ''
       }
       return Object.assign({}, state, newObj)
     case 'LOGIN_PASSWORD':
@@ -355,6 +363,30 @@ function favoriteReducer (state = defaultFavorite, action) {
       return Object.assign({}, state, newObj)
     case 'POST_FAVORITE':
       return state
+    default:
+      return state
+  }
+}
+
+function pdfReducer (state = defaultPdf, action) {
+  let newObj
+  switch (action.type) {
+    case 'OPEN_PDF_MODAL':
+      newObj = { modalOn: true }
+      return Object.assign({}, state, newObj)
+    case 'CLOSE_PDF_MODAL':
+      newObj = { modalOn: false }
+      return Object.assign({}, state, newObj)
+    case 'SET_PDF_DATE':
+      let year = moment(action.date).year()
+      let month = moment(action.date).month() + 1
+      newObj = { date: {year, month} }
+      console.log(newObj)
+      return Object.assign({}, state, newObj)
+    case 'CREATE_PDF':
+      // if OK, remove SET_PDF_DATE
+      newObj = { date: {} }
+      return Object.assign({}, state, newObj)
     default:
       return state
   }
