@@ -5,11 +5,15 @@ import StatusQuestionSquare from './state-question-square'
 import StdButton from './std-button'
 
 export default function (props) {
-  let status
+  let status = null
+  console.log('props.admin:', props.admin)
   if (props.comment) {
     status = <StatusQuestionSquare size={20} color={'orange'} />
   } else {
     status = <StatusSquare size={20} color={props.attest ? 'green' : 'grey'} />
+  }
+  if (props.expenseUserId === props.userId && props.admin) {
+    status = null
   }
 
   return (

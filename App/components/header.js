@@ -55,7 +55,7 @@ const styles = {
   },
   buttonRight: {
     textAlign: 'center',
-    familyFont: 'Helvetica',
+    fontFamily: 'Helvetica',
     fontSize: 20,
     fontWeight: '100',
     color: sylogRed,

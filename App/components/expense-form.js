@@ -47,6 +47,7 @@ export default class ExpenseForm extends Component {
 
   render() {
     let date = {}
+    let comment = null
     const { expenseProps } = this.props
     
     if (!(typeof(expenseProps.date) == 'string')) {
@@ -59,13 +60,20 @@ export default class ExpenseForm extends Component {
         selected: true,
         selectedColor: sylogRed
     }}
+    if(this.props.comment) {
+      comment = <View style={styles.commentContainer} >
+      <Text> Adminkommentar: </Text>
+      <Text style={styles.commentText}c > { this.props.comment } </Text>
+    </View>
+    }
+    
     return (
       <TouchableWithoutFeedback 
         onPress={() => {  
           Keyboard.dismiss()} }
         onPressOut={() => { } } >
       <View style={styles.container} >
-        <StdTextInput onChangeText={this.props.onChange('km')} label='km' value={expenseProps.km}  />
+        <StdTextInput onChangeText={this.props.onChange('km')} label='km' value={expenseProps.km} />
         <StdTextInput onChangeText={this.props.onChange('client')} label='kund' value={expenseProps.client}  />
         <StdTextInput onChangeText={this.props.onChange('route_descr')} label='Färdbeskr.' value={expenseProps.route_descr}  />
         <CarButton onPress={ this.toggle } label={expenseProps.carType}/>
@@ -73,6 +81,8 @@ export default class ExpenseForm extends Component {
         { this.props.renderSelectables(this.props.carTypes, expenseProps.carType) }
         </Collapsible>
         { !this.props.favoriteMode ? <DateButton date={null} text={expenseProps.date} onPress={this.props.onPress('date')} /> :  <StdTextInput onChangeText={this.props.onChange('nick')} label='Namn för favorit' value={this.props.favoriteNick}  /> }
+        <Text style={styles.clearButton} onPress={this.props.clear} > Töm fälten </Text>
+        { comment }
         <Modal isVisible={this.props.modelOpen}>
           <View style={{ flex: 1, alignItems: 'center' }}>
              <View style={{margin: 20}}>
@@ -116,7 +126,7 @@ const styles = {
   container: {
     flex: 1,
     alignItems: 'center',
-    width: '100%'
+    width: '98%',
   },
   buttonText: {
     fontFamily: 'Helvetica',
@@ -128,5 +138,32 @@ const styles = {
     fontFamily: 'Helvetica',
     fontSize: 25,
     fontWeight: '400'
+  },
+  clearButton: {
+    position: 'relative',
+    top: 50,
+    right: 20,
+    textAlign: 'center',
+    fontFamily: 'Helvetica',
+    fontSize: 15,
+    fontWeight: '100',
+    color: sylogRed,
+    margin: 5
+  },
+  commentContainer: {
+    flex: 1,
+    top: 70,
+    right: 30,
+    width: 300,
+    margin: 5,
+    borderWidth: 1, 
+    borderColor: sylogRed, 
+    borderRadius: 10
+  },
+  commentText : {
+    fontFamily: 'Helvetica',
+    fontSize: 15,
+    fontWeight: '100',
+    margin: 5
   }
 }

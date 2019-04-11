@@ -93,9 +93,10 @@ class ListScreen extends Component {
   createPdf = () => {
     // skicka ett anrop till servern som skapar och skickar en pdf till admin skicka med månad som ska skrivas ut.
     // 
-    const { createPdf, pdfDate } = this.props
-    console.log(1)
-    createPdf(pdfDate)
+    const { createPdf, pdfDate, admin } = this.props
+    if (admin) { 
+      createPdf(pdfDate)
+    }
   }
 
   renderMonths = (arr) => {
@@ -111,7 +112,6 @@ class ListScreen extends Component {
  * { this.state.userExpenses.monthIndex === arr.indexOf(month) ? this.renderExpenses(month) : null }
  */
 
-
   render () {
     const { monthFormattedExpenses, admin, name, pdfModalOpen } = this.props
     return (
@@ -122,12 +122,14 @@ class ListScreen extends Component {
             { admin ? 'Reseutlägg' : `${name}s reseutlägg`  }
           </Text>
         </View>
+        <View style={{flex: 1, width: '100%', height: '100%'}}>
           <ScrollView style={{width:'100%', right: 10, left: 10}}>
-            <View style={{flex: 1, flexDirection: 'column'}}>
-            { monthFormattedExpenses.length == 0 ? <Text> Inga reseutlägg </Text> : null }
+            <View style={{flex: 1, flexDirection: 'column', alignContent: 'center', justifyContent: 'center'}}>
+            { monthFormattedExpenses.length == 0 ? <Text style={{textAlign: 'center'}}> Inga reseutlägg </Text> : null }
             { this.renderMonths(monthFormattedExpenses) }
             </View>
           </ScrollView>
+          </View>
           <Modal isVisible={pdfModalOpen}>
             <View style={{flex: 1, alignItems: 'center'}}>
             <View style={{ position: 'absolute', bottom: 0}}>

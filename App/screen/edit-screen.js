@@ -26,6 +26,7 @@ import config from '../config'
 import { connect } from 'react-redux'
 import StdTextInput from '../components/std-text-input'
 import FavoriteButton from '../components/favorite-button'
+import { sylogRed, backgroundColor } from '../themes'
 
 // date: new Date('2018-04-29T11:16:36.858Z'), car_type: 'comp_car_gas', km: 9, route_descr: 'Linköping på kundträff', attest: false, client: 'Kund D'}
 
@@ -42,9 +43,10 @@ class EditScreen extends Component {
   }
 
   componentDidMount () {
-    const { chosenCarType, attachName, attachUserId, expenseProps, id, carChange, editExpense, expenses, kmChange, clientChange, routeChange, dateChange, e, getFavorites } = this.props
+    const { chosenCarType, attachName, attachUserId, expenseProps, id, carChange, editExpense, expenses, kmChange, clientChange, routeChange, dateChange, e, getFavorites, onCommentChange } = this.props
     if (editExpense.setToEdit) {
       let expense = expenses[editExpense.monthIndex][editExpense.expenseIndex]
+      getFavorites(e._id)
       kmChange(`${expense.km}`)
       clientChange(expense.client)
       routeChange(expense.route_descr)
@@ -52,6 +54,8 @@ class EditScreen extends Component {
       carChange(expense.car_type) 
       attachName(e.name)
       attachUserId(e._id)
+      onCommentChange(expense.comment)
+
     } else {
       getFavorites(e._id)
       attachName(expenseProps.name)
@@ -170,7 +174,15 @@ class EditScreen extends Component {
   removeFavorite = () => {
     const { getFavorites, removeFavorite, e, favorites, currentFavoriteIndex, clearExpenses, onFavoritePress } = this.props
     removeFavorite(e._id, favorites[currentFavoriteIndex]._id)
+    setInterval(()=> {}, 200)
     getFavorites(e._id)
+    clearExpenses()
+    onFavoritePress(-1)
+  }
+
+  clear = () => {
+    const { clearExpenses, onFavoritePress } = this.props
+    console.log('clear')
     clearExpenses()
     onFavoritePress(-1)
   }
@@ -198,9 +210,15 @@ class EditScreen extends Component {
     })
   }
 
+  onStarPress = () => {
+    const { clearExpenses, onStarPress} = this.props
+    clearExpenses()
+    onStarPress()
+  }
+
 
   render () {
-    const { hideDate, carTypes, carType, dateModalOpened, carSelectOpened, onCarPress, expenseProps, editExpense, onStarPress, favoriteMode, favoriteNick, favorites, currentFavoriteIndex, isFavoritePressed, clearExpenses, onFavoritePress, removeFavorite } = this.props
+    const { hideDate, carTypes, carType, dateModalOpened, carSelectOpened, onCarPress, expenseProps, editExpense, favoriteMode, favoriteNick, favorites, currentFavoriteIndex, isFavoritePressed, removeFavorite } = this.props
     let addText
     if (favoriteMode) {
       addText = 'Lägg till favorit'
@@ -213,26 +231,25 @@ class EditScreen extends Component {
     }
     return (
       <TouchableWithoutFeedback 
-      onPress={() => {  
-        clearExpenses()
-        onFavoritePress(-1)
+      onPress={() => {
         Keyboard.dismiss()} }
       onPressOut={() => {  } } >
       <View style={styles.container}>
-        <Header removeFavorite={this.removeFavorite} isFavoritePressed={isFavoritePressed} favoriteMode={favoriteMode} lefttrash={ editExpense.setToEdit ? true : false} rightstar={ editExpense.setToEdit ? false : true } onStarPress={onStarPress} onPress2={this.onPress2} buttonName='Avbryt' onPress={this.goBack } />
+        <Header removeFavorite={this.removeFavorite} isFavoritePressed={isFavoritePressed} favoriteMode={favoriteMode} lefttrash={ editExpense.setToEdit ? true : false} rightstar={ editExpense.setToEdit ? false : true } onStarPress={this.onStarPress} onPress2={this.onPress2} buttonName='Avbryt' onPress={this.goBack } />
         <View style={styles.textContainer}>
           <Text style={styles.welcome}>
            Editera mina utgifter
           </Text>
         </View>
-        { favorites.length == 0 ? <Text color={'grey'} style={{fontSize: 12, fontWeight: '100'}}> Favoriter </Text> : null }
+        { favorites.length == 0 ? 
+        <Text onPress={this.onStarPress} color={'grey'} style={{fontSize: 12, fontWeight: '100' }}> Favoriter saknas </Text>: null }
         <ScrollView style={{width:'100%', right: 10, left: 10}}>
           <ScrollView style={{left: 20}} horizontal={true} contentContainerStyle={{paddingRight: 50}} >
             <View style={{flex: 1,flexDirection: 'row', alignItems:'center', backgroundColor:'white', width:'100%'}}>
               { this.renderFavorites(favorites) }
             </View>
           </ScrollView>
-          <ExpenseForm favoriteNick={favoriteNick} favoriteMode={favoriteMode} carTypes={carTypes} renderSelectables={this.renderSelectables} onCarPress={onCarPress} _toggleModal={hideDate} onChange={this.onChange}  expenseProps={expenseProps} onPress={this.onPress} modelOpen={dateModalOpened} carSelectOpen={carSelectOpened} />
+          <ExpenseForm comment={editExpense.comment} clear={this.clear} favoriteNick={favoriteNick} favoriteMode={favoriteMode} carTypes={carTypes} renderSelectables={this.renderSelectables} onCarPress={onCarPress} _toggleModal={hideDate} onChange={this.onChange}  expenseProps={expenseProps} onPress={this.onPress} modelOpen={dateModalOpened} carSelectOpen={carSelectOpened} />
         </ScrollView>
         <AddExpenseButton onPress={ this.onPressSend } buttonName={ addText } />
       </View>
@@ -243,6 +260,7 @@ class EditScreen extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    // comment: state
     isFavoritePressed: state.favorites.favoriteChosenIndex != -1 ? true : false,
     currentFavoriteIndex: state.favorites.favoriteChosenIndex,
     favorites: state.favorites.favorites,
@@ -290,6 +308,10 @@ const mapDispatchToProps = (dispatch) => {
         data }) 
     },
     updateComment: (userId, expenseId, comment) => { dispatch(updatecomment({userId, expenseId, comment})) },
+    onCommentChange: (data) => { dispatch({
+      type: 'ON_CHANGE_COMMENT', 
+      data
+    })},
     removeFavorite: (userId, favoriteId) => { dispatch(removefavorite({ userId, favoriteId })) },
     removeExpense: (userId, expenseId) => { dispatch(removeexpense({ userId, expenseId })) },
     clearExpenses: () => { dispatch({ type: 'CLEAR_ALL_EXPENSES' }) },

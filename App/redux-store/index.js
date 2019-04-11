@@ -48,7 +48,8 @@ const defaultExpense = {
     carType: 'Egen bil',
     date: moment().format().slice(0, 10),
     userId: '',
-    name: '' },
+    name: '',
+    km: ''},
   editExpense: {
     setToEdit: false,
     userId: '',
@@ -306,7 +307,7 @@ function addExpensesReducer (state = defaultExpense, action) {
     case 'POST_EXPENSE_UPDATE':
       return state
     case 'OPEN_REPORT_MODAL':
-      obj = Object.assign({}, state.editExpense, { showReportModal: true })
+      obj = Object.assign({}, state.editExpense, { showReportModal: true, comment: '' })
       newObj = {
         editExpense: obj
       }
@@ -341,12 +342,14 @@ function favoriteReducer (state = defaultFavorite, action) {
   switch (action.type) {
     case 'ON_STAR_PRESS':
       newObj = {
-        favoriteMode: !state.favoriteMode
+        favoriteMode: !state.favoriteMode,
+        favoriteNick: ''
       }
       return Object.assign({}, state, newObj)
     case 'ON_FAVORITE_PRESS':
       newObj = {
-        favoriteChosenIndex: action.data
+        favoriteChosenIndex: action.data,
+        favoriteNick: ''
       }
       return Object.assign({}, state, newObj)
     case 'GET_FAVORITES':

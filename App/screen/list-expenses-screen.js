@@ -23,20 +23,20 @@ class ListExpenseScreen extends Component {
     }
   }
 
-  editExpense = (expenseIndex, userId, expenseId) => {
+  editExpense = (expenseIndex, userId, expenseId, comment) => {
     const { toggleSetToEditExpense, monthIndex } = this.props
-    toggleSetToEditExpense(userId, expenseIndex, monthIndex, expenseId)
+    toggleSetToEditExpense(userId, expenseIndex, monthIndex, expenseId, comment)
     this.props.navigation.navigate('EditExpensesPage')
     // Expense should be give someting to tell it that edit is going down
   }
 
-  onExpensePress = (expenseIndex, admin, expenseId, expenseUserId) => {
+  onExpensePress = (expenseIndex, admin, expenseId, expenseUserId, comment) => {
     const { setExpenseAttest, postToServer, monthIndex, userId } = this.props
     if (admin && (userId != expenseUserId)) {
       setExpenseAttest(expenseIndex, monthIndex)
       postToServer(userId, expenseId)
     } else {
-      this.editExpense(expenseIndex, userId, expenseId)
+      this.editExpense(expenseIndex, userId, expenseId, comment)
     }
   }
 
@@ -57,11 +57,11 @@ class ListExpenseScreen extends Component {
     props.navigation.navigate('EditExpensesPage')
   }
   renderExpenses = (arr, admin) => {
-    const { isExpenseNew, carTypes, comment, expenseId } = this.props
+    const { isExpenseNew, carTypes, expenseId, userId } = this.props
     if (!arr) return null
     return arr.map((expense) => {
       return (
-        <Expense comment={ expense.comment } name={expense.name} admin={admin} onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId) }} onLongPress={() => { this.onExpenseLongPress(arr.indexOf(expense), admin, expense._id, expense.userId)}} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} carType={expense.car_type} carTypes={carTypes} key={expense._id} />
+        <Expense userId={userId} expenseUserId={expense.userId} comment={ expense.comment } name={expense.name} admin={admin} onPress={() => { this.onExpensePress(arr.indexOf(expense), admin, expense._id, expense.userId, expense.comment) }} onLongPress={() => { this.onExpenseLongPress(arr.indexOf(expense), admin, expense._id, expense.userId)}} km={expense.km} date={expense.date} attest={expense.attest} descr={expense.route_descr} client={expense.client} carType={expense.car_type} carTypes={carTypes} key={expense._id} />
       )
     })
   }
@@ -69,6 +69,7 @@ class ListExpenseScreen extends Component {
   postComment = () => {
     const { updateComment, expenseUserId, expenseId, comment, getExpenses, userId, closeReportModal} = this.props
     updateComment(expenseUserId, expenseId, comment)
+    setInterval(() => {}, 200)
     getExpenses(userId)
     closeReportModal()
   }
@@ -145,7 +146,7 @@ class ListExpenseScreen extends Component {
       })
     },
     postToServer: (userId, expenseId) => { dispatch(postattest(userId, expenseId)) },
-    toggleSetToEditExpense: (userId, expenseIndex, monthIndex, expenseId) => { 
+    toggleSetToEditExpense: (userId, expenseIndex, monthIndex, expenseId, comment) => { 
       dispatch({
         type: 'TOGGLE_SET_TO_EDIT_EXPENSE', 
         data: { userId, expenseIndex, monthIndex, expenseId }} )
