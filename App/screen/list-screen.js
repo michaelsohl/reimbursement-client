@@ -19,7 +19,6 @@ import { connect } from 'react-redux'
 import createpdf from '../redux-store/create-pdf'
 import { SylogHeader } from '../media'
 import Modal from 'react-native-modal'
-import moment from 'moment'
 
 
 const HEADER_MAX_HEIGHT = 200;

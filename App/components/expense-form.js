@@ -1,12 +1,9 @@
 import React, { Component } from 'react'
 import { View, Text, TextInput, Switch, Slider, Picker, DatePickerIOS, PickerIOS, TouchableOpacity, Animated, TouchableWithoutFeedback, Keyboard } from 'react-native'
-import Form from 'react-native-form'
 import { Calendar } from 'react-native-calendars'
 import StdTextInput from './std-text-input'
 import Modal from 'react-native-modal'
 import DateButton from '../components/date-button'
-import DatePicker from 'react-datepicker'
-import moment from 'moment'
 import { sylogRed } from '../themes'
 import CarButton from './car-button'
 import StdButton from './std-button'
@@ -90,8 +87,6 @@ export default class ExpenseForm extends Component {
              </View>
              <Calendar
                style= {{width: 300}}
-               // eventDates={['2018-06-13']}       // Optional array of moment() parseable dates that will show an event indicator
-               // events={[{ date: '2018-06-12' }]} // Optional array of event objects with a date property and custom styles for the event indicator
                onDayPress={this.props.onChange('date')}
                theme={{arrowColor: sylogRed}}
                onSwipeNext={() => {}}    // Callback for forward swipe event
